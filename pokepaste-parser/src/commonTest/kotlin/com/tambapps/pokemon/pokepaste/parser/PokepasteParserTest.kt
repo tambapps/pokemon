@@ -112,7 +112,7 @@ class PokepasteParserTest {
             Pokemon(
                 name = "Ogerpon-Cornerstone",
                 surname = null,
-                gender = "F",
+                gender = Gender.FEMALE,
                 nature = "Adamant",
                 item = "Cornerstone Mask",
                 shiny = false,
@@ -161,7 +161,7 @@ class PokepasteParserTest {
             Pokemon(
                 name = "Farigiraf",
                 surname = "Sophie",
-                gender = "F",
+                gender = Gender.FEMALE,
                 nature = "Bold",
                 item = "Electric Seed",
                 shiny = false,
@@ -203,7 +203,7 @@ class PokepasteParserTest {
             Pokemon(
                 name = "Whimsicott",
                 surname = null,
-                gender = "M",
+                gender = Gender.MALE,
                 nature = "Timid",
                 item = "Focus Sash",
                 shiny = false,

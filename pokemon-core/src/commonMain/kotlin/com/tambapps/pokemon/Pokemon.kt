@@ -3,7 +3,7 @@ package com.tambapps.pokemon
 data class Pokemon(
   val name: String,
   val surname: String?,
-  val gender: String?,
+  val gender: Gender?,
   val nature: String,
   val item: String?,
   val shiny: Boolean,
@@ -16,11 +16,13 @@ data class Pokemon(
   val evs: PokeStats,
 )
 
-object Gender {
-  const val MALE = "M"
-  const val FEMALE = "F"
+enum class Gender {
+  MALE,
+  FEMALE,
+  ASEXUAL
 }
 
+// TODO add enum for nature
 enum class PokeType {
   STEEL,
   FIGHTING,

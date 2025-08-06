@@ -12,6 +12,9 @@ class PokepasteParser(
     const val DEFAULT_IV_VALUE = 31
     const val DEFAULT_EV_VALUE = 0
 
+    const val GENDER_MALE = "M"
+    const val GENDER_FEMALE = "F"
+
     private const val ABILITY_PREFIX = "Ability:"
     private const val TERA_TYPE_PREFIX = "Tera Type:"
     private const val LEVEL_PREFIX = "Level:"
@@ -128,7 +131,7 @@ class PokepasteParser(
     throw PokePasteParseException(line, "Invalid number")
   }
 
-  private data class PokemonHeader(var name: String = "", var item: String? = null, var surname: String? = null, var gender: String? = null)
+  private data class PokemonHeader(var name: String = "", var item: String? = null, var surname: String? = null, var gender: Gender? = null)
 
   private fun parseHeader(headerLine: String) = PokemonHeader().apply {
     var line = headerLine
@@ -143,25 +146,36 @@ class PokepasteParser(
     when (nbParenthesis) {
       // no surname and no specific gender
       0 -> name = line.trim()
-      // surname or gender
-      1 -> {
-        val content = line.substring(line.indexOf('(') + 1, line.indexOf(')')).trim()
-        if (content == Gender.MALE || content == Gender.FEMALE) {
-          name = line.substring(0, line.indexOf('(')).trim()
-          gender = content
+      1 -> { // surname or gender
+        val content = parenthesisContent(line)
+        if (content == GENDER_MALE || content == GENDER_FEMALE) {
+          name = beforeParenthesisContent(line)
+          gender = if (content == GENDER_MALE) Gender.MALE else Gender.FEMALE
         } else {
           name = content
-          surname = line.substring(0, line.indexOf('(')).trim()
+          surname = beforeParenthesisContent(line)
         }
       }
-      // both surname and gender
-      2 -> {
-        surname = line.substring(0, line.indexOf('(')).trim()
-        name = line.substring(line.indexOf('(') + 1, line.indexOf(')')).trim()
-        gender = line.substring(line.lastIndexOf('(') + 1, line.lastIndexOf(')')).trim()
+      2 -> { // both surname and gender
+        surname = beforeParenthesisContent(line)
+        name = parenthesisContent(line)
+        gender = if (lastParenthesisContent(line) == GENDER_MALE) Gender.MALE else Gender.FEMALE
       }
       else -> throw PokePasteParseException(headerLine)
     }
+  }
+
+  private fun beforeParenthesisContent(line: String) = line.substring(0, line.indexOf('(')).trim()
+
+  private fun parenthesisContent(line: String) = parenthesisContent(line) { line.indexOf('(') }
+
+  private fun lastParenthesisContent(line: String) = parenthesisContent(line) { line.lastIndexOf('(') }
+
+  private inline fun parenthesisContent(line: String, startSupplier: () -> Int): String {
+    val start = startSupplier.invoke()
+    val end = line.indexOf(')', startIndex = start + 1)
+    if (start == -1 || end == -1) throw PokePasteParseException(line)
+    return line.substring(start + 1, end).trim()
   }
 }
 
