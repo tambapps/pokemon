@@ -1,5 +1,8 @@
 package com.tambapps.pokemon
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class Stat {
   ATTACK,
   DEFENSE,
@@ -9,6 +12,7 @@ enum class Stat {
   HP
 }
 
+@Serializable
 data class PokeStats(
   val hp: Int,
   val speed: Int,

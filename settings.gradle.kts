@@ -6,8 +6,9 @@ pluginManagement {
     }
 
     plugins {
-        val kotlinVersion = extra["kotlin.version"] as String
+        val kotlinVersion = extra["kotlinVersion"] as String
         id("org.jetbrains.kotlin.multiplatform") version kotlinVersion
+        id("org.jetbrains.kotlin.plugin.serialization") version kotlinVersion
     }
 
 }

@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
     `maven-publish`
 }
 
@@ -23,7 +24,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                // Core dependencies that will be shared
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${property("serializationVersion")}")
             }
         }
         commonTest {
