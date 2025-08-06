@@ -1,4 +1,4 @@
-package com.tambapps.pokemon.replay
+package com.tambapps.pokemon.replay.parser
 
 import com.tambapps.pokemon.Pokemon
 

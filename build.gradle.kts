@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version "2.2.0" apply false
+    kotlin("multiplatform") apply false
 }
 
 group = "com.tambapps.pokemon"

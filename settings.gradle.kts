@@ -4,6 +4,12 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
+
+    plugins {
+        val kotlinVersion = extra["kotlin.version"] as String
+        id("org.jetbrains.kotlin.multiplatform") version kotlinVersion
+    }
+
 }
 
 plugins {
