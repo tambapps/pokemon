@@ -13,11 +13,11 @@ data class PokeStats(
   }
 }
 
-fun buildStats(defaultValue: Int, builder: StatsBuilder.() -> Unit): PokeStats = StatsBuilder(defaultValue).apply(builder).run {
+fun buildStats(defaultValue: Int, builder: PokeStatsBuilder.() -> Unit): PokeStats = PokeStatsBuilder(defaultValue).apply(builder).run {
   PokeStats(attack = attack, speed = speed, specialAttack = specialAttack, defense = defense, specialDefense = specialDefense, hp = hp)
 }
 
-class StatsBuilder(defaultValue: Int) {
+class PokeStatsBuilder(defaultValue: Int) {
   var hp = defaultValue
   var speed = defaultValue
   var attack = defaultValue
