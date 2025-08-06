@@ -50,7 +50,7 @@ class PokepasteParser(
       val moves = mutableListOf<String>()
       var ivs: PokeStats? = null
       var evs: PokeStats? = null
-      var nature = DEFAULT_NATURE // neutral nature
+      var nature = Nature.HARDY // neutral nature
       var shiny = false
       var happiness = DEFAULT_HAPPINESS
 
@@ -61,7 +61,7 @@ class PokepasteParser(
         if (line.startsWith(ABILITY_PREFIX)) {
           ability = extractRight(line)
         } else if (line.startsWith(TERA_TYPE_PREFIX)) {
-          teraType = parseTeraType(extractRight(line))
+          teraType = parseTeraType(line, extractRight(line))
         } else if (line.startsWith(LEVEL_PREFIX)) {
           level = extractRightInt(line);
         } else if (line.startsWith(EVS_PREFIX)) {
@@ -69,7 +69,7 @@ class PokepasteParser(
         } else if (line.startsWith(IVS_PREFIX)) {
           ivs = parseStats(line, DEFAULT_IV_VALUE)
         } else if (line.endsWith(NATURE_SUFFIX)) {
-          nature = line.substring(0, line.indexOf(" "));
+          nature = parseNature(line, line.substring(0, line.indexOf(" ")).uppercase())
         } else if (line.startsWith(MOVE_PREFIX)) {
           moves.add(line.substring(MOVE_PREFIX.length))
         } else if (line.startsWith(SHINY_PREFIX)) {
@@ -97,10 +97,16 @@ class PokepasteParser(
     return PokePaste(pokemons.toList())
   }
 
-  private fun parseTeraType(str: String) = try {
+  private fun parseNature(line: String, str: String) = try {
+    Nature.valueOf(str)
+  } catch (_: IllegalArgumentException) {
+    throw PokePasteParseException(line, "Unknown nature $str")
+  }
+
+  private fun parseTeraType(line: String, str: String) = try {
     PokeType.valueOf(str.trim().uppercase())
   } catch (_: IllegalArgumentException) {
-    throw PokePasteParseException(str, "Unknown tera type $str")
+    throw PokePasteParseException(line, "Unknown tera type $str")
   }
 
   private fun parseStats(line: String, defaultValue: Int) = buildStats(defaultValue) {

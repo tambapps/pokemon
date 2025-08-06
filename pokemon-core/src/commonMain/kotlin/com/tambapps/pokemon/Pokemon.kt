@@ -4,7 +4,7 @@ data class Pokemon(
   val name: String,
   val surname: String?,
   val gender: Gender?,
-  val nature: String,
+  val nature: Nature,
   val item: String?,
   val shiny: Boolean,
   val happiness: Int,
@@ -16,13 +16,41 @@ data class Pokemon(
   val evs: PokeStats,
 )
 
+// TODO make boosts information retrievable
+enum class Nature {
+  ADAMANT, // +Atk -SpA
+  BOLD, // +Def -Atk
+  BRAVE, // +Atk -Spe
+  CALM, // +SpD -Atk
+  CAREFUL, // +SpD -SpA
+  DOCILE, // Neutral
+  GENTLE, // +SpD -Def
+  HARDY, // Neutral
+  HASTY, // +Spe -Def
+  IMPISH, // +Def -SpA
+  JOLLY, // +Spe -SpA
+  LAX, // +Def -SpD
+  LONELY, // +Atk -Def
+  MILD, // +SpA -Def
+  MODEST, // +SpA -Atk
+  NAIVE, // +Spe -SpD
+  NAUGHTY, // +Atk -SpD
+  QUIET, // +SpA -Spe
+  QUIRKY, // Neutral
+  RASH, // +SpA -SpD
+  RELAXED, // +Def -Spe
+  SASSY, // +SpD -Spe
+  SERIOUS, // Neutral
+  TIMID, // +Spe -Atk
+  BASHFUL, // Neutral
+}
+
 enum class Gender {
   MALE,
   FEMALE,
   ASEXUAL
 }
 
-// TODO add enum for nature
 enum class PokeType {
   STEEL,
   FIGHTING,
