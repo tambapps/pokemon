@@ -185,6 +185,10 @@ class PokepasteParser(
   }
 }
 
+class PokePasteParseException(line: String, reason: String = "Invalid line"): Exception(
+  "Invalid pokepaste line $line: $reason"
+)
+
 private class LineReader(input: String) {
   private val lines = input.trim().lines()
   private var i = 0
