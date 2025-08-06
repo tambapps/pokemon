@@ -9,7 +9,7 @@ data class Pokemon(
   val shiny: Boolean,
   val happiness: Int,
   val ability: String?,
-  val teraType: String?,
+  val teraType: PokeType?,
   val level: Int,
   val moves: List<String>,
   val ivs: PokeStats,
@@ -19,4 +19,29 @@ data class Pokemon(
 object Gender {
   const val MALE = "M"
   const val FEMALE = "F"
+}
+
+enum class PokeType {
+  STEEL,
+  FIGHTING,
+  DRAGON,
+  FIRE,
+  ICE,
+  NORMAL,
+  WATER,
+  GRASS,
+  ELECTRIC,
+  FAIRY,
+  POISON,
+  PSY,
+  ROCK,
+  GHOST,
+  DARK,
+  GROUND,
+  FLYING,
+  PSYCHIC,
+  BUG,
+  // not really types, but meh
+  STELLAR,
+  UNKNOWN
 }

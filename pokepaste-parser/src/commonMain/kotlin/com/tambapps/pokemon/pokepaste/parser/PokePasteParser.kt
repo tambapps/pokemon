@@ -42,7 +42,7 @@ class PokepasteParser(
       val (name, item, surname, gender) = parseHeader(lineReader.readLine())
 
       var ability: String? = null
-      var teraType: String? = null
+      var teraType: PokeType? = null
       var level: Int = defaultLevel
       val moves = mutableListOf<String>()
       var ivs: PokeStats? = null
@@ -58,7 +58,7 @@ class PokepasteParser(
         if (line.startsWith(ABILITY_PREFIX)) {
           ability = extractRight(line)
         } else if (line.startsWith(TERA_TYPE_PREFIX)) {
-          teraType = extractRight(line)
+          teraType = parseTeraType(extractRight(line))
         } else if (line.startsWith(LEVEL_PREFIX)) {
           level = extractRightInt(line);
         } else if (line.startsWith(EVS_PREFIX)) {
@@ -92,6 +92,12 @@ class PokepasteParser(
       ))
     }
     return PokePaste(pokemons.toList())
+  }
+
+  private fun parseTeraType(str: String) = try {
+    PokeType.valueOf(str.trim().uppercase())
+  } catch (_: IllegalArgumentException) {
+    throw PokePasteParseException(str, "Unknown tera type $str")
   }
 
   private fun parseStats(line: String, defaultValue: Int) = buildStats(defaultValue) {

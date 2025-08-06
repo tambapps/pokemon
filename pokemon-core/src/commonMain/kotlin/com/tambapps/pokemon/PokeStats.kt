@@ -1,5 +1,14 @@
 package com.tambapps.pokemon
 
+enum class Stat {
+  ATTACK,
+  DEFENSE,
+  SPECIAL_ATTACK,
+  SPECIAL_DEFENSE,
+  SPEED,
+  HP
+}
+
 data class PokeStats(
   val hp: Int,
   val speed: Int,
@@ -10,6 +19,14 @@ data class PokeStats(
 ) {
   companion object {
     fun default(defaultValue: Int) = PokeStats(defaultValue, defaultValue, defaultValue, defaultValue, defaultValue, defaultValue)
+  }
+  operator fun get(stat: Stat) = when(stat) {
+    Stat.ATTACK -> attack
+    Stat.DEFENSE -> defense
+    Stat.SPECIAL_ATTACK -> specialAttack
+    Stat.SPECIAL_DEFENSE -> specialDefense
+    Stat.SPEED -> speed
+    Stat.HP -> hp
   }
 }
 
