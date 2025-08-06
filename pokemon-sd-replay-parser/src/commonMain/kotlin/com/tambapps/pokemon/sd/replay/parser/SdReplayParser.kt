@@ -1,11 +1,10 @@
-package com.tambapps.pokemon.replay.parser
+package com.tambapps.pokemon.sd.replay.parser
 
-import com.tambapps.pokemon.Pokemon
 
-class ReplayParser {
+class SdReplayParser {
     
-    fun parseReplay(replayData: String): List<Pokemon> {
+    fun parseReplay(replayData: String): SdReplay {
         // TODO: Implement replay parsing logic
-        return emptyList()
+        TODO()
     }
 }
