@@ -22,9 +22,11 @@ data class PokeStats(
   val specialDefense: Int,
 ) {
   companion object {
-    fun default(defaultValue: Int) = PokeStats(defaultValue, defaultValue, defaultValue, defaultValue, defaultValue, defaultValue)
+    fun default(defaultValue: Int) =
+      PokeStats(defaultValue, defaultValue, defaultValue, defaultValue, defaultValue, defaultValue)
   }
-  operator fun get(stat: Stat) = when(stat) {
+
+  operator fun get(stat: Stat) = when (stat) {
     Stat.ATTACK -> attack
     Stat.DEFENSE -> defense
     Stat.SPECIAL_ATTACK -> specialAttack
@@ -34,9 +36,17 @@ data class PokeStats(
   }
 }
 
-fun buildStats(defaultValue: Int, builder: PokeStatsBuilder.() -> Unit): PokeStats = PokeStatsBuilder(defaultValue).apply(builder).run {
-  PokeStats(attack = attack, speed = speed, specialAttack = specialAttack, defense = defense, specialDefense = specialDefense, hp = hp)
-}
+fun buildStats(defaultValue: Int, builder: PokeStatsBuilder.() -> Unit): PokeStats =
+  PokeStatsBuilder(defaultValue).apply(builder).run {
+    PokeStats(
+      attack = attack,
+      speed = speed,
+      specialAttack = specialAttack,
+      defense = defense,
+      specialDefense = specialDefense,
+      hp = hp
+    )
+  }
 
 class PokeStatsBuilder(defaultValue: Int) {
   var hp = defaultValue

@@ -78,6 +78,7 @@ enum class PokeType {
   FLYING,
   PSYCHIC,
   BUG,
+
   // not really types, but meh
   STELLAR,
   UNKNOWN

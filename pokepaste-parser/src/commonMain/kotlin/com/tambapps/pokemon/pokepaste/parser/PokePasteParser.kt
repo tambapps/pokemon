@@ -1,6 +1,11 @@
 package com.tambapps.pokemon.pokepaste.parser
 
-import com.tambapps.pokemon.*
+import com.tambapps.pokemon.Gender
+import com.tambapps.pokemon.Nature
+import com.tambapps.pokemon.PokeStats
+import com.tambapps.pokemon.PokeType
+import com.tambapps.pokemon.Pokemon
+import com.tambapps.pokemon.buildStats
 
 class PokepasteParser(
   private val defaultLevel: Int = 100,
@@ -29,7 +34,7 @@ class PokepasteParser(
     private const val YES = "Yes"
     private const val STAT_SEPARATOR = " / "
     private const val ITEM_SEPARATOR = "@"
-    
+
     private const val STAT_ATTACK = "Atk"
     private const val STAT_DEFENSE = "Def"
     private const val STAT_SPECIAL_ATTACK = "SpA"
@@ -79,21 +84,23 @@ class PokepasteParser(
           happiness = extractRightInt(line)
         }
       }
-      pokemons.add(Pokemon(
-        name = name,
-        surname = surname,
-        gender = gender,
-        nature = nature,
-        item = item,
-        shiny = shiny,
-        happiness = happiness,
-        ability = ability,
-        teraType = teraType,
-        level = level,
-        moves = moves.toList(),
-        ivs = ivs ?: PokeStats.default(DEFAULT_IV_VALUE),
-        evs = evs ?: PokeStats.default(DEFAULT_EV_VALUE)
-      ))
+      pokemons.add(
+        Pokemon(
+          name = name,
+          surname = surname,
+          gender = gender,
+          nature = nature,
+          item = item,
+          shiny = shiny,
+          happiness = happiness,
+          ability = ability,
+          teraType = teraType,
+          level = level,
+          moves = moves.toList(),
+          ivs = ivs ?: PokeStats.default(DEFAULT_IV_VALUE),
+          evs = evs ?: PokeStats.default(DEFAULT_EV_VALUE)
+        )
+      )
     }
     return PokePaste(pokemons.toList())
   }
@@ -138,7 +145,12 @@ class PokepasteParser(
     throw PokePasteParseException(line, "Invalid number")
   }
 
-  private data class PokemonHeader(var name: String = "", var item: String? = null, var surname: String? = null, var gender: Gender? = null)
+  private data class PokemonHeader(
+    var name: String = "",
+    var item: String? = null,
+    var surname: String? = null,
+    var gender: Gender? = null
+  )
 
   private fun parseHeader(headerLine: String) = PokemonHeader().apply {
     var line = headerLine
@@ -163,11 +175,13 @@ class PokepasteParser(
           surname = beforeParenthesisContent(line)
         }
       }
+
       2 -> { // both surname and gender
         surname = beforeParenthesisContent(line)
         name = formatPokemonName(parenthesisContent(line))
         gender = if (lastParenthesisContent(line) == GENDER_MALE) Gender.MALE else Gender.FEMALE
       }
+
       else -> throw PokePasteParseException(headerLine)
     }
   }
@@ -186,7 +200,7 @@ class PokepasteParser(
   }
 }
 
-class PokePasteParseException(line: String, reason: String = "Invalid line"): Exception(
+class PokePasteParseException(line: String, reason: String = "Invalid line") : Exception(
   "Invalid pokepaste line $line: $reason"
 )
 
