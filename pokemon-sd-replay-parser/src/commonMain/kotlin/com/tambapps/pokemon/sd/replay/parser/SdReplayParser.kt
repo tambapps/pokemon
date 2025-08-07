@@ -6,7 +6,8 @@ import kotlinx.serialization.json.Json
 
 
 class SdReplayParser(
-    val formatPokemonName: (String) -> String = { it }
+    val formatPokemonName: (String) -> String = { it },
+    val formatPokemonTrait: (String) -> String = { it },
 ) {
 
     companion object {
@@ -52,7 +53,7 @@ class SdReplayParser(
             when (tokens[1]) {
                 LOG_MOVE -> {
                     val pokemonName = formatPokemonName(tokens[2].split(':').last().trim())
-                    val moveName = tokens[3].trim()
+                    val moveName = formatPokemonTrait(tokens[3].trim())
                     playerBuilder.moveUsage(pokemonName, moveName)
                 }
                 LOG_POKE -> {
@@ -112,14 +113,16 @@ class SdReplayParser(
 
     private fun parsePokemonOts(log: String): OtsPokemon {
         val fields = log.split("|")
+        val teraType =
+            if (fields.size > 11 && fields[11].isNotBlank()) PokeType.valueOf(fields[11].split(",").last().uppercase())
+            else null
         return OtsPokemon(
-            name = fields[0],
-            item = fields[2],
-            ability = fields[3],
-            moves = fields[4].split(","),
+            name = formatPokemonName(fields[0]),
+            item = formatPokemonTrait(fields[2]),
+            ability = formatPokemonTrait(fields[3]),
+            moves = fields[4].split(",").map(formatPokemonTrait),
             level = fields[10].toInt(),
-            // TODO would crash for gen 8- matches
-            teraType = PokeType.valueOf(fields[11].split(",").last().uppercase())
+            teraType = teraType
         )
     }
 }

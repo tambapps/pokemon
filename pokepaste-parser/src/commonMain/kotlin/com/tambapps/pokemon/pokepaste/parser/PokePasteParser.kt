@@ -3,11 +3,12 @@ package com.tambapps.pokemon.pokepaste.parser
 import com.tambapps.pokemon.*
 
 class PokepasteParser(
-  private val defaultLevel: Int = 100
+  private val defaultLevel: Int = 100,
+  val formatPokemonName: (String) -> String = { it },
+  val formatPokemonTrait: (String) -> String = { it },
 ) {
 
   companion object {
-    const val DEFAULT_NATURE = "Hardy" // neutral nature
     const val DEFAULT_HAPPINESS = 255
     const val DEFAULT_IV_VALUE = 31
     const val DEFAULT_EV_VALUE = 0
@@ -59,7 +60,7 @@ class PokepasteParser(
         line = lineReader.readLine()
         if (line.isEmpty()) break // parsing of current Pokemon is finished. Moving on
         if (line.startsWith(ABILITY_PREFIX)) {
-          ability = extractRight(line)
+          ability = formatPokemonTrait(extractRight(line))
         } else if (line.startsWith(TERA_TYPE_PREFIX)) {
           teraType = parseTeraType(line, extractRight(line))
         } else if (line.startsWith(LEVEL_PREFIX)) {
@@ -71,7 +72,7 @@ class PokepasteParser(
         } else if (line.endsWith(NATURE_SUFFIX)) {
           nature = parseNature(line, line.substring(0, line.indexOf(" ")).uppercase())
         } else if (line.startsWith(MOVE_PREFIX)) {
-          moves.add(line.substring(MOVE_PREFIX.length))
+          moves.add(formatPokemonTrait(line.substring(MOVE_PREFIX.length)))
         } else if (line.startsWith(SHINY_PREFIX)) {
           shiny = extractRight(line) == YES
         } else if (line.startsWith(HAPPINESS_PREFIX)) {
@@ -144,27 +145,27 @@ class PokepasteParser(
     if (headerLine.contains(ITEM_SEPARATOR)) {
       val parts = headerLine.split(ITEM_SEPARATOR)
       if (parts.size != 2) throw PokePasteParseException(headerLine, "Missing item")
-      item = parts.last().trim()
+      item = formatPokemonTrait(parts.last().trim())
       line = parts.first().trim()
     }
     val nbParenthesis = line.count { it == '(' }
     if (line.count { it == ')' } != nbParenthesis) throw PokePasteParseException(headerLine)
     when (nbParenthesis) {
       // no surname and no specific gender
-      0 -> name = line.trim()
+      0 -> name = formatPokemonName(line.trim())
       1 -> { // surname or gender
         val content = parenthesisContent(line)
         if (content == GENDER_MALE || content == GENDER_FEMALE) {
-          name = beforeParenthesisContent(line)
+          name = formatPokemonName(beforeParenthesisContent(line))
           gender = if (content == GENDER_MALE) Gender.MALE else Gender.FEMALE
         } else {
-          name = content
+          name = formatPokemonName(content)
           surname = beforeParenthesisContent(line)
         }
       }
       2 -> { // both surname and gender
         surname = beforeParenthesisContent(line)
-        name = parenthesisContent(line)
+        name = formatPokemonName(parenthesisContent(line))
         gender = if (lastParenthesisContent(line) == GENDER_MALE) Gender.MALE else Gender.FEMALE
       }
       else -> throw PokePasteParseException(headerLine)
