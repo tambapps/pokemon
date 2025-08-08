@@ -6,7 +6,7 @@ A Kotlin Multiplatform library collection for parsing and working with Pokémon 
 
 This project provides a comprehensive set of tools for parsing various Pokémon data formats used in competitive
 battling, including team compositions, battle replays, and statistical information. All modules are built using Kotlin
-Multiplatform, making them compatible with JVM, JavaScript, iOS, and Android platforms.
+Multiplatform, making them compatible with JVM, JavaScript, WASM, iOS, and Android platforms.
 
 ## Modules
 

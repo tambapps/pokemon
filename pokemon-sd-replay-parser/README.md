@@ -6,4 +6,4 @@ This project is compatible on
 
 - Java projects
 - Kotlin project
-- Kotlin multiplatform project (web, iOs, and Android targets)
+- Kotlin multiplatform project (Javascript, WASM, iOs, and Android targets)

@@ -20,6 +20,12 @@ kotlin {
     browser()
     nodejs()
   }
+  
+  // WASM target
+  wasmJs {
+    browser()
+    nodejs()
+  }
 
   sourceSets {
     commonMain {
