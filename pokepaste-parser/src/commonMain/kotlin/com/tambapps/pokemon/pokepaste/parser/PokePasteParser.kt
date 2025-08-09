@@ -84,6 +84,7 @@ class PokepasteParser(
           happiness = extractRightInt(line)
         }
       }
+      if (moves.isEmpty()) throw PokePasteParseException("Pokemon ${name} has no moves")
       pokemons.add(
         Pokemon(
           name = name,
@@ -102,6 +103,7 @@ class PokepasteParser(
         )
       )
     }
+    if (pokemons.isEmpty()) throw PokePasteParseException("Empty pokepaste")
     return PokePaste(pokemons.toList())
   }
 
@@ -184,6 +186,7 @@ class PokepasteParser(
 
       else -> throw PokePasteParseException(headerLine)
     }
+    if (name.isEmpty()) throw PokePasteParseException(headerLine, "Missing name")
   }
 
   private fun beforeParenthesisContent(line: String) = line.substring(0, line.indexOf('(')).trim()
@@ -200,9 +203,9 @@ class PokepasteParser(
   }
 }
 
-class PokePasteParseException(line: String, reason: String = "Invalid line") : Exception(
-  "Invalid pokepaste line $line: $reason"
-)
+class PokePasteParseException(message: String) : Exception(message) {
+  constructor(line: String, reason: String = "Invalid line"): this("Invalid pokepaste line $line: $reason")
+}
 
 private class LineReader(input: String) {
   private val lines = input.trim().lines()

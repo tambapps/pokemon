@@ -7,7 +7,9 @@ import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.Pokemon
 import com.tambapps.pokemon.buildStats
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class PokepasteParserTest {
 
@@ -276,4 +278,22 @@ class PokepasteParserTest {
       assertEquals(expectedMons[i], pokepaste.pokemons[i])
     }
   }
+
+  @Test
+  fun parseIncompletePokepasteWithoutMoves() {
+    val exception = assertFailsWith<PokePasteParseException> {
+      parser.parse(PokePastes.INCOMPLETE_WITHOUT_MOVES)
+    }
+    assertContains(exception.message ?: "", "has no moves")
+  }
+
+
+  @Test
+  fun parseEmptyPokepaste() {
+    val exception = assertFailsWith<PokePasteParseException> {
+      parser.parse("")
+    }
+    assertContains(exception.message ?: "", "Missing name")
+  }
+
 }

@@ -142,4 +142,22 @@ IVs: 29 Spe
 - U-turn  
 
   """
+
+  const val INCOMPLETE_WITHOUT_MOVES = """
+Pikachu @ Light Ball  
+Ability: Static  
+Level: 50  
+Tera Type: Electric  
+EVs: 252 SpA / 4 SpD / 252 Spe  
+Modest Nature  
+
+Charizard @ Choice Specs  
+Ability: Solar Power  
+Level: 50  
+Tera Type: Fire  
+EVs: 252 SpA / 252 Spe  
+Timid Nature  
+IVs: 0 Atk  
+
+  """
 }
