@@ -287,6 +287,13 @@ class PokepasteParserTest {
     assertContains(exception.message ?: "", "has no moves")
   }
 
+  @Test
+  fun testToPokePasteString() {
+    for (str in listOf(PokePastes.BASIC, PokePastes.WITH_SURNAMES)) {
+      val pp = parser.parse(str)
+      assertEquals(pp, parser.parse(pp.toPokePasteString()))
+    }
+  }
 
   @Test
   fun parseEmptyPokepaste() {
