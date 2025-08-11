@@ -11,7 +11,7 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class PokepasteParserTest {
+class PokePasteParserTest {
 
   private val parser = PokepasteParser()
 
