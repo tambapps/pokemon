@@ -43,6 +43,12 @@ class PokepasteParser(
     private const val STAT_SPEED = "Spe"
   }
 
+  fun tryParse(input: String) = try {
+    parse(input)
+  } catch (_: PokePasteParseException) {
+    null
+  }
+
   fun parse(input: String): PokePaste {
     val pokemons = mutableListOf<Pokemon>()
     val lineReader = LineReader(input)
