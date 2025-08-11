@@ -1,6 +1,5 @@
 plugins {
   kotlin("multiplatform")
-  kotlin("plugin.serialization")
   `maven-publish`
 }
 
@@ -31,7 +30,6 @@ kotlin {
     commonMain {
       dependencies {
         api(project(":pokemon-core"))
-        implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${property("serializationVersion")}")
       }
     }
     commonTest {

@@ -4,13 +4,11 @@ import com.tambapps.pokemon.PokeType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable
 data class Terastallization(
   val pokemon: String,
   val type: PokeType
 )
 
-@Serializable
 data class SdReplay(
   val players: List<Player>,
   val uploadTime: Long,
@@ -24,12 +22,10 @@ data class SdReplay(
   val player2 get() = players[1]
 }
 
-@Serializable
 data class OpenTeamSheet(
   val pokemons: List<OtsPokemon>,
 )
 
-@Serializable
 data class OtsPokemon(
   val name: String,
   val item: String,
@@ -39,18 +35,15 @@ data class OtsPokemon(
   val teraType: PokeType?
 )
 
-@Serializable
 data class TeamPreview(
   val pokemons: List<TeamPreviewPokemon>,
 )
 
-@Serializable
 data class TeamPreviewPokemon(
   val name: String,
   val level: Int?
 )
 
-@Serializable
 data class Player(
   val name: String,
   val teamPreview: TeamPreview,
