@@ -4,7 +4,7 @@ data class Pokemon(
   val name: String,
   val surname: String?,
   val gender: Gender?,
-  val nature: Nature,
+  val nature: Nature?,
   val item: String?,
   val shiny: Boolean,
   val happiness: Int,

@@ -48,9 +48,9 @@ data class PokePaste(
       if (evs != com.tambapps.pokemon.PokeStats.default(0)) {
         appendLine("EVs: ${evsToString(evs)}")
       }
-      
-      if (pokemon.nature != com.tambapps.pokemon.Nature.HARDY) {
-        appendLine("${pokemon.nature.name.lowercase().replaceFirstChar { it.uppercase() }} Nature")
+
+      pokemon.nature?.let { nature ->
+        appendLine("${nature.name.lowercase().replaceFirstChar { it.uppercase() }} Nature")
       }
       
       val ivs = pokemon.ivs

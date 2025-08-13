@@ -62,7 +62,7 @@ class PokepasteParser(
       val moves = mutableListOf<String>()
       var ivs: PokeStats? = null
       var evs: PokeStats? = null
-      var nature = Nature.HARDY // neutral nature
+      var nature: Nature? = null
       var shiny = false
       var happiness = DEFAULT_HAPPINESS
 
