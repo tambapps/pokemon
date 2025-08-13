@@ -5,6 +5,7 @@ import com.tambapps.pokemon.Pokemon
 // TODO add metadata, or plain fields (for format, and team name)
 data class PokePaste(
   val pokemons: List<Pokemon>,
+  val isOts: Boolean = false,
 ) {
   fun toPokePasteString(): String = buildString {
     for (pokemon in pokemons) {

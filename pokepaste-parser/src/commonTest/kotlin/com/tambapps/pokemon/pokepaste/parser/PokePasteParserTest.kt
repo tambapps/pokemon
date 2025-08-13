@@ -141,6 +141,7 @@ class PokePasteParserTest {
     for (i in expectedMons.indices) {
       assertEquals(expectedMons[i], pokepaste.pokemons[i])
     }
+    assertEquals(false, pokepaste.isOts)
   }
 
   @Test
@@ -277,6 +278,7 @@ class PokePasteParserTest {
     for (i in expectedMons.indices) {
       assertEquals(expectedMons[i], pokepaste.pokemons[i])
     }
+    assertEquals(false, pokepaste.isOts)
   }
 
   @Test

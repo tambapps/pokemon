@@ -53,6 +53,7 @@ class PokepasteParser(
     val pokemons = mutableListOf<Pokemon>()
     val lineReader = LineReader(input)
 
+    var isOts = true
     while (lineReader.hasNext()) {
       val (name, item, surname, gender) = parseHeader(lineReader.readLine())
 
@@ -77,10 +78,13 @@ class PokepasteParser(
         } else if (line.startsWith(LEVEL_PREFIX)) {
           level = extractRightInt(line);
         } else if (line.startsWith(EVS_PREFIX)) {
+          isOts = false
           evs = parseStats(line, DEFAULT_EV_VALUE)
         } else if (line.startsWith(IVS_PREFIX)) {
+          isOts = false
           ivs = parseStats(line, DEFAULT_IV_VALUE)
         } else if (line.endsWith(NATURE_SUFFIX)) {
+          isOts = false
           nature = parseNature(line, line.substring(0, line.indexOf(" ")).uppercase())
         } else if (line.startsWith(MOVE_PREFIX)) {
           moves.add(formatPokemonTrait(line.substring(MOVE_PREFIX.length)))
@@ -110,7 +114,7 @@ class PokepasteParser(
       )
     }
     if (pokemons.isEmpty()) throw PokePasteParseException("Empty pokepaste")
-    return PokePaste(pokemons.toList())
+    return PokePaste(pokemons.toList(), isOts)
   }
 
   private fun parseNature(line: String, str: String) = try {
