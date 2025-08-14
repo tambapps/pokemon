@@ -305,4 +305,9 @@ class PokePasteParserTest {
     assertContains(exception.message ?: "", "Missing name")
   }
 
+  @Test
+  fun testOts() {
+    val pokepaste = parser.parse(PokePastes.OTS)
+    assertEquals(true, pokepaste.isOts)
+  }
 }

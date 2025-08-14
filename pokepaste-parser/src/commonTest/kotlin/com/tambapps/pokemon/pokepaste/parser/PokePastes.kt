@@ -160,4 +160,61 @@ Timid Nature
 IVs: 0 Atk  
 
   """
+
+  const val OTS = """
+Ursaluna @ Flame Orb  
+Ability: Guts  
+Level: 50  
+Tera Type: Ghost  
+- Earthquake  
+- Facade  
+- Headlong Rush  
+- Protect  
+
+Tauros-Paldea-Aqua @ Mirror Herb  
+Ability: Intimidate  
+Level: 50  
+Tera Type: Water  
+- Close Combat  
+- Wave Crash  
+- Protect  
+- Aqua Jet  
+
+Vivillon @ Focus Sash  
+Ability: Compound Eyes  
+Level: 50  
+Tera Type: Ghost  
+- Tailwind  
+- Hurricane  
+- Protect  
+- Sleep Powder  
+
+Gholdengo @ Metal Coat  
+Ability: Good as Gold  
+Level: 50  
+Tera Type: Dragon  
+- Make It Rain  
+- Shadow Ball  
+- Nasty Plot  
+- Protect  
+
+Incineroar @ Safety Goggles  
+Ability: Intimidate  
+Level: 50  
+Tera Type: Ghost  
+- Fake Out  
+- Flare Blitz  
+- Knock Off  
+- Parting Shot  
+
+Porygon2 @ Eviolite  
+Ability: Download  
+Level: 50  
+Tera Type: Flying  
+- Tera Blast  
+- Trick Room  
+- Recover  
+- Ice Beam  
+
+  """
 }
