@@ -22,4 +22,5 @@ rootProject.name = "pokemon"
 
 include(":pokepaste-parser")
 include(":pokemon-sd-replay-parser")
+include(":pokemon-sd-replay-log-visitor")
 include(":pokemon-core")
