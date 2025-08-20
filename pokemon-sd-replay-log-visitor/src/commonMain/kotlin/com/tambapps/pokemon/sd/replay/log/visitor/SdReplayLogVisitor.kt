@@ -105,7 +105,11 @@ interface SdReplayLogVisitor {
       LOG_POKE -> {
         val playerSlot = tokens[2]
         val pokemonInfo = tokens[3]
-        visitPokeLog(playerSlot, pokemonInfo)
+        val pokemonDetails = pokemonInfo.split(", ")
+        val pokemonName = formatPokemonName(pokemonDetails[0])
+        val level = pokemonDetails.getOrNull(1)?.substring(1)?.toIntOrNull()
+        val gender = pokemonDetails.getOrNull(2)
+        visitPokeLog(playerSlot, pokemonName, level, gender)
       }
       LOG_TEAMPREVIEW -> visitTeamPreviewLog(tokens[2].toInt())
       LOG_SHOW_TEAM -> visitShowTeamLog(tokens[2], tokens.drop(3).joinToString("|"))
@@ -113,13 +117,17 @@ interface SdReplayLogVisitor {
       LOG_START -> visitStartLog()
       LOG_SWITCH -> {
         val pokemonSlot = tokens[2]
-        val pokemonInfo = tokens[3]
-        visitSwitchLog(pokemonSlot, pokemonInfo)
+        val pokemonName = formatPokemonName(tokens[3].split(',')[0])
+        val hpInfo = tokens.getOrNull(4)
+        val hpValue: Int? = hpInfo?.let { parseHpPercentage(it) }
+        visitSwitchLog(pokemonSlot, pokemonName, hpValue)
       }
       LOG_DRAG -> {
         val pokemonSlot = tokens[2]
-        val pokemonInfo = tokens[3]
-        visitDragLog(pokemonSlot, pokemonInfo)
+        val pokemonName = formatPokemonName(tokens[3].split(',')[0])
+        val hpInfo = tokens.getOrNull(4)
+        val hpValue: Int? = hpInfo?.let { parseHpPercentage(it) }
+        visitDragLog(pokemonSlot, pokemonName, hpValue)
       }
       LOG_FIELDSTART -> {
         val field = tokens[2]
@@ -279,13 +287,13 @@ interface SdReplayLogVisitor {
   fun visitRatedLog() {}
   fun visitRuleLog(rule: String) {}
   fun visitClearPokeLog() {}
-  fun visitPokeLog(playerSlot: String, pokemonInfo: String) {}
+  fun visitPokeLog(playerSlot: String, pokemonName: String, level: Int?, gender: String?) {}
   fun visitTeamPreviewLog(teamSize: Int) {}
   fun visitShowTeamLog(playerSlot: String, teamData: String) {}
   fun visitInactiveLog(message: String) {}
   fun visitStartLog() {}
-  fun visitSwitchLog(pokemonSlot: String, pokemonInfo: String) {}
-  fun visitDragLog(pokemonSlot: String, pokemonInfo: String) {}
+  fun visitSwitchLog(pokemonSlot: String, pokemonName: String, hpPercentage: Int?) {}
+  fun visitDragLog(pokemonSlot: String, pokemonName: String, hpPercentage: Int?) {}
   fun visitFieldStartLog(field: String, source: String?, from: String?) {}
   fun visitEndItemLog(pokemonSlot: String, item: String) {}
   fun visitActivateLog(pokemonSlot: String, ability: String, details: String) {}
@@ -318,4 +326,14 @@ interface SdReplayLogVisitor {
   fun formatPokemonName(name: String): String = name
 
   fun formatPokemonTrait(name: String): String = name
+  
+  private fun parseHpPercentage(hpInfo: String): Int? {
+    if (hpInfo.contains("/")) {
+      val parts = hpInfo.split("/")
+      if (parts.size == 2) {
+        return parts[0].toIntOrNull()
+      }
+    }
+    return null
+  }
 }
