@@ -116,18 +116,18 @@ interface SdReplayLogVisitor {
       LOG_INACTIVE -> visitInactiveLog(tokens.drop(2).joinToString("|"))
       LOG_START -> visitStartLog()
       LOG_SWITCH -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val pokemonName = formatPokemonName(tokens[3].split(',')[0])
         val hpInfo = tokens.getOrNull(4)
         val hpValue: Int? = hpInfo?.let { parseHpPercentage(it) }
         visitSwitchLog(pokemonSlot, pokemonName, hpValue)
       }
       LOG_DRAG -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val pokemonName = formatPokemonName(tokens[3].split(',')[0])
         val hpInfo = tokens.getOrNull(4)
-        val hpValue: Int? = hpInfo?.let { parseHpPercentage(it) }
-        visitDragLog(pokemonSlot, pokemonName, hpValue)
+        val hpPercentage: Int? = hpInfo?.let { parseHpPercentage(it) }
+        visitDragLog(pokemonSlot, pokemonName, hpPercentage)
       }
       LOG_FIELDSTART -> {
         val field = tokens[2]
@@ -136,24 +136,24 @@ interface SdReplayLogVisitor {
         visitFieldStartLog(field, source, from)
       }
       LOG_ENDITEM -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val item = tokens[3]
         visitEndItemLog(pokemonSlot, item)
       }
       LOG_ACTIVATE -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val ability = tokens[3]
         val details = tokens.drop(4).joinToString("|")
         visitActivateLog(pokemonSlot, ability, details)
       }
       LOG_START_STATUS -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val status = tokens[3]
         visitStartStatusLog(pokemonSlot, status)
       }
       LOG_TURN -> visitTurnLog(tokens[2].toInt())
       LOG_TERASTALLIZE -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val teraType = tokens[3]
         visitTerastallizeLog(pokemonSlot, teraType)
       }
@@ -182,28 +182,28 @@ interface SdReplayLogVisitor {
         visitMoveLog(sourcePokemonSlot, sourcePokemonName, moveName, targetPokemonSlot, targetPokemonName, isSpread, isStill, additionalInfo)
       }
       LOG_DAMAGE -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val hpStatus = tokens[3]
-        val source = tokens.getOrNull(4)
+        val source = if (tokens.size > 4) tokens.drop(4).joinToString("|") else null
         visitDamageLog(pokemonSlot, hpStatus, source)
       }
       LOG_SUPEREFFECTIVE -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         visitSuperEffectiveLog(pokemonSlot)
       }
       LOG_FAINT -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         visitFaintLog(pokemonSlot)
       }
       LOG_HEAL -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val hpStatus = tokens[3]
-        val source = tokens.getOrNull(4)
+        val source = if (tokens.size > 4) tokens.drop(4).joinToString("|") else null
         visitHealLog(pokemonSlot, hpStatus, source)
       }
       LOG_UPKEEP -> visitUpkeepLog()
       LOG_ABILITY -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val ability = tokens[3]
         visitAbilityLog(pokemonSlot, ability)
       }
@@ -213,38 +213,38 @@ interface SdReplayLogVisitor {
         visitSideStartLog(side, condition)
       }
       LOG_FAIL -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         visitFailLog(pokemonSlot)
       }
       LOG_CRIT -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         visitCritLog(pokemonSlot)
       }
       LOG_BOOST -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val stat = tokens[3]
         val amount = tokens[4].toInt()
         visitBoostLog(pokemonSlot, stat, amount)
       }
       LOG_SINGLETURN -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val move = tokens[3]
         visitSingleTurnLog(pokemonSlot, move)
       }
       LOG_UNBOOST -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val stat = tokens[3]
         val amount = tokens[4].toInt()
         visitUnboostLog(pokemonSlot, stat, amount)
       }
       LOG_END -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         val condition = tokens[3]
         val details = tokens.drop(4).joinToString("|")
         visitEndLog(pokemonSlot, condition, details)
       }
       LOG_RESISTED -> {
-        val pokemonSlot = tokens[2]
+        val pokemonSlot = tokens[2].split(':')[0]
         visitResistedLog(pokemonSlot)
       }
       LOG_SIDEEND -> {
