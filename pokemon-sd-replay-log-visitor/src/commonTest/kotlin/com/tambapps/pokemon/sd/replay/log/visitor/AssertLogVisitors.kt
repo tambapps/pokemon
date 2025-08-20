@@ -8,10 +8,9 @@ fun assertMoveLog(log: String,
                   expectedSourcePokemonSlot: String,
                   expectedSourcePokemonName: String,
                   expectedMoveName: String,
-                  expectedTargetPokemonSlot: String,
-                  expectedTargetPokemonName: String,
+                  expectedTargetPokemonSlot: String?,
+                  expectedTargetPokemonName: String?,
                   expectedIsSpread: Boolean
-
 ) {
   var visited = false
   val visitor = object: SdReplayLogVisitor {
@@ -19,8 +18,8 @@ fun assertMoveLog(log: String,
       sourcePokemonSlot: String,
       sourcePokemonName: String,
       moveName: String,
-      targetPokemonSlot: String,
-      targetPokemonName: String,
+      targetPokemonSlot: String?,
+      targetPokemonName: String?,
       isSpread: Boolean,
       isStill: Boolean,
       additionalInfo: String

@@ -12,6 +12,7 @@ class SdReplayParserTest {
   @Test
   fun decodeTest() {
     val rawReplay = parser.parse(SdReplays.REPLAY_1)
+    rawReplay.logs.split("\n").forEach { println(it) }
 
     // Verify basic replay properties
     assertEquals("gen9vgc2025reggbo3", rawReplay.formatId)

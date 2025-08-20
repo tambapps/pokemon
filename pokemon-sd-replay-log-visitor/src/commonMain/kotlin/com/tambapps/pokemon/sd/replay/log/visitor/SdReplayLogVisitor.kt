@@ -62,77 +62,79 @@ interface SdReplayLogVisitor {
       visit(log)
     }
   }
+
   fun visit(log: String) {
     val tokens = log.split("|")
     if (tokens.size < 2) return
     when (tokens[1]) {
-      LOG_JOIN -> visitJoinLog(tokens.getOrNull(2) ?: "")
+      LOG_JOIN -> visitJoinLog(tokens[2])
       LOG_HTML -> visitHtmlLog(tokens.drop(2).joinToString("|"))
-      LOG_UHTML -> visitUhtmlLog(tokens.getOrNull(2) ?: "", tokens.drop(3).joinToString("|"))
-      LOG_TIME -> visitTimeLog(tokens.getOrNull(2) ?: "")
-      LOG_GAMETYPE -> visitGameTypeLog(tokens.getOrNull(2) ?: "")
+      // TODO handle win/lost log
+      LOG_UHTML -> visitUhtmlLog(tokens[2], tokens.drop(3).joinToString("|"))
+      LOG_TIME -> visitTimeLog(tokens[2])
+      LOG_GAMETYPE -> visitGameTypeLog(tokens[2])
       LOG_PLAYER -> {
-        val playerSlot = tokens.getOrNull(2) ?: ""
-        val playerName = tokens.getOrNull(3) ?: ""
-        val avatar = tokens.getOrNull(4) ?: ""
-        val rating = tokens.getOrNull(5) ?: ""
+        val playerSlot = tokens[2]
+        val playerName = tokens[3]
+        val avatar = tokens.getOrNull(4)
+        val rating = tokens.getOrNull(5)
         visitPlayerLog(playerSlot, playerName, avatar, rating)
       }
       LOG_TEAMSIZE -> {
-        val playerSlot = tokens.getOrNull(2) ?: ""
-        val teamSize = tokens.getOrNull(3)?.toIntOrNull() ?: 0
+        val playerSlot = tokens[2]
+        val teamSize = tokens[3].toInt()
         visitTeamSizeLog(playerSlot, teamSize)
       }
-      LOG_GEN -> visitGenLog(tokens.getOrNull(2) ?: "")
-      LOG_TIER -> visitTierLog(tokens.getOrNull(2) ?: "")
+      LOG_GEN -> visitGenLog(tokens[2])
+      LOG_TIER -> visitTierLog(tokens[2])
       LOG_RATED -> visitRatedLog()
-      LOG_RULE -> visitRuleLog(tokens.getOrNull(2) ?: "")
+      LOG_RULE -> visitRuleLog(tokens[2])
       LOG_CLEARPOKE -> visitClearPokeLog()
       LOG_POKE -> {
-        val playerSlot = tokens.getOrNull(2) ?: ""
-        val pokemonInfo = tokens.getOrNull(3) ?: ""
+        val playerSlot = tokens[2]
+        val pokemonInfo = tokens[3]
         visitPokeLog(playerSlot, pokemonInfo)
       }
-      LOG_TEAMPREVIEW -> visitTeamPreviewLog(tokens.getOrNull(2)?.toIntOrNull() ?: 0)
-      LOG_SHOW_TEAM -> visitShowTeamLog(tokens.getOrNull(2) ?: "", tokens.drop(3).joinToString("|"))
+      LOG_TEAMPREVIEW -> visitTeamPreviewLog(tokens[2].toInt())
+      LOG_SHOW_TEAM -> visitShowTeamLog(tokens[2], tokens.drop(3).joinToString("|"))
       LOG_INACTIVE -> visitInactiveLog(tokens.drop(2).joinToString("|"))
       LOG_START -> visitStartLog()
       LOG_SWITCH -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val pokemonInfo = tokens.getOrNull(3) ?: ""
+        val pokemonSlot = tokens[2]
+        val pokemonInfo = tokens[3]
         visitSwitchLog(pokemonSlot, pokemonInfo)
       }
       LOG_DRAG -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val pokemonInfo = tokens.getOrNull(3) ?: ""
+        val pokemonSlot = tokens[2]
+        val pokemonInfo = tokens[3]
         visitDragLog(pokemonSlot, pokemonInfo)
       }
       LOG_FIELDSTART -> {
-        val field = tokens.getOrNull(2) ?: ""
-        val source = tokens.getOrNull(3) ?: ""
-        val from = tokens.getOrNull(4) ?: ""
+        val field = tokens[2]
+        val source = tokens.getOrNull(3)
+        val from = tokens.getOrNull(4)
         visitFieldStartLog(field, source, from)
       }
       LOG_ENDITEM -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val item = tokens.getOrNull(3) ?: ""
+        val pokemonSlot = tokens[2]
+        val item = tokens[3]
         visitEndItemLog(pokemonSlot, item)
       }
       LOG_ACTIVATE -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val ability = tokens.getOrNull(3) ?: ""
+        val pokemonSlot = tokens[2]
+        val ability = tokens[3]
         val details = tokens.drop(4).joinToString("|")
         visitActivateLog(pokemonSlot, ability, details)
       }
       LOG_START_STATUS -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val status = tokens.getOrNull(3) ?: ""
+        val pokemonSlot = tokens[2]
+        val status = tokens[3]
         visitStartStatusLog(pokemonSlot, status)
       }
-      LOG_TURN -> visitTurnLog(tokens.getOrNull(2)?.toIntOrNull() ?: 0)
+      LOG_TURN -> visitTurnLog(tokens[2].toInt())
       LOG_TERASTALLIZE -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val teraType = tokens.getOrNull(3) ?: ""
+        val pokemonSlot = tokens[2]
+        val teraType = tokens[3]
         visitTerastallizeLog(pokemonSlot, teraType)
       }
       LOG_MOVE -> {
@@ -141,10 +143,18 @@ interface SdReplayLogVisitor {
         val sourcePokemonName = formatPokemonName(sourceFields.last().trim())
         val moveName = formatPokemonTrait(tokens[3].trim())
 
-        val targetInfo = tokens.getOrNull(4) ?: ""
-        val targetFields = targetInfo.split(':')
-        val targetPokemonSlot = targetFields.firstOrNull() ?: ""
-        val targetPokemonName = if (targetFields.size > 1) formatPokemonName(targetFields.last().trim()) else ""
+        val targetInfo = tokens.getOrNull(4)
+        val targetPokemonSlot: String?
+        val targetPokemonName: String?
+        
+        if (targetInfo.isNullOrBlank()) {
+          targetPokemonSlot = null
+          targetPokemonName = null
+        } else {
+          val targetFields = targetInfo.split(':')
+          targetPokemonSlot = targetFields.firstOrNull()
+          targetPokemonName = if (targetFields.size > 1) formatPokemonName(targetFields.last().trim()) else null
+        }
 
         val additionalInfo = tokens.drop(5).joinToString("|")
         val isSpread = additionalInfo.contains("[spread]")
@@ -152,84 +162,84 @@ interface SdReplayLogVisitor {
         visitMoveLog(sourcePokemonSlot, sourcePokemonName, moveName, targetPokemonSlot, targetPokemonName, isSpread, isStill, additionalInfo)
       }
       LOG_DAMAGE -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val hpStatus = tokens.getOrNull(3) ?: ""
-        val source = tokens.getOrNull(4) ?: ""
+        val pokemonSlot = tokens[2]
+        val hpStatus = tokens[3]
+        val source = tokens.getOrNull(4)
         visitDamageLog(pokemonSlot, hpStatus, source)
       }
       LOG_SUPEREFFECTIVE -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
+        val pokemonSlot = tokens[2]
         visitSuperEffectiveLog(pokemonSlot)
       }
       LOG_FAINT -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
+        val pokemonSlot = tokens[2]
         visitFaintLog(pokemonSlot)
       }
       LOG_HEAL -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val hpStatus = tokens.getOrNull(3) ?: ""
-        val source = tokens.getOrNull(4) ?: ""
+        val pokemonSlot = tokens[2]
+        val hpStatus = tokens[3]
+        val source = tokens.getOrNull(4)
         visitHealLog(pokemonSlot, hpStatus, source)
       }
       LOG_UPKEEP -> visitUpkeepLog()
       LOG_ABILITY -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val ability = tokens.getOrNull(3) ?: ""
+        val pokemonSlot = tokens[2]
+        val ability = tokens[3]
         visitAbilityLog(pokemonSlot, ability)
       }
       LOG_SIDESTART -> {
-        val side = tokens.getOrNull(2) ?: ""
-        val condition = tokens.getOrNull(3) ?: ""
+        val side = tokens[2]
+        val condition = tokens[3]
         visitSideStartLog(side, condition)
       }
       LOG_FAIL -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
+        val pokemonSlot = tokens[2]
         visitFailLog(pokemonSlot)
       }
       LOG_CRIT -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
+        val pokemonSlot = tokens[2]
         visitCritLog(pokemonSlot)
       }
       LOG_BOOST -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val stat = tokens.getOrNull(3) ?: ""
-        val amount = tokens.getOrNull(4)?.toIntOrNull() ?: 0
+        val pokemonSlot = tokens[2]
+        val stat = tokens[3]
+        val amount = tokens[4].toInt()
         visitBoostLog(pokemonSlot, stat, amount)
       }
       LOG_SINGLETURN -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val move = tokens.getOrNull(3) ?: ""
+        val pokemonSlot = tokens[2]
+        val move = tokens[3]
         visitSingleTurnLog(pokemonSlot, move)
       }
       LOG_UNBOOST -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val stat = tokens.getOrNull(3) ?: ""
-        val amount = tokens.getOrNull(4)?.toIntOrNull() ?: 0
+        val pokemonSlot = tokens[2]
+        val stat = tokens[3]
+        val amount = tokens[4].toInt()
         visitUnboostLog(pokemonSlot, stat, amount)
       }
       LOG_END -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
-        val condition = tokens.getOrNull(3) ?: ""
+        val pokemonSlot = tokens[2]
+        val condition = tokens[3]
         val details = tokens.drop(4).joinToString("|")
         visitEndLog(pokemonSlot, condition, details)
       }
       LOG_RESISTED -> {
-        val pokemonSlot = tokens.getOrNull(2) ?: ""
+        val pokemonSlot = tokens[2]
         visitResistedLog(pokemonSlot)
       }
       LOG_SIDEEND -> {
-        val side = tokens.getOrNull(2) ?: ""
-        val condition = tokens.getOrNull(3) ?: ""
+        val side = tokens[2]
+        val condition = tokens[3]
         visitSideEndLog(side, condition)
       }
       LOG_FIELDEND -> {
-        val field = tokens.getOrNull(2) ?: ""
+        val field = tokens[2]
         visitFieldEndLog(field)
       }
       LOG_MESSAGE -> visitMessageLog(tokens.drop(2).joinToString("|"))
-      LOG_WIN -> visitWinLog(tokens.getOrNull(2) ?: "")
+      LOG_WIN -> visitWinLog(tokens[2])
       LOG_RAW -> visitRawLog(tokens.drop(2).joinToString("|"))
-      LOG_LEAVE -> visitLeaveLog(tokens.getOrNull(2) ?: "")
+      LOG_LEAVE -> visitLeaveLog(tokens[2])
     }
   }
 
@@ -238,7 +248,7 @@ interface SdReplayLogVisitor {
   fun visitUhtmlLog(name: String, content: String) {}
   fun visitTimeLog(timestamp: String) {}
   fun visitGameTypeLog(gameType: String) {}
-  fun visitPlayerLog(playerSlot: String, playerName: String, avatar: String, rating: String) {}
+  fun visitPlayerLog(playerSlot: String, playerName: String, avatar: String?, rating: String?) {}
   fun visitTeamSizeLog(playerSlot: String, teamSize: Int) {}
   fun visitGenLog(generation: String) {}
   fun visitTierLog(tier: String) {}
@@ -252,17 +262,17 @@ interface SdReplayLogVisitor {
   fun visitStartLog() {}
   fun visitSwitchLog(pokemonSlot: String, pokemonInfo: String) {}
   fun visitDragLog(pokemonSlot: String, pokemonInfo: String) {}
-  fun visitFieldStartLog(field: String, source: String, from: String) {}
+  fun visitFieldStartLog(field: String, source: String?, from: String?) {}
   fun visitEndItemLog(pokemonSlot: String, item: String) {}
   fun visitActivateLog(pokemonSlot: String, ability: String, details: String) {}
   fun visitStartStatusLog(pokemonSlot: String, status: String) {}
   fun visitTurnLog(turnNumber: Int) {}
   fun visitTerastallizeLog(pokemonSlot: String, teraType: String) {}
-  fun visitMoveLog(sourcePokemonSlot: String, sourcePokemonName: String, moveName: String, targetPokemonSlot: String, targetPokemonName: String, isSpread: Boolean, isStill: Boolean, additionalInfo: String) {}
-  fun visitDamageLog(pokemonSlot: String, hpStatus: String, source: String) {}
+  fun visitMoveLog(sourcePokemonSlot: String, sourcePokemonName: String, moveName: String, targetPokemonSlot: String?, targetPokemonName: String?, isSpread: Boolean, isStill: Boolean, additionalInfo: String) {}
+  fun visitDamageLog(pokemonSlot: String, hpStatus: String, source: String?) {}
   fun visitSuperEffectiveLog(pokemonSlot: String) {}
   fun visitFaintLog(pokemonSlot: String) {}
-  fun visitHealLog(pokemonSlot: String, hpStatus: String, source: String) {}
+  fun visitHealLog(pokemonSlot: String, hpStatus: String, source: String?) {}
   fun visitUpkeepLog() {}
   fun visitAbilityLog(pokemonSlot: String, ability: String) {}
   fun visitSideStartLog(side: String, condition: String) {}
