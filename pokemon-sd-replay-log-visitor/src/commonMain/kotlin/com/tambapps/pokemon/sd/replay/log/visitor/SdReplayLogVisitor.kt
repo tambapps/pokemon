@@ -3,9 +3,6 @@ package com.tambapps.pokemon.sd.replay.log.visitor
 interface SdReplayLogVisitor {
 
   companion object {
-    const val PLAYER_1 = "p1"
-    const val PLAYER_2 = "p2"
-
     private const val LOG_MOVE = "move"
     private const val LOG_POKE = "poke"
     private const val LOG_UHTML = "uhtml"
@@ -53,6 +50,9 @@ interface SdReplayLogVisitor {
     private const val LOG_FIELDEND = "-fieldend"
     private const val LOG_MESSAGE = "-message"
     private const val LOG_LEAVE = "l"
+    
+    private val RATING_LOG_REGEX = Regex("(.*?)'s rating: (\\d+) .*?&rarr;.*?<strong>(\\d+)</strong>")
+    private val NEXT_BATTLE_REGEX = Regex("href=\"([^\"]+)\"")
   }
 
   fun visitAll(logs: String) = visitAll(logs.trim().lines())
@@ -69,8 +69,20 @@ interface SdReplayLogVisitor {
     when (tokens[1]) {
       LOG_JOIN -> visitJoinLog(tokens[2])
       LOG_HTML -> visitHtmlLog(tokens.drop(2).joinToString("|"))
-      // TODO handle win/lost log
-      LOG_UHTML -> visitUhtmlLog(tokens[2], tokens.drop(3).joinToString("|"))
+      LOG_UHTML -> {
+        val name = tokens[2]
+        val content = tokens.drop(3).joinToString("|")
+        val match = NEXT_BATTLE_REGEX.find(content)
+        if (match != null) {
+          var nextBattle = match.groupValues[1]
+          if (nextBattle.contains("-gen")) {
+            nextBattle = nextBattle.substring(nextBattle.indexOf("-gen") + 1)
+          }
+          visitNextBattleUhtmlLog(name, content, nextBattle)
+        } else {
+          visitUhtmlLog(name, content)
+        }
+      }
       LOG_TIME -> visitTimeLog(tokens[2])
       LOG_GAMETYPE -> visitGameTypeLog(tokens[2])
       LOG_PLAYER -> {
@@ -238,7 +250,18 @@ interface SdReplayLogVisitor {
       }
       LOG_MESSAGE -> visitMessageLog(tokens.drop(2).joinToString("|"))
       LOG_WIN -> visitWinLog(tokens[2])
-      LOG_RAW -> visitRawLog(tokens.drop(2).joinToString("|"))
+      LOG_RAW -> {
+        val content = tokens.drop(2).joinToString("|")
+        val match = RATING_LOG_REGEX.find(content)
+        if (match != null) {
+          val playerName = match.groupValues[1]
+          val beforeElo = match.groupValues[2].toInt()
+          val afterElo = match.groupValues[3].toInt()
+          visitRatingUpdateRawLog(content, playerName, beforeElo, afterElo)
+        } else {
+          visitRawLog(content)
+        }
+      }
       LOG_LEAVE -> visitLeaveLog(tokens[2])
     }
   }
@@ -246,6 +269,7 @@ interface SdReplayLogVisitor {
   fun visitJoinLog(playerName: String) {}
   fun visitHtmlLog(content: String) {}
   fun visitUhtmlLog(name: String, content: String) {}
+  fun visitNextBattleUhtmlLog(name: String, content: String, nextBattle: String) {}
   fun visitTimeLog(timestamp: String) {}
   fun visitGameTypeLog(gameType: String) {}
   fun visitPlayerLog(playerSlot: String, playerName: String, avatar: String?, rating: String?) {}
@@ -288,6 +312,7 @@ interface SdReplayLogVisitor {
   fun visitMessageLog(message: String) {}
   fun visitWinLog(winner: String) {}
   fun visitRawLog(content: String) {}
+  fun visitRatingUpdateRawLog(content: String, playerName: String, beforeElo: Int, afterElo: Int) {}
   fun visitLeaveLog(playerName: String) {}
 
   fun formatPokemonName(name: String): String = name
