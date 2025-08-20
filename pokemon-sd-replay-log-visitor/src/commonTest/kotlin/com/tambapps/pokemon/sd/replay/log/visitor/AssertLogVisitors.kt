@@ -21,7 +21,9 @@ fun assertMoveLog(log: String,
       moveName: String,
       targetPokemonSlot: String,
       targetPokemonName: String,
-      isSpread: Boolean
+      isSpread: Boolean,
+      isStill: Boolean,
+      additionalInfo: String
     ) {
       visited = true
       assertEquals(expectedSourcePokemonSlot, sourcePokemonSlot)
