@@ -1,5 +1,7 @@
 package com.tambapps.pokemon.sd.replay.log.visitor
 
+import com.tambapps.pokemon.PokeType
+
 interface SdReplayLogVisitor {
 
   companion object {
@@ -112,7 +114,12 @@ interface SdReplayLogVisitor {
         visitPokeLog(playerSlot, pokemonName, level, gender)
       }
       LOG_TEAMPREVIEW -> visitTeamPreviewLog(tokens[2].toInt())
-      LOG_SHOW_TEAM -> visitShowTeamLog(tokens[2], tokens.drop(3).joinToString("|"))
+      LOG_SHOW_TEAM -> {
+        val teamLog = log.substring(13)
+        val pokemonLogs = teamLog.split("]")
+        val otsPokemons = pokemonLogs.map(this::parsePokemonOts)
+        visitShowTeamLog(tokens[2], otsPokemons)
+      }
       LOG_INACTIVE -> visitInactiveLog(tokens.drop(2).joinToString("|"))
       LOG_START -> visitStartLog()
       LOG_SWITCH -> {
@@ -291,7 +298,7 @@ interface SdReplayLogVisitor {
   fun visitClearPokeLog() {}
   fun visitPokeLog(playerSlot: String, pokemonName: String, level: Int?, gender: String?) {}
   fun visitTeamPreviewLog(teamSize: Int) {}
-  fun visitShowTeamLog(playerSlot: String, teamData: String) {}
+  fun visitShowTeamLog(playerSlot: String, otsPokemons: List<OtsPokemon>) {}
   fun visitInactiveLog(message: String) {}
   fun visitStartLog() {}
   fun visitSwitchLog(pokemonSlot: String, pokemonName: String, hpPercentage: Int?) {}
@@ -328,7 +335,22 @@ interface SdReplayLogVisitor {
   fun formatPokemonName(name: String): String = name
 
   fun formatPokemonTrait(name: String): String = name
-  
+
+  private fun parsePokemonOts(log: String): OtsPokemon {
+    val fields = log.split("|")
+    val teraType =
+      if (fields.size > 11 && fields[11].isNotBlank()) PokeType.valueOf(fields[11].split(",").last().uppercase())
+      else null
+    return OtsPokemon(
+      name = formatPokemonName(fields[0]),
+      item = formatPokemonTrait(fields[2]),
+      ability = formatPokemonTrait(fields[3]),
+      moves = fields[4].split(",").map(this::formatPokemonTrait),
+      level = fields[10].toInt(),
+      teraType = teraType
+    )
+  }
+
   private fun parseHpPercentage(hpInfo: String): Int? {
     if (hpInfo.contains("/")) {
       val parts = hpInfo.split("/")
