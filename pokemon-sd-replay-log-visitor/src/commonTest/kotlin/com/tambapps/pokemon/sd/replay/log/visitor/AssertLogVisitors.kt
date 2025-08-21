@@ -33,7 +33,7 @@ fun assertMoveLog(log: String,
       assertEquals(expectedIsSpread, isSpread)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -45,7 +45,7 @@ fun assertJoinLog(log: String, expectedPlayerName: String) {
       assertEquals(expectedPlayerName, playerName)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -60,7 +60,7 @@ fun assertPlayerLog(log: String, expectedPlayerSlot: String, expectedPlayerName:
       assertEquals(expectedRating, rating)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -75,7 +75,7 @@ fun assertPokeLog(log: String, expectedPlayerSlot: String, expectedPokemonName: 
       assertEquals(expectedGender, gender)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -89,20 +89,20 @@ fun assertSwitchLog(log: String, expectedPokemonSlot: String, expectedPokemonNam
       assertEquals(expectedHpValue, hpPercentage)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
-fun assertTerastallizeLog(log: String, expectedPokemonSlot: String, expectedTeraType: String) {
+fun assertTerastallizeLog(log: String, expectedPokemonSlot: String, expectedPokemonName: String, expectedTeraType: String) {
   var visited = false
   val visitor = object: SdReplayLogVisitor {
-    override fun visitTerastallizeLog(pokemonSlot: String, teraType: String) {
+    override fun visitTerastallizeLog(pokemonSlot: String, pokemonName: String, teraType: String) {
       visited = true
       assertEquals(expectedPokemonSlot, pokemonSlot)
       assertEquals(expectedTeraType, teraType)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -116,7 +116,7 @@ fun assertDamageLog(log: String, expectedPokemonSlot: String, expectedHpStatus: 
       assertEquals(expectedSource, source)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -128,7 +128,7 @@ fun assertFaintLog(log: String, expectedPokemonSlot: String) {
       assertEquals(expectedPokemonSlot, pokemonSlot)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -142,7 +142,7 @@ fun assertHealLog(log: String, expectedPokemonSlot: String, expectedHpStatus: St
       assertEquals(expectedSource, source)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -155,7 +155,7 @@ fun assertAbilityLog(log: String, expectedPokemonSlot: String, expectedAbility: 
       assertEquals(expectedAbility, ability)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -169,7 +169,7 @@ fun assertFieldStartLog(log: String, expectedField: String, expectedSource: Stri
       assertEquals(expectedFrom, from)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -182,7 +182,7 @@ fun assertEndItemLog(log: String, expectedPokemonSlot: String, expectedItem: Str
       assertEquals(expectedItem, item)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -196,7 +196,7 @@ fun assertActivateLog(log: String, expectedPokemonSlot: String, expectedAbility:
       assertEquals(expectedDetails, details)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -210,7 +210,7 @@ fun assertBoostLog(log: String, expectedPokemonSlot: String, expectedStat: Strin
       assertEquals(expectedAmount, amount)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -224,7 +224,7 @@ fun assertUnboostLog(log: String, expectedPokemonSlot: String, expectedStat: Str
       assertEquals(expectedAmount, amount)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -237,7 +237,7 @@ fun assertSingleTurnLog(log: String, expectedPokemonSlot: String, expectedMove: 
       assertEquals(expectedMove, move)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -249,7 +249,7 @@ fun assertFailLog(log: String, expectedPokemonSlot: String) {
       assertEquals(expectedPokemonSlot, pokemonSlot)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -261,7 +261,7 @@ fun assertCritLog(log: String, expectedPokemonSlot: String) {
       assertEquals(expectedPokemonSlot, pokemonSlot)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -273,7 +273,7 @@ fun assertSuperEffectiveLog(log: String, expectedPokemonSlot: String) {
       assertEquals(expectedPokemonSlot, pokemonSlot)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -285,7 +285,7 @@ fun assertResistedLog(log: String, expectedPokemonSlot: String) {
       assertEquals(expectedPokemonSlot, pokemonSlot)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -298,7 +298,7 @@ fun assertSideStartLog(log: String, expectedSide: String, expectedCondition: Str
       assertEquals(expectedCondition, condition)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -311,7 +311,7 @@ fun assertSideEndLog(log: String, expectedSide: String, expectedCondition: Strin
       assertEquals(expectedCondition, condition)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -326,7 +326,7 @@ fun assertRatingUpdateRawLog(log: String, expectedContent: String, expectedPlaye
       assertEquals(expectedAfterElo, afterElo)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
 
@@ -338,6 +338,6 @@ fun assertWinLog(log: String, expectedWinner: String) {
       assertEquals(expectedWinner, winner)
     }
   }
-  visitor.visit(log)
+  visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }

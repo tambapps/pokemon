@@ -77,12 +77,12 @@ class SdReplayLogVisitorTest {
 
   @Test
   fun visitTerastallizeElectric() {
-    assertTerastallizeLog("|-terastallize|p1b: Raging Bolt|Electric", P1B, "Electric")
+    assertTerastallizeLog("|-terastallize|p1b: Raging Bolt|Electric", P1B, "Raging Bolt", "Electric")
   }
 
   @Test
   fun visitTerastallizeNormal() {
-    assertTerastallizeLog("|-terastallize|p2b: Entei|Normal", P2B, "Normal")
+    assertTerastallizeLog("|-terastallize|p2b: Entei|Normal", P2B, "Entei", "Normal")
   }
 
   @Test

@@ -55,15 +55,15 @@ interface SdReplayLogVisitor {
     private val NEXT_BATTLE_REGEX = Regex("href=\"([^\"]+)\"")
   }
 
-  fun visitAll(logs: String) = visitAll(logs.trim().lines())
+  fun visitLogs(logs: String) = visitLogs(logs.trim().lines())
 
-  fun visitAll(logs: List<String>) {
+  fun visitLogs(logs: List<String>) {
     for (log in logs) {
-      visit(log)
+      visitLog(log)
     }
   }
 
-  fun visit(log: String) {
+  fun visitLog(log: String) {
     val tokens = log.split("|")
     if (tokens.size < 2) return
     when (tokens[1]) {
@@ -74,11 +74,11 @@ interface SdReplayLogVisitor {
         val content = tokens.drop(3).joinToString("|")
         val match = NEXT_BATTLE_REGEX.find(content)
         if (match != null) {
-          var nextBattle = match.groupValues[1]
-          if (nextBattle.contains("-gen")) {
-            nextBattle = nextBattle.substring(nextBattle.indexOf("-gen") + 1)
+          var nextBattleRef = match.groupValues[1]
+          if (nextBattleRef.contains("-gen")) {
+            nextBattleRef = nextBattleRef.substring(nextBattleRef.indexOf("-gen") + 1)
           }
-          visitNextBattleUhtmlLog(name, content, nextBattle)
+          visitNextBattleUhtmlLog(name, content, nextBattleRef)
         } else {
           visitUhtmlLog(name, content)
         }
@@ -153,9 +153,11 @@ interface SdReplayLogVisitor {
       }
       LOG_TURN -> visitTurnLog(tokens[2].toInt())
       LOG_TERASTALLIZE -> {
-        val pokemonSlot = tokens[2].split(':')[0]
+        val pokemonFields = tokens[2].split(':')
+        val pokemonSlot = pokemonFields[0]
+        val pokemonName = formatPokemonName(pokemonFields[1].trim())
         val teraType = tokens[3]
-        visitTerastallizeLog(pokemonSlot, teraType)
+        visitTerastallizeLog(pokemonSlot, pokemonName, teraType)
       }
       LOG_MOVE -> {
         val sourceFields = tokens[2].split(':')
@@ -277,7 +279,7 @@ interface SdReplayLogVisitor {
   fun visitJoinLog(playerName: String) {}
   fun visitHtmlLog(content: String) {}
   fun visitUhtmlLog(name: String, content: String) {}
-  fun visitNextBattleUhtmlLog(name: String, content: String, nextBattle: String) {}
+  fun visitNextBattleUhtmlLog(name: String, content: String, nextBattleRef: String) {}
   fun visitTimeLog(timestamp: String) {}
   fun visitGameTypeLog(gameType: String) {}
   fun visitPlayerLog(playerSlot: String, playerName: String, avatar: String?, rating: String?) {}
@@ -299,7 +301,7 @@ interface SdReplayLogVisitor {
   fun visitActivateLog(pokemonSlot: String, ability: String, details: String) {}
   fun visitStartStatusLog(pokemonSlot: String, status: String) {}
   fun visitTurnLog(turnNumber: Int) {}
-  fun visitTerastallizeLog(pokemonSlot: String, teraType: String) {}
+  fun visitTerastallizeLog(pokemonSlot: String, pokemonName: String, teraType: String) {}
   fun visitMoveLog(sourcePokemonSlot: String, sourcePokemonName: String, moveName: String, targetPokemonSlot: String?, targetPokemonName: String?, isSpread: Boolean, isStill: Boolean, additionalInfo: String) {}
   fun visitDamageLog(pokemonSlot: String, hpStatus: String, source: String?) {}
   fun visitSuperEffectiveLog(pokemonSlot: String) {}
