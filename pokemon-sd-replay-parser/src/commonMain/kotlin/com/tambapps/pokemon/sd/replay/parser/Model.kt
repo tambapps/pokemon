@@ -60,8 +60,8 @@ data class Player(
 data class PlayerBuilder(
   var name: String = "<none>",
   var selection: MutableList<String> = mutableListOf(),
-  var beforeElo: Int? = 0,
-  var afterElo: Int? = 0,
+  var beforeElo: Int? = null,
+  var afterElo: Int? = null,
   var terastallization: Terastallization? = null,
   var ots: OpenTeamSheet? = null,
   val movesUsage: MutableMap<String, MutableMap<String, Int>> = mutableMapOf(),
