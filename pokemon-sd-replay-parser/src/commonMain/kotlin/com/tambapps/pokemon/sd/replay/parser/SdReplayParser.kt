@@ -130,13 +130,29 @@ class SdReplayParser(
       else null
     return OtsPokemon(
       name = formatPokemonName(fields[0]),
-      item = formatPokemonTrait(fields[2]),
-      ability = formatPokemonTrait(fields[3]),
-      moves = fields[4].split(",").map(formatPokemonTrait),
+      item = formattedShowteamPokemonTrait(fields[2]),
+      ability = formattedShowteamPokemonTrait(fields[3]),
+      moves = fields[4].split(",").map(this::formattedShowteamPokemonTrait),
       level = fields[10].toInt(),
       teraType = teraType
     )
   }
+
+  private fun formattedShowteamPokemonTrait(input: String) = formatPokemonTrait(buildString {
+    append(input[0])
+    for (i in 1 until input.length) {
+      val c = input[i]
+      val last = input[i - 1]
+      if (c.isUpperCase() && last != '-') {
+        append(" ")
+        append(c)
+      } else if (c == '-') {
+        append(" ")
+      } else {
+        append(c)
+      }
+    }
+  })
 }
 
 
