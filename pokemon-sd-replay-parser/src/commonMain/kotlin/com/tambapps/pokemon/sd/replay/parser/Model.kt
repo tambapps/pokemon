@@ -1,11 +1,12 @@
 package com.tambapps.pokemon.sd.replay.parser
 
 import com.tambapps.pokemon.PokeType
+import com.tambapps.pokemon.PokemonName
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 data class Terastallization(
-  val pokemon: String,
+  val pokemon: PokemonName,
   val type: PokeType
 )
 
@@ -27,7 +28,7 @@ data class OpenTeamSheet(
 )
 
 data class OtsPokemon(
-  val name: String,
+  val name: PokemonName,
   val item: String,
   val ability: String,
   val moves: List<String>,
@@ -40,44 +41,44 @@ data class TeamPreview(
 )
 
 data class TeamPreviewPokemon(
-  val name: String,
+  val name: PokemonName,
   val level: Int?
 )
 
 data class Player(
   val name: String,
   val teamPreview: TeamPreview,
-  val selection: List<String>,
+  val selection: List<PokemonName>,
   val beforeElo: Int?,
   val afterElo: Int?,
   val terastallization: Terastallization?,
   val ots: OpenTeamSheet?,
-  val movesUsage: Map<String, Map<String, Int>>
+  val movesUsage: Map<PokemonName, Map<String, Int>>
 ) {
   val lead get() = selection.take(2)
 }
 
 data class PlayerBuilder(
   var name: String = "<none>",
-  var selection: MutableList<String> = mutableListOf(),
+  var selection: MutableList<PokemonName> = mutableListOf(),
   var beforeElo: Int? = null,
   var afterElo: Int? = null,
   var terastallization: Terastallization? = null,
   var ots: OpenTeamSheet? = null,
-  val movesUsage: MutableMap<String, MutableMap<String, Int>> = mutableMapOf(),
+  val movesUsage: MutableMap<PokemonName, MutableMap<String, Int>> = mutableMapOf(),
 ) {
 
   private val teamPreviewPokemons = mutableListOf<TeamPreviewPokemon>()
 
   fun teamPreviewPokemon(pokemon: TeamPreviewPokemon) = teamPreviewPokemons.add(pokemon)
 
-  fun selection(pokemon: String) {
+  fun selection(pokemon: PokemonName) {
     if (!selection.contains(pokemon)) {
       selection.add(pokemon)
     }
   }
 
-  fun moveUsage(pokemonName: String, moveName: String) {
+  fun moveUsage(pokemonName: PokemonName, moveName: String) {
     val movesCount = movesUsage.getOrPut(pokemonName) { mutableMapOf() }
     movesCount[moveName] = movesCount.getOrPut(moveName) { 0 } + 1
   }

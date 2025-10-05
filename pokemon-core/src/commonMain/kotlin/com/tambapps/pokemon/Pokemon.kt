@@ -1,7 +1,16 @@
 package com.tambapps.pokemon
 
+import kotlin.jvm.JvmInline
+
+@JvmInline
+value class PokemonName(val value: String) {
+  val normalized: String get() = PokemonNormalizer.normalize(value)
+
+  val baseNormalized get() = PokemonNormalizer.normalizeToBase(value)
+}
+
 data class Pokemon(
-  val name: String,
+  val name: PokemonName,
   val surname: String?,
   val gender: Gender?,
   val nature: Nature?,

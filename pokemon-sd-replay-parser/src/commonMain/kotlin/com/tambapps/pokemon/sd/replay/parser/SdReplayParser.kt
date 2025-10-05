@@ -1,6 +1,7 @@
 package com.tambapps.pokemon.sd.replay.parser
 
 import com.tambapps.pokemon.PokeType
+import com.tambapps.pokemon.PokemonName
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
@@ -53,7 +54,7 @@ class SdReplayParser(
       ]
       when (tokens[1]) {
         LOG_MOVE -> {
-          val pokemonName = formatPokemonName(tokens[2].split(':').last().trim())
+          val pokemonName = PokemonName(formatPokemonName(tokens[2].split(':').last().trim()))
           val moveName = formatPokemonTrait(tokens[3].trim())
           playerBuilder.moveUsage(pokemonName, moveName)
         }
@@ -62,7 +63,7 @@ class SdReplayParser(
           val (rawPokemonName, levelStr) = tokens[3].split(',')
           playerBuilder.teamPreviewPokemon(
             TeamPreviewPokemon(
-              formatPokemonName(rawPokemonName),
+              PokemonName(formatPokemonName(rawPokemonName)),
               levelStr.trim().substring(1).toInt()
             )
           )
@@ -91,13 +92,13 @@ class SdReplayParser(
         }
 
         LOG_DRAG, LOG_SWITCH -> {
-          val pokemon = formatPokemonName(tokens[3].split(',')[0])
+          val pokemon = PokemonName(formatPokemonName(tokens[3].split(',')[0]))
           playerBuilder.selection(pokemon)
         }
 
         LOG_TERASTALLIZE -> {
           playerBuilder.terastallization = Terastallization(
-            pokemon = formatPokemonName(tokens[2].split(':').last().trim()),
+            pokemon = PokemonName(formatPokemonName(tokens[2].split(':').last().trim())),
             type = PokeType.valueOf(tokens[3].uppercase()) // TODO handle error
           )
         }
@@ -129,7 +130,7 @@ class SdReplayParser(
       if (fields.size > 11 && fields[11].isNotBlank()) PokeType.valueOf(fields[11].split(",").last().uppercase())
       else null
     return OtsPokemon(
-      name = formatPokemonName(fields[0]),
+      name = PokemonName(formatPokemonName(fields[0])),
       item = formattedShowteamPokemonTrait(fields[2]),
       ability = formattedShowteamPokemonTrait(fields[3]),
       moves = fields[4].split(",").map(this::formattedShowteamPokemonTrait),

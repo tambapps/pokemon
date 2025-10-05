@@ -5,6 +5,7 @@ import com.tambapps.pokemon.Nature
 import com.tambapps.pokemon.PokeStats
 import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.Pokemon
+import com.tambapps.pokemon.PokemonName
 import com.tambapps.pokemon.buildStats
 
 class PokepasteParser(
@@ -97,7 +98,7 @@ class PokepasteParser(
       if (moves.isEmpty()) throw PokePasteParseException("Pokemon ${name} has no moves")
       pokemons.add(
         Pokemon(
-          name = name,
+          name = PokemonName(name),
           surname = surname,
           gender = gender,
           nature = nature,

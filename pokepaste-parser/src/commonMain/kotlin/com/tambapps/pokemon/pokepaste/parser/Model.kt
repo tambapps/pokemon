@@ -10,9 +10,9 @@ data class PokePaste(
   fun toPokePasteString(): String = buildString {
     for (pokemon in pokemons) {
       if (pokemon.surname != null) {
-        append("${pokemon.surname} (${pokemon.name})")
+        append("${pokemon.surname} (${pokemon.name.value})")
       } else {
-        append(pokemon.name)
+        append(pokemon.name.value)
       }
       
       pokemon.gender?.let { gender ->

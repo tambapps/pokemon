@@ -5,6 +5,7 @@ import com.tambapps.pokemon.Nature
 import com.tambapps.pokemon.PokeStats
 import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.Pokemon
+import com.tambapps.pokemon.PokemonName
 import com.tambapps.pokemon.buildStats
 import kotlin.test.Test
 import kotlin.test.assertContains
@@ -21,7 +22,7 @@ class PokePasteParserTest {
 
     val expectedMons = listOf(
       Pokemon(
-        name = "Miraidon",
+        name = PokemonName("Miraidon"),
         surname = null,
         gender = null,
         nature = Nature.MODEST,
@@ -40,7 +41,7 @@ class PokePasteParserTest {
         }
       ),
       Pokemon(
-        name = "Entei",
+        name = PokemonName("Entei"),
         surname = null,
         gender = null,
         nature = Nature.ADAMANT,
@@ -59,7 +60,7 @@ class PokePasteParserTest {
         }
       ),
       Pokemon(
-        name = "Chien-Pao",
+        name = PokemonName("Chien-Pao"),
         surname = null,
         gender = null,
         nature = Nature.JOLLY,
@@ -77,7 +78,7 @@ class PokePasteParserTest {
         }
       ),
       Pokemon(
-        name = "Iron Hands",
+        name = PokemonName("Iron Hands"),
         surname = null,
         gender = null,
         nature = Nature.BRAVE,
@@ -98,7 +99,7 @@ class PokePasteParserTest {
         }
       ),
       Pokemon(
-        name = "Whimsicott",
+        name = PokemonName("Whimsicott"),
         surname = null,
         gender = null,
         nature = Nature.MODEST,
@@ -118,7 +119,7 @@ class PokePasteParserTest {
         }
       ),
       Pokemon(
-        name = "Ogerpon-Cornerstone",
+        name = PokemonName("Ogerpon-Cornerstone"),
         surname = null,
         gender = Gender.FEMALE,
         nature = Nature.ADAMANT,
@@ -150,7 +151,7 @@ class PokePasteParserTest {
 
     val expectedMons = listOf(
       Pokemon(
-        name = "Miraidon",
+        name = PokemonName("Miraidon"),
         surname = "Dondochakka",
         gender = null,
         nature = Nature.MODEST,
@@ -168,7 +169,7 @@ class PokePasteParserTest {
         }
       ),
       Pokemon(
-        name = "Farigiraf",
+        name = PokemonName("Farigiraf"),
         surname = "Sophie",
         gender = Gender.FEMALE,
         nature = Nature.BOLD,
@@ -189,7 +190,7 @@ class PokePasteParserTest {
         }
       ),
       Pokemon(
-        name = "Landorus",
+        name = PokemonName("Landorus"),
         surname = "Genius",
         gender = null,
         nature = Nature.TIMID,
@@ -210,7 +211,7 @@ class PokePasteParserTest {
         }
       ),
       Pokemon(
-        name = "Whimsicott",
+        name = PokemonName("Whimsicott"),
         surname = null,
         gender = Gender.MALE,
         nature = Nature.TIMID,
@@ -233,7 +234,7 @@ class PokePasteParserTest {
         }
       ),
       Pokemon(
-        name = "Ogerpon-Cornerstone",
+        name = PokemonName("Ogerpon-Cornerstone"),
         surname = "Rockpon",
         gender = null,
         nature = Nature.ADAMANT,
@@ -252,7 +253,7 @@ class PokePasteParserTest {
         }
       ),
       Pokemon(
-        name = "Incineroar",
+        name = PokemonName("Incineroar"),
         surname = "Cat",
         gender = null,
         nature = Nature.IMPISH,

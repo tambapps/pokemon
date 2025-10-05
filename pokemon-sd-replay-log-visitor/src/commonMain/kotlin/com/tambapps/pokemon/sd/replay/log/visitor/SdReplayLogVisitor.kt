@@ -1,6 +1,7 @@
 package com.tambapps.pokemon.sd.replay.log.visitor
 
 import com.tambapps.pokemon.PokeType
+import com.tambapps.pokemon.PokemonName
 
 interface SdReplayLogVisitor {
 
@@ -342,7 +343,7 @@ interface SdReplayLogVisitor {
       if (fields.size > 11 && fields[11].isNotBlank()) PokeType.valueOf(fields[11].split(",").last().uppercase())
       else null
     return OtsPokemon(
-      name = formatPokemonName(fields[0]),
+      name = PokemonName(formatPokemonName(fields[0])),
       item = formattedShowteamPokemonTrait(fields[2]),
       ability = formattedShowteamPokemonTrait(fields[3]),
       moves = fields[4].split(",").map(this::formattedShowteamPokemonTrait),
