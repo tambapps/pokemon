@@ -3,10 +3,21 @@ package com.tambapps.pokemon
 import kotlin.jvm.JvmInline
 
 @JvmInline
-value class PokemonName(val value: String) {
-  val normalized: String get() = PokemonNormalizer.normalize(value)
+value class PokemonName(val value: String): Comparable<PokemonName> {
+
+  val normalized get() = PokemonNormalizer.normalize(value)
+
+  val pretty get() = PokemonNormalizer.pretty(value)
 
   val baseNormalized get() = PokemonNormalizer.normalizeToBase(value)
+
+  fun baseMatches(name: PokemonName) = PokemonNormalizer.baseMatches(value, name.value)
+
+  fun matches(name: PokemonName) = PokemonNormalizer.matches(value, name.value)
+
+  override fun compareTo(other: PokemonName): Int {
+    return value.compareTo(other.value)
+  }
 }
 
 data class Pokemon(
