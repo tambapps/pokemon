@@ -3,9 +3,9 @@ package com.tambapps.pokemon.pokepaste.parser
 import com.tambapps.pokemon.Gender
 import com.tambapps.pokemon.Nature
 import com.tambapps.pokemon.PokeStats
-import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.Pokemon
 import com.tambapps.pokemon.PokemonName
+import com.tambapps.pokemon.TeraType
 import com.tambapps.pokemon.buildStats
 
 class PokepasteParser(
@@ -59,7 +59,7 @@ class PokepasteParser(
       val (name, item, surname, gender) = parseHeader(lineReader.readLine())
 
       var ability: String? = null
-      var teraType: PokeType? = null
+      var teraType: TeraType? = null
       var level: Int = defaultLevel
       val moves = mutableListOf<String>()
       var ivs: PokeStats? = null
@@ -125,7 +125,7 @@ class PokepasteParser(
   }
 
   private fun parseTeraType(line: String, str: String) = try {
-    PokeType.valueOf(str.trim().uppercase())
+    TeraType.valueOf(str.trim().uppercase())
   } catch (_: IllegalArgumentException) {
     throw PokePasteParseException(line, "Unknown tera type $str")
   }

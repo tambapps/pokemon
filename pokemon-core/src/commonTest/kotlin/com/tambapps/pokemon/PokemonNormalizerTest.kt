@@ -11,16 +11,16 @@ class PokemonNormalizerTest {
         assertEquals("pikachu", PokemonNormalizer.normalize("Pikachu"))
         assertEquals("pikachu", PokemonNormalizer.normalize("PIKACHU"))
         assertEquals("pikachu", PokemonNormalizer.normalize("pikachu"))
-        
+
         // Test space replacement with dashes
         assertEquals("tapu-koko", PokemonNormalizer.normalize("Tapu Koko"))
         assertEquals("tapu-lele", PokemonNormalizer.normalize("TAPU LELE"))
         assertEquals("mr-mime", PokemonNormalizer.normalize("Mr Mime"))
-        
+
         // Test combined transformations
         assertEquals("ho-oh", PokemonNormalizer.normalize("Ho Oh"))
         assertEquals("porygon-z", PokemonNormalizer.normalize("Porygon Z"))
-        
+
         // Test edge cases
         assertEquals("", PokemonNormalizer.normalize(""))
         assertEquals("a", PokemonNormalizer.normalize("A"))
@@ -92,7 +92,7 @@ class PokemonNormalizerTest {
         assertEquals("charizard", PokemonNormalizer.normalizeToBase("Charizard"))
         assertEquals("blastoise", PokemonNormalizer.normalizeToBase("Blastoise"))
         assertEquals("venusaur", PokemonNormalizer.normalizeToBase("Venusaur"))
-        
+
         // Test Pokemon with forms that don't match our patterns
         assertEquals("deoxys-attack", PokemonNormalizer.normalizeToBase("Deoxys-Attack"))
         assertEquals("shaymin-sky", PokemonNormalizer.normalizeToBase("Shaymin-Sky"))
@@ -103,13 +103,13 @@ class PokemonNormalizerTest {
     fun testNormalizeToBase_EdgeCases() {
         // Test empty string
         assertEquals("", PokemonNormalizer.normalizeToBase(""))
-        
+
         // Test single character
         assertEquals("a", PokemonNormalizer.normalizeToBase("a"))
-        
+
         // Test strings that start with prefix but are actually different
         assertEquals("rotate", PokemonNormalizer.normalizeToBase("Rotate"))
-        
+
         // Test case sensitivity
         assertEquals("urshifu", PokemonNormalizer.normalizeToBase("URSHIFU-RAPID-STRIKE"))
         assertEquals("pikachu", PokemonNormalizer.normalizeToBase("PIKACHU-GALAR")) // No such form exists
@@ -129,7 +129,7 @@ class PokemonNormalizerTest {
         // If we had both "ur" and "urshifu" in the trie, it should return "urshifu"
         assertEquals("urshifu", PokemonNormalizer.normalizeToBase("Urshifu-Something-Else"))
         assertEquals("ursaluna", PokemonNormalizer.normalizeToBase("Ursaluna-Something-Else"))
-        
+
         // Test that shorter prefixes don't interfere
         assertEquals("rotom", PokemonNormalizer.normalizeToBase("Rotom-Heat"))
         assertEquals("rotom", PokemonNormalizer.normalizeToBase("Rotom-Something-New"))
@@ -141,7 +141,7 @@ class PokemonNormalizerTest {
         // A Pokemon like "Urshifu-Galar" should match prefix "urshifu", not suffix "-galar"
         assertEquals("urshifu", PokemonNormalizer.normalizeToBase("Urshifu-Galar"))
         assertEquals("rotom", PokemonNormalizer.normalizeToBase("Rotom-Alola"))
-        
+
         // But if no prefix matches, suffix should work
         assertEquals("pikachu", PokemonNormalizer.normalizeToBase("Pikachu-Galar"))
     }

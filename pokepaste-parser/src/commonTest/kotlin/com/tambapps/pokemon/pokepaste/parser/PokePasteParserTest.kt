@@ -3,9 +3,9 @@ package com.tambapps.pokemon.pokepaste.parser
 import com.tambapps.pokemon.Gender
 import com.tambapps.pokemon.Nature
 import com.tambapps.pokemon.PokeStats
-import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.Pokemon
 import com.tambapps.pokemon.PokemonName
+import com.tambapps.pokemon.TeraType
 import com.tambapps.pokemon.buildStats
 import kotlin.test.Test
 import kotlin.test.assertContains
@@ -30,7 +30,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Hadron Engine",
-        teraType = PokeType.FAIRY,
+        teraType = TeraType.FAIRY,
         level = 50,
         moves = listOf("Volt Switch", "Draco Meteor", "Electro Drift", "Dazzling Gleam"),
         ivs = PokeStats.default(31),
@@ -49,7 +49,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Inner Focus",
-        teraType = PokeType.NORMAL,
+        teraType = TeraType.NORMAL,
         level = 50,
         moves = listOf("Sacred Fire", "Crunch", "Stomping Tantrum", "Extreme Speed"),
         ivs = PokeStats.default(31),
@@ -68,7 +68,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Sword of Ruin",
-        teraType = PokeType.STELLAR,
+        teraType = TeraType.STELLAR,
         level = 50,
         moves = listOf("Icicle Crash", "Sucker Punch", "Sacred Sword", "Protect"),
         ivs = PokeStats.default(31),
@@ -86,7 +86,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Quark Drive",
-        teraType = PokeType.WATER,
+        teraType = TeraType.WATER,
         level = 50,
         moves = listOf("Drain Punch", "Low Kick", "Heavy Slam", "Fake Out"),
         ivs = buildStats(31) {
@@ -107,7 +107,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Prankster",
-        teraType = PokeType.DARK,
+        teraType = TeraType.DARK,
         level = 50,
         moves = listOf("Moonblast", "Encore", "Light Screen", "Tailwind"),
         ivs = buildStats(31) {
@@ -127,7 +127,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Sturdy",
-        teraType = PokeType.ROCK,
+        teraType = TeraType.ROCK,
         level = 50,
         moves = listOf("Ivy Cudgel", "Horn Leech", "Spiky Shield", "Follow Me"),
         ivs = PokeStats.default(31),
@@ -159,7 +159,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Hadron Engine",
-        teraType = PokeType.ELECTRIC,
+        teraType = TeraType.ELECTRIC,
         level = 50,
         moves = listOf("Electro Drift", "Draco Meteor", "Volt Switch", "Discharge"),
         ivs = PokeStats.default(31),
@@ -177,7 +177,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Armor Tail",
-        teraType = PokeType.GROUND,
+        teraType = TeraType.GROUND,
         level = 54,
         moves = listOf("Dazzling Gleam", "Foul Play", "Trick Room", "Helping Hand"),
         ivs = buildStats(31) {
@@ -198,7 +198,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Sheer Force",
-        teraType = PokeType.STEEL,
+        teraType = TeraType.STEEL,
         level = 70,
         moves = listOf("Earth Power", "Sludge Bomb", "Taunt", "Protect"),
         ivs = buildStats(31) {
@@ -219,7 +219,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Prankster",
-        teraType = PokeType.GHOST,
+        teraType = TeraType.GHOST,
         level = 50,
         moves = listOf("Moonblast", "Tailwind", "Encore", "Protect"),
         ivs = buildStats(31) {
@@ -242,7 +242,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Sturdy",
-        teraType = PokeType.ROCK,
+        teraType = TeraType.ROCK,
         level = 100,
         moves = listOf("Ivy Cudgel", "Horn Leech", "Follow Me", "Spiky Shield"),
         ivs = PokeStats.default(31),
@@ -261,7 +261,7 @@ class PokePasteParserTest {
         shiny = false,
         happiness = 255,
         ability = "Intimidate",
-        teraType = PokeType.GRASS,
+        teraType = TeraType.GRASS,
         level = 50,
         moves = listOf("Flare Blitz", "Knock Off", "Fake Out", "U-turn"),
         ivs = buildStats(31) {
