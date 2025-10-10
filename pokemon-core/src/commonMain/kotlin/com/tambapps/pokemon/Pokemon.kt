@@ -25,7 +25,7 @@ data class Pokemon(
   val shiny: Boolean,
   val happiness: Int,
   val ability: String?,
-  val teraType: PokeType?,
+  val teraType: TeraType?,
   val level: Int,
   val moves: List<String>,
   val ivs: PokeStats,
@@ -91,8 +91,27 @@ enum class PokeType {
   FLYING,
   PSYCHIC,
   BUG,
+}
 
-  // not really types, but meh
+enum class TeraType {
+  STEEL,
+  FIGHTING,
+  DRAGON,
+  FIRE,
+  ICE,
+  NORMAL,
+  WATER,
+  GRASS,
+  ELECTRIC,
+  FAIRY,
+  POISON,
+  PSY,
+  ROCK,
+  GHOST,
+  DARK,
+  GROUND,
+  FLYING,
+  PSYCHIC,
+  BUG,
   STELLAR,
-  UNKNOWN
 }

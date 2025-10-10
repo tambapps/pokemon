@@ -1,7 +1,7 @@
 package com.tambapps.pokemon.sd.replay.log.visitor
 
-import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.PokemonName
+import com.tambapps.pokemon.TeraType
 
 interface SdReplayLogVisitor {
 
@@ -340,7 +340,7 @@ interface SdReplayLogVisitor {
   private fun parsePokemonOts(log: String): OtsPokemon {
     val fields = log.split("|")
     val teraType =
-      if (fields.size > 11 && fields[11].isNotBlank()) PokeType.valueOf(fields[11].split(",").last().uppercase())
+      if (fields.size > 11 && fields[11].isNotBlank()) TeraType.valueOf(fields[11].split(",").last().uppercase())
       else null
     return OtsPokemon(
       name = PokemonName(formatPokemonName(fields[0])),

@@ -1,13 +1,13 @@
 package com.tambapps.pokemon.sd.replay.parser
 
-import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.PokemonName
+import com.tambapps.pokemon.TeraType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 data class Terastallization(
   val pokemon: PokemonName,
-  val type: PokeType
+  val type: TeraType
 )
 
 data class SdReplay(
@@ -33,7 +33,7 @@ data class OtsPokemon(
   val ability: String,
   val moves: List<String>,
   val level: Int,
-  val teraType: PokeType?
+  val teraType: TeraType?
 )
 
 data class TeamPreview(

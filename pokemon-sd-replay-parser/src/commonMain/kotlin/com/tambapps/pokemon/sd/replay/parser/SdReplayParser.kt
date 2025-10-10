@@ -1,7 +1,7 @@
 package com.tambapps.pokemon.sd.replay.parser
 
-import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.PokemonName
+import com.tambapps.pokemon.TeraType
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
@@ -99,7 +99,9 @@ class SdReplayParser(
         LOG_TERASTALLIZE -> {
           playerBuilder.terastallization = Terastallization(
             pokemon = PokemonName(formatPokemonName(tokens[2].split(':').last().trim())),
-            type = PokeType.valueOf(tokens[3].uppercase()) // TODO handle error
+            type =  try {
+              TeraType.valueOf(tokens[3].uppercase())
+            } catch (e: IllegalArgumentException) { throw SdReplayParseException("Unknown terastallize type ${tokens[3]}") }
           )
         }
 
@@ -127,7 +129,7 @@ class SdReplayParser(
   private fun parsePokemonOts(log: String): OtsPokemon {
     val fields = log.split("|")
     val teraType =
-      if (fields.size > 11 && fields[11].isNotBlank()) PokeType.valueOf(fields[11].split(",").last().uppercase())
+      if (fields.size > 11 && fields[11].isNotBlank()) TeraType.valueOf(fields[11].split(",").last().uppercase())
       else null
     return OtsPokemon(
       name = PokemonName(formatPokemonName(fields[0])),

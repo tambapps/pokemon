@@ -1,7 +1,7 @@
 package com.tambapps.pokemon.sd.replay.parser
 
-import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.PokemonName
+import com.tambapps.pokemon.TeraType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -35,7 +35,7 @@ class SdReplayParserTest {
       "Ogerpon-Hearthflame"
     )
     assertEquals(expectedTeam1, player1.teamPreview.pokemons.map { it.name.value })
-    assertEquals(Terastallization(pokemon = PokemonName("Raging Bolt"), type = PokeType.ELECTRIC), player1.terastallization)
+    assertEquals(Terastallization(pokemon = PokemonName("Raging Bolt"), type = TeraType.ELECTRIC), player1.terastallization)
     assertEquals(1358, player1.beforeElo)
     assertEquals(1332, player1.afterElo)
 
@@ -53,7 +53,7 @@ class SdReplayParserTest {
       "Ogerpon-Cornerstone"
     )
     assertEquals(expectedTeam2, player2.teamPreview.pokemons.map { it.name.value })
-    assertEquals(Terastallization(pokemon = PokemonName("Entei"), type = PokeType.NORMAL), player2.terastallization)
+    assertEquals(Terastallization(pokemon = PokemonName("Entei"), type = TeraType.NORMAL), player2.terastallization)
     assertEquals(1256, player2.beforeElo)
     assertEquals(1288, player2.afterElo)
 

@@ -47,6 +47,7 @@ object PokemonNormalizer {
     insert("necrozma", "necrozma")
     insert("calyrex", "calyrex")
     insert("kyurem", "kyurem")
+    insert("tatsugiri", "tatsugiri")
   }
 
   fun pretty(s: String) = buildString {
@@ -80,12 +81,12 @@ object PokemonNormalizer {
     // Then handle suffix patterns (still O(1) constant time checks)
     return when {
       !s.contains("-") -> s
-      s.endsWith("-galar") -> s.substring(0, s.length - 6)
-      s.endsWith("-alola") -> s.substring(0, s.length - 6)
-      s.endsWith("-incarnate") -> s.substring(0, s.length - 10)
+      s.endsWith("-galar") -> s.dropLast(6)
+      s.endsWith("-alola") -> s.dropLast(6)
+      s.endsWith("-incarnate") -> s.dropLast(10)
       s.contains("-paldea") -> {
         // because of Tauros-Paldea-Aqua
-        s.substring(0, s.indexOf("-paldea"))
+        s.substringBefore("-paldea")
       }
       else -> s
     }
