@@ -81,8 +81,9 @@ object PokemonNormalizer {
     // Then handle suffix patterns (still O(1) constant time checks)
     return when {
       !s.contains("-") -> s
-      s.endsWith("-galar") -> s.dropLast(6)
-      s.endsWith("-alola") -> s.dropLast(6)
+      s.endsWith("-hisui")
+          || s.endsWith("-galar")
+          || s.endsWith("-alola") -> s.dropLast(6)
       s.endsWith("-incarnate") -> s.dropLast(10)
       s.contains("-paldea") -> {
         // because of Tauros-Paldea-Aqua
