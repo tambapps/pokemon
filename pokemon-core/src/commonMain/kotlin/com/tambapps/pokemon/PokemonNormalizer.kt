@@ -40,6 +40,9 @@ object PokemonNormalizer {
   // Initialize the prefix trie with Pokemon forms that need prefix matching
   private val prefixTrie = PrefixTrie().apply {
     insert("urshifu")
+    insert("indeedee")
+    insert("oinkologne")
+    insert("meowstic")
     insert("ogerpon")
     insert("oricorio")
     insert("ursaluna")
@@ -51,6 +54,8 @@ object PokemonNormalizer {
     insert("calyrex")
     insert("kyurem")
     insert("tatsugiri")
+    insert("pyroar")
+    insert("basculegion")
   }
 
   fun pretty(s: String) = buildString {

@@ -2,6 +2,7 @@ package com.tambapps.pokemon
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class PokemonNormalizerTest {
 
@@ -146,5 +147,12 @@ class PokemonNormalizerTest {
 
     // But if no prefix matches, suffix should work
     assertEquals("pikachu", PokemonNormalizer.normalizeToBase("Pikachu-Galar"))
+  }
+
+  @Test
+  fun testBaseMatches() {
+    assertTrue(PokemonNormalizer.baseMatches("pikachu", "pikachu"))
+    assertTrue(PokemonNormalizer.baseMatches("indeedee-f", "indeedee"))
+    assertTrue(PokemonNormalizer.baseMatches("indeedee", "indeedee-f"))
   }
 }
