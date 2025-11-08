@@ -12,6 +12,8 @@ object PokemonNormalizer {
   private class PrefixTrie {
     private val root = TrieNode()
 
+    fun insert(value: String) = insert(value, value)
+
     fun insert(prefix: String, value: String) {
       var current = root
       for (char in prefix) {
@@ -37,17 +39,18 @@ object PokemonNormalizer {
 
   // Initialize the prefix trie with Pokemon forms that need prefix matching
   private val prefixTrie = PrefixTrie().apply {
-    insert("urshifu", "urshifu")
-    insert("ogerpon", "ogerpon")
-    insert("ursaluna", "ursaluna")
-    insert("rotom", "rotom")
-    insert("terapagos", "terapagos")
-    insert("zamazenta", "zamazenta")
-    insert("zacian", "zacian")
-    insert("necrozma", "necrozma")
-    insert("calyrex", "calyrex")
-    insert("kyurem", "kyurem")
-    insert("tatsugiri", "tatsugiri")
+    insert("urshifu")
+    insert("ogerpon")
+    insert("oricorio")
+    insert("ursaluna")
+    insert("rotom")
+    insert("terapagos")
+    insert("zamazenta")
+    insert("zacian")
+    insert("necrozma")
+    insert("calyrex")
+    insert("kyurem")
+    insert("tatsugiri")
   }
 
   fun pretty(s: String) = buildString {
