@@ -86,6 +86,10 @@ class PokemonNormalizerTest {
     assertEquals("tornadus", PokemonNormalizer.normalizeToBase("Tornadus-Incarnate"))
     assertEquals("thundurus", PokemonNormalizer.normalizeToBase("Thundurus-Incarnate"))
     assertEquals("landorus", PokemonNormalizer.normalizeToBase("Landorus-Incarnate"))
+
+    // other forms
+    assertEquals("tatsugiri", PokemonNormalizer.normalizeToBase("Tatsugiri-Droopy"))
+    assertEquals("indeedee", PokemonNormalizer.normalizeToBase("Indeedee-F"))
   }
 
   @Test
@@ -154,5 +158,6 @@ class PokemonNormalizerTest {
     assertTrue(PokemonNormalizer.baseMatches("pikachu", "pikachu"))
     assertTrue(PokemonNormalizer.baseMatches("indeedee-f", "indeedee"))
     assertTrue(PokemonNormalizer.baseMatches("indeedee", "indeedee-f"))
+    assertTrue(PokemonNormalizer.baseMatches("tatsugiri-droopy", "tatsugiri"))
   }
 }
