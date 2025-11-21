@@ -1,6 +1,7 @@
 package com.tambapps.pokemon.pokepaste.parser
 
 import com.tambapps.pokemon.Pokemon
+import com.tambapps.pokemon.TeraType
 
 // TODO add metadata, or plain fields (for format, and team name)
 data class PokePaste(
@@ -40,11 +41,11 @@ data class PokePaste(
       if (pokemon.happiness != 255) {
         appendLine("Happiness: ${pokemon.happiness}")
       }
-      
-      if (pokemon.teraType != null) {
-        appendLine("Tera Type: ${pokemon.teraType}")
+
+      pokemon.teraType?.let { teraType ->
+        appendLine("Tera Type: ${teraType.pascalCase}")
       }
-      
+
       val evs = pokemon.evs
       if (evs != com.tambapps.pokemon.PokeStats.default(0)) {
         appendLine("EVs: ${evsToString(evs)}")
@@ -90,38 +91,4 @@ data class PokePaste(
   }
 }
 
-/*
-  @override
-  String toString() {
-    StringBuffer buffer = StringBuffer();
-    for (Pokemon pokemon in pokemons) {
-      buffer.write(pokemon.name);
-      if (pokemon.gender != null) {
-        buffer.write(" (${pokemon.gender})");
-      }
-      if (pokemon.item != null) {
-        buffer.write(" @ ${pokemon.item}");
-      }
-      buffer.writeln();
-      buffer.writeln("Ability: ${pokemon.ability}");
-      if (pokemon.level != null) {
-        buffer.writeln("Level: ${pokemon.level}");
-      }
-      buffer.writeln("Tera Type: ${pokemon.teraType}");
-      Stats evs = pokemon.evs ?? Stats.withDefault(0);
-      buffer.writeln("EVs: ${_statsToString(evs)}");
-      if (pokemon.nature != null) {
-        buffer.writeln("${pokemon.nature} Nature");
-      }
-      if (pokemon.ivs != null && pokemon.ivs != Stats.withDefault(31)) {
-        buffer.writeln("IVs: ${_statsToString(pokemon.ivs!)}");
-      }
-      for (String move in pokemon.moves) {
-        buffer.writeln("- $move");
-      }
-      buffer.writeln();
-    }
-    return buffer.toString();
-  }
-
- */
+private val TeraType.pascalCase get() = name[0].uppercase() + name.substring(1).lowercase()
