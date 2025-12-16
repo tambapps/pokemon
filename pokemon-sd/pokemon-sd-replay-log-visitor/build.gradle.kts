@@ -3,5 +3,5 @@ plugins {
   `maven-publish`
 }
 
-// All common configuration is inherited from root build.gradle.kts
+// All configuration is inherited from root and pokemon-sd parent build files
 // This module has no additional dependencies or specific configuration
