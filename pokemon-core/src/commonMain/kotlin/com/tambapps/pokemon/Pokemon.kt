@@ -22,6 +22,9 @@ value class MoveName(val value: String) {
   val normalized get() = MoveName(PokemonNormalizer.normalize(value))
 
   fun matches(name: MoveName) = PokemonNormalizer.matches(value, name.value)
+
+  val pretty get() = PokemonNormalizer.pretty(value)
+
 }
 
 @JvmInline
@@ -30,6 +33,9 @@ value class ItemName(val value: String) {
   val normalized get() = ItemName(PokemonNormalizer.normalize(value))
 
   fun matches(name: ItemName) = PokemonNormalizer.matches(value, name.value)
+
+  val pretty get() = PokemonNormalizer.pretty(value)
+
 }
 
 @JvmInline
@@ -38,6 +44,9 @@ value class AbilityName(val value: String) {
   val normalized get() = AbilityName(PokemonNormalizer.normalize(value))
 
   fun matches(name: AbilityName) = PokemonNormalizer.matches(value, name.value)
+
+  val pretty get() = PokemonNormalizer.pretty(value)
+
 }
 
 data class Pokemon(
