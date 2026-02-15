@@ -1,5 +1,6 @@
 package com.tambapps.pokemon.pokeapi.client
 
+import com.tambapps.pokemon.MoveName
 import com.tambapps.pokemon.PokemonName
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -40,7 +41,7 @@ class PokeApiGqlClientTest {
     val client = mockClient(GQL_RESPONSE)
     val result = client.getPokemonsAndMoves(
       pokemonNames = listOf(PokemonName("chien-pao"), PokemonName("ogerpon")),
-      moveNames = listOf("pound", "karate-chop")
+      moveNames = listOf("pound", "karate-chop").map(::MoveName)
     )
 
     // Pokemon assertions
@@ -83,7 +84,7 @@ class PokeApiGqlClientTest {
   fun getPokemonsAndMovesFailsOnErrorStatus() = runTest {
     val client = mockClient("{}", HttpStatusCode.InternalServerError)
     assertFailsWith<PokeApiException> {
-      client.getPokemonsAndMoves(listOf(PokemonName("bulbasaur")), listOf("pound"))
+      client.getPokemonsAndMoves(listOf(PokemonName("bulbasaur")), listOf(MoveName("pound")))
     }
   }
 
