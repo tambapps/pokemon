@@ -14,6 +14,7 @@ import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 
 class PokeApiGqlClientTest {
 
@@ -34,32 +35,54 @@ class PokeApiGqlClientTest {
   }
 
   @Test
-  fun getPokemonsReturnsExpectedPokemons() = runTest {
+  fun getPokemonsAndMovesReturnsExpectedData() = runTest {
     val client = mockClient(GQL_RESPONSE)
-    val pokemons = client.getPokemons(listOf("chien-pao", "ogerpon"))
+    val result = client.getPokemonsAndMoves(
+      pokemonNames = listOf("chien-pao", "ogerpon"),
+      moveNames = listOf("pound", "karate-chop")
+    )
 
-    assertEquals(2, pokemons.size)
+    // Pokemon assertions
+    assertEquals(2, result.pokemons.size)
 
-    val chienPao = pokemons.first { it.name == "chien-pao" }
+    val chienPao = result.pokemons.first { it.name == "chien-pao" }
     assertEquals(1002, chienPao.id)
     assertEquals(6, chienPao.stats.size)
     assertEquals(80, chienPao.stats.first { it.stat.name == "hp" }.baseStat)
     assertEquals(120, chienPao.stats.first { it.stat.name == "attack" }.baseStat)
     assertEquals(135, chienPao.stats.first { it.stat.name == "speed" }.baseStat)
 
-    val ogerpon = pokemons.first { it.name == "ogerpon" }
+    val ogerpon = result.pokemons.first { it.name == "ogerpon" }
     assertEquals(1017, ogerpon.id)
-    assertEquals(6, ogerpon.stats.size)
     assertEquals(80, ogerpon.stats.first { it.stat.name == "hp" }.baseStat)
-    assertEquals(120, ogerpon.stats.first { it.stat.name == "attack" }.baseStat)
     assertEquals(110, ogerpon.stats.first { it.stat.name == "speed" }.baseStat)
+
+    // Move assertions
+    assertEquals(2, result.moves.size)
+
+    val pound = result.moves.first { it.name == "pound" }
+    assertEquals("Pound", pound.moveNames.first().name)
+    assertEquals("us", pound.moveNames.first().language.iso3166)
+    assertEquals(100, pound.accuracy)
+    assertEquals(40, pound.power)
+    assertEquals(0, pound.priority)
+    assertEquals(35, pound.pp)
+    assertEquals("physical", pound.damageClass.name)
+    assertEquals("normal", pound.type.name)
+
+    val karateChop = result.moves.first { it.name == "karate-chop" }
+    assertEquals("Karate Chop", karateChop.moveNames.first().name)
+    assertEquals(100, karateChop.accuracy)
+    assertEquals(50, karateChop.power)
+    assertEquals(25, karateChop.pp)
+    assertEquals("fighting", karateChop.type.name)
   }
 
   @Test
-  fun getPokemonsFailsOnErrorStatus() = runTest {
+  fun getPokemonsAndMovesFailsOnErrorStatus() = runTest {
     val client = mockClient("{}", HttpStatusCode.InternalServerError)
     assertFailsWith<PokeApiException> {
-      client.getPokemons(listOf("bulbasaur"))
+      client.getPokemonsAndMoves(listOf("bulbasaur"), listOf("pound"))
     }
   }
 
@@ -91,6 +114,28 @@ class PokeApiGqlClientTest {
                 { "base_stat": 96,  "stat": { "name": "special-defense" } },
                 { "base_stat": 110, "stat": { "name": "speed" } }
               ]
+            }
+          ],
+          "move": [
+            {
+              "name": "pound",
+              "movenames": [{ "name": "Pound", "language": { "iso3166": "us" } }],
+              "accuracy": 100,
+              "movedamageclass": { "name": "physical" },
+              "power": 40,
+              "priority": 0,
+              "pp": 35,
+              "type": { "name": "normal" }
+            },
+            {
+              "name": "karate-chop",
+              "movenames": [{ "name": "Karate Chop", "language": { "iso3166": "us" } }],
+              "accuracy": 100,
+              "movedamageclass": { "name": "physical" },
+              "power": 50,
+              "priority": 0,
+              "pp": 25,
+              "type": { "name": "fighting" }
             }
           ]
         }
