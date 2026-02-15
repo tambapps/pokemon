@@ -1,5 +1,6 @@
 package com.tambapps.pokemon.pokeapi.client
 
+import com.tambapps.pokemon.PokemonName
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -18,8 +19,8 @@ class PokeApiGqlClient(
     private const val OPERATION_NAME = "getPokemonsAndMoves"
   }
 
-  suspend fun getPokemonsAndMoves(pokemonNames: List<String>, moveNames: List<String>): GqlBatchResult {
-    val pokemonNamesLiteral = pokemonNames.joinToString(", ") { "\"$it\"" }
+  suspend fun getPokemonsAndMoves(pokemonNames: List<PokemonName>, moveNames: List<String>): GqlBatchResult {
+    val pokemonNamesLiteral = pokemonNames.joinToString(", ") { "\"${it.value}\"" }
     val moveNamesLiteral = moveNames.joinToString(", ") { "\"$it\"" }
     val query = """
       query $OPERATION_NAME {
