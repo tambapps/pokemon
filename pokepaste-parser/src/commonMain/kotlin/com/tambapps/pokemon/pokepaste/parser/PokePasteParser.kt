@@ -1,6 +1,9 @@
 package com.tambapps.pokemon.pokepaste.parser
 
+import com.tambapps.pokemon.AbilityName
 import com.tambapps.pokemon.Gender
+import com.tambapps.pokemon.ItemName
+import com.tambapps.pokemon.MoveName
 import com.tambapps.pokemon.Nature
 import com.tambapps.pokemon.PokeStats
 import com.tambapps.pokemon.Pokemon
@@ -61,7 +64,7 @@ class PokepasteParser(
       var ability: String? = null
       var teraType: TeraType? = null
       var level: Int = defaultLevel
-      val moves = mutableListOf<String>()
+      val moves = mutableListOf<MoveName>()
       var ivs: PokeStats? = null
       var evs: PokeStats? = null
       var nature: Nature? = null
@@ -88,24 +91,24 @@ class PokepasteParser(
           isOts = false
           nature = parseNature(line, line.substring(0, line.indexOf(" ")).uppercase())
         } else if (line.startsWith(MOVE_PREFIX)) {
-          moves.add(formatPokemonTrait(line.substring(MOVE_PREFIX.length)))
+          moves.add(MoveName(formatPokemonTrait(line.substring(MOVE_PREFIX.length))))
         } else if (line.startsWith(SHINY_PREFIX)) {
           shiny = extractRight(line) == YES
         } else if (line.startsWith(HAPPINESS_PREFIX)) {
           happiness = extractRightInt(line)
         }
       }
-      if (moves.isEmpty()) throw PokePasteParseException("Pokemon ${name} has no moves")
+      if (moves.isEmpty()) throw PokePasteParseException("Pokemon $name has no moves")
       pokemons.add(
         Pokemon(
           name = PokemonName(name),
           surname = surname,
           gender = gender,
           nature = nature,
-          item = item,
+          item = item?.let(::ItemName),
           shiny = shiny,
           happiness = happiness,
-          ability = ability,
+          ability = ability?.let(::AbilityName),
           teraType = teraType,
           level = level,
           moves = moves.toList(),

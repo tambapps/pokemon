@@ -4,6 +4,9 @@ import com.tambapps.pokemon.Gender
 import com.tambapps.pokemon.Nature
 import com.tambapps.pokemon.PokeStats
 import com.tambapps.pokemon.Pokemon
+import com.tambapps.pokemon.AbilityName
+import com.tambapps.pokemon.ItemName
+import com.tambapps.pokemon.MoveName
 import com.tambapps.pokemon.PokemonName
 import com.tambapps.pokemon.TeraType
 import com.tambapps.pokemon.buildStats
@@ -26,13 +29,13 @@ class PokePasteParserTest {
         surname = null,
         gender = null,
         nature = Nature.MODEST,
-        item = "Choice Specs",
+        item = ItemName("Choice Specs"),
         shiny = false,
         happiness = 255,
-        ability = "Hadron Engine",
+        ability = AbilityName("Hadron Engine"),
         teraType = TeraType.FAIRY,
         level = 50,
-        moves = listOf("Volt Switch", "Draco Meteor", "Electro Drift", "Dazzling Gleam"),
+        moves = listOf(MoveName("Volt Switch"), MoveName("Draco Meteor"), MoveName("Electro Drift"), MoveName("Dazzling Gleam")),
         ivs = PokeStats.default(31),
         evs = buildStats(0) {
           specialAttack = 252
@@ -45,13 +48,13 @@ class PokePasteParserTest {
         surname = null,
         gender = null,
         nature = Nature.ADAMANT,
-        item = "Choice Band",
+        item = ItemName("Choice Band"),
         shiny = false,
         happiness = 255,
-        ability = "Inner Focus",
+        ability = AbilityName("Inner Focus"),
         teraType = TeraType.NORMAL,
         level = 50,
-        moves = listOf("Sacred Fire", "Crunch", "Stomping Tantrum", "Extreme Speed"),
+        moves = listOf(MoveName("Sacred Fire"), MoveName("Crunch"), MoveName("Stomping Tantrum"), MoveName("Extreme Speed")),
         ivs = PokeStats.default(31),
         evs = buildStats(0) {
           hp = 140
@@ -64,13 +67,13 @@ class PokePasteParserTest {
         surname = null,
         gender = null,
         nature = Nature.JOLLY,
-        item = "Focus Sash",
+        item = ItemName("Focus Sash"),
         shiny = false,
         happiness = 255,
-        ability = "Sword of Ruin",
+        ability = AbilityName("Sword of Ruin"),
         teraType = TeraType.STELLAR,
         level = 50,
-        moves = listOf("Icicle Crash", "Sucker Punch", "Sacred Sword", "Protect"),
+        moves = listOf(MoveName("Icicle Crash"), MoveName("Sucker Punch"), MoveName("Sacred Sword"), MoveName("Protect")),
         ivs = PokeStats.default(31),
         evs = buildStats(0) {
           attack = 252
@@ -82,13 +85,13 @@ class PokePasteParserTest {
         surname = null,
         gender = null,
         nature = Nature.BRAVE,
-        item = "Assault Vest",
+        item = ItemName("Assault Vest"),
         shiny = false,
         happiness = 255,
-        ability = "Quark Drive",
+        ability = AbilityName("Quark Drive"),
         teraType = TeraType.WATER,
         level = 50,
-        moves = listOf("Drain Punch", "Low Kick", "Heavy Slam", "Fake Out"),
+        moves = listOf(MoveName("Drain Punch"), MoveName("Low Kick"), MoveName("Heavy Slam"), MoveName("Fake Out")),
         ivs = buildStats(31) {
           speed = 0
         },
@@ -103,13 +106,13 @@ class PokePasteParserTest {
         surname = null,
         gender = null,
         nature = Nature.MODEST,
-        item = "Covert Cloak",
+        item = ItemName("Covert Cloak"),
         shiny = false,
         happiness = 255,
-        ability = "Prankster",
+        ability = AbilityName("Prankster"),
         teraType = TeraType.DARK,
         level = 50,
-        moves = listOf("Moonblast", "Encore", "Light Screen", "Tailwind"),
+        moves = listOf(MoveName("Moonblast"), MoveName("Encore"), MoveName("Light Screen"), MoveName("Tailwind")),
         ivs = buildStats(31) {
           attack = 0
         },
@@ -123,13 +126,13 @@ class PokePasteParserTest {
         surname = null,
         gender = Gender.FEMALE,
         nature = Nature.ADAMANT,
-        item = "Cornerstone Mask",
+        item = ItemName("Cornerstone Mask"),
         shiny = false,
         happiness = 255,
-        ability = "Sturdy",
+        ability = AbilityName("Sturdy"),
         teraType = TeraType.ROCK,
         level = 50,
-        moves = listOf("Ivy Cudgel", "Horn Leech", "Spiky Shield", "Follow Me"),
+        moves = listOf(MoveName("Ivy Cudgel"), MoveName("Horn Leech"), MoveName("Spiky Shield"), MoveName("Follow Me")),
         ivs = PokeStats.default(31),
         evs = buildStats(0) {
           attack = 252
@@ -155,13 +158,13 @@ class PokePasteParserTest {
         surname = "Dondochakka",
         gender = null,
         nature = Nature.MODEST,
-        item = "Choice Specs",
+        item = ItemName("Choice Specs"),
         shiny = false,
         happiness = 255,
-        ability = "Hadron Engine",
+        ability = AbilityName("Hadron Engine"),
         teraType = TeraType.ELECTRIC,
         level = 50,
-        moves = listOf("Electro Drift", "Draco Meteor", "Volt Switch", "Discharge"),
+        moves = listOf(MoveName("Electro Drift"), MoveName("Draco Meteor"), MoveName("Volt Switch"), MoveName("Discharge")),
         ivs = PokeStats.default(31),
         evs = buildStats(0) {
           specialAttack = 252
@@ -173,13 +176,13 @@ class PokePasteParserTest {
         surname = "Sophie",
         gender = Gender.FEMALE,
         nature = Nature.BOLD,
-        item = "Electric Seed",
+        item = ItemName("Electric Seed"),
         shiny = false,
         happiness = 255,
-        ability = "Armor Tail",
+        ability = AbilityName("Armor Tail"),
         teraType = TeraType.GROUND,
         level = 54,
-        moves = listOf("Dazzling Gleam", "Foul Play", "Trick Room", "Helping Hand"),
+        moves = listOf(MoveName("Dazzling Gleam"), MoveName("Foul Play"), MoveName("Trick Room"), MoveName("Helping Hand")),
         ivs = buildStats(31) {
           attack = 0
         },
@@ -194,13 +197,13 @@ class PokePasteParserTest {
         surname = "Genius",
         gender = null,
         nature = Nature.TIMID,
-        item = "Life Orb",
+        item = ItemName("Life Orb"),
         shiny = false,
         happiness = 255,
-        ability = "Sheer Force",
+        ability = AbilityName("Sheer Force"),
         teraType = TeraType.STEEL,
         level = 70,
-        moves = listOf("Earth Power", "Sludge Bomb", "Taunt", "Protect"),
+        moves = listOf(MoveName("Earth Power"), MoveName("Sludge Bomb"), MoveName("Taunt"), MoveName("Protect")),
         ivs = buildStats(31) {
           attack = 0
         },
@@ -215,13 +218,13 @@ class PokePasteParserTest {
         surname = null,
         gender = Gender.MALE,
         nature = Nature.TIMID,
-        item = "Focus Sash",
+        item = ItemName("Focus Sash"),
         shiny = false,
         happiness = 255,
-        ability = "Prankster",
+        ability = AbilityName("Prankster"),
         teraType = TeraType.GHOST,
         level = 50,
-        moves = listOf("Moonblast", "Tailwind", "Encore", "Protect"),
+        moves = listOf(MoveName("Moonblast"), MoveName("Tailwind"), MoveName("Encore"), MoveName("Protect")),
         ivs = buildStats(31) {
           attack = 0
         },
@@ -238,13 +241,13 @@ class PokePasteParserTest {
         surname = "Rockpon",
         gender = null,
         nature = Nature.ADAMANT,
-        item = "Cornerstone Mask",
+        item = ItemName("Cornerstone Mask"),
         shiny = false,
         happiness = 255,
-        ability = "Sturdy",
+        ability = AbilityName("Sturdy"),
         teraType = TeraType.ROCK,
         level = 100,
-        moves = listOf("Ivy Cudgel", "Horn Leech", "Follow Me", "Spiky Shield"),
+        moves = listOf(MoveName("Ivy Cudgel"), MoveName("Horn Leech"), MoveName("Follow Me"), MoveName("Spiky Shield")),
         ivs = PokeStats.default(31),
         evs = buildStats(0) {
           attack = 252
@@ -260,10 +263,10 @@ class PokePasteParserTest {
         item = null,
         shiny = false,
         happiness = 255,
-        ability = "Intimidate",
+        ability = AbilityName("Intimidate"),
         teraType = TeraType.GRASS,
         level = 50,
-        moves = listOf("Flare Blitz", "Knock Off", "Fake Out", "U-turn"),
+        moves = listOf(MoveName("Flare Blitz"), MoveName("Knock Off"), MoveName("Fake Out"), MoveName("U-turn")),
         ivs = buildStats(31) {
           speed = 29
         },

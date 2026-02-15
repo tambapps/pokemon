@@ -16,18 +16,42 @@ value class PokemonName(val value: String) {
   fun matches(name: PokemonName) = PokemonNormalizer.matches(value, name.value)
 }
 
+@JvmInline
+value class MoveName(val value: String) {
+
+  val normalized get() = MoveName(PokemonNormalizer.normalize(value))
+
+  fun matches(name: MoveName) = PokemonNormalizer.matches(value, name.value)
+}
+
+@JvmInline
+value class ItemName(val value: String) {
+
+  val normalized get() = ItemName(PokemonNormalizer.normalize(value))
+
+  fun matches(name: ItemName) = PokemonNormalizer.matches(value, name.value)
+}
+
+@JvmInline
+value class AbilityName(val value: String) {
+
+  val normalized get() = AbilityName(PokemonNormalizer.normalize(value))
+
+  fun matches(name: AbilityName) = PokemonNormalizer.matches(value, name.value)
+}
+
 data class Pokemon(
   val name: PokemonName,
   val surname: String?,
   val gender: Gender?,
   val nature: Nature?,
-  val item: String?,
+  val item: ItemName?,
   val shiny: Boolean,
   val happiness: Int,
-  val ability: String?,
+  val ability: AbilityName?,
   val teraType: TeraType?,
   val level: Int,
-  val moves: List<String>,
+  val moves: List<MoveName>,
   val ivs: PokeStats,
   val evs: PokeStats,
 )

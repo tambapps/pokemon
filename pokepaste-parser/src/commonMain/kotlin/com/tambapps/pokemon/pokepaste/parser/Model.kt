@@ -21,13 +21,13 @@ data class PokePaste(
       }
       
       if (pokemon.item != null) {
-        append(" @ ${pokemon.item}")
+        append(" @ ${pokemon.item?.value}")
       }
       
       appendLine()
       
       if (pokemon.ability != null) {
-        appendLine("Ability: ${pokemon.ability}")
+        appendLine("Ability: ${pokemon.ability?.value}")
       }
       
       if (pokemon.level != 100) {
@@ -61,7 +61,7 @@ data class PokePaste(
       }
       
       for (move in pokemon.moves) {
-        appendLine("- $move")
+        appendLine("- ${move.value}")
       }
       
       appendLine()
