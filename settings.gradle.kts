@@ -21,6 +21,7 @@ plugins {
 rootProject.name = "pokemon"
 
 include(":pokepaste-parser")
+include(":pokeapi-client")
 include(":pokemon-sd")
 include(":pokemon-sd:pokemon-sd-replay-parser")
 include(":pokemon-sd:pokemon-sd-replay-log-visitor")
