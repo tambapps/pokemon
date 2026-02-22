@@ -39,7 +39,7 @@ class PokeApiGqlClientTest {
   @Test
   fun getPokemonsAndMovesReturnsExpectedData() = runTest {
     val client = mockClient(GQL_RESPONSE)
-    val result = client.getPokemonsAndMoves(
+    val result = client.getPokemons(
       pokemonNames = listOf(PokemonName("chien-pao"), PokemonName("ogerpon")),
       moveNames = listOf("pound", "karate-chop").map(::MoveName)
     )
@@ -84,7 +84,7 @@ class PokeApiGqlClientTest {
   fun getPokemonsAndMovesFailsOnErrorStatus() = runTest {
     val client = mockClient("{}", HttpStatusCode.InternalServerError)
     assertFailsWith<PokeApiException> {
-      client.getPokemonsAndMoves(listOf(PokemonName("bulbasaur")), listOf(MoveName("pound")))
+      client.getPokemons(listOf(PokemonName("bulbasaur")), listOf(MoveName("pound")))
     }
   }
 

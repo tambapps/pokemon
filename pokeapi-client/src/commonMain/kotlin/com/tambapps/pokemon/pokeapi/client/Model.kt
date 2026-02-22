@@ -28,7 +28,7 @@ internal data class GqlResponse(
 @Serializable
 internal data class GqlData(
   val pokemon: List<GqlPokemon>,
-  val move: List<GqlMove>,
+  val move: List<GqlMove>? = null,
 )
 
 // Pokemon models

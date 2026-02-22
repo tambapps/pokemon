@@ -20,12 +20,14 @@ class PokeApiGqlClient(
     private const val OPERATION_NAME = "getPokemonsAndMoves"
   }
 
-  suspend fun getPokemonsAndMoves(pokemonNames: List<PokemonName>, moveNames: List<MoveName>): GqlBatchResult {
-    val pokemonNamesLiteral = pokemonNames.joinToString(", ") { "\"${it.value}\"" }
-    val moveNamesLiteral = moveNames.joinToString(", ") { "\"${it.value}\"" }
-    val query = """
-      query $OPERATION_NAME {
-        pokemon(where: {name: {_in: [$pokemonNamesLiteral]}}) {
+  suspend fun getPokemons(
+    pokemonNames: List<PokemonName>,
+    moveNames: List<MoveName>? = null
+  ): GqlBatchResult {
+    val queriees = buildList {
+      val pokemonNamesLiteral = pokemonNames.joinToString(", ") { "\"${it.value}\"" }
+      add("""
+      pokemon(where: {name: {_in: [$pokemonNamesLiteral]}}) {
           id
           name
           pokemonstats {
@@ -35,6 +37,10 @@ class PokeApiGqlClient(
             }
           }
         }
+    """.trimIndent())
+      if (moveNames != null) {
+        val moveNamesLiteral = moveNames.joinToString(", ") { "\"${it.value}\"" }
+        add("""
         move(where: {name: {_in: [$moveNamesLiteral]}}) {
           name
           movenames(where: {language: {iso3166: {_eq: "us"}}}) {
@@ -54,8 +60,11 @@ class PokeApiGqlClient(
             name
           }
         }
+      """.trimIndent()
+        )
       }
-    """.trimIndent()
+    }
+    val query = queriees.joinToString(separator = "\n", prefix = "query $OPERATION_NAME {", postfix = "}") { it }
 
     val response = try {
       httpClient.post(baseUrl) {
@@ -72,9 +81,10 @@ class PokeApiGqlClient(
 
     return try {
       val data = response.body<GqlResponse>().data
-      GqlBatchResult(pokemons = data.pokemon, moves = data.move)
+      GqlBatchResult(pokemons = data.pokemon, moves = data.move ?: emptyList())
     } catch (e: Exception) {
       throw PokeApiException("Failed to deserialize GraphQL response", e)
     }
   }
+
 }
