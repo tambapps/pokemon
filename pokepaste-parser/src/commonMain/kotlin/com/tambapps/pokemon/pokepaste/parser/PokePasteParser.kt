@@ -13,7 +13,7 @@ import com.tambapps.pokemon.buildStats
 
 class PokepasteParser(
   private val defaultLevel: Int = 100,
-  val formatPokemonName: (String) -> String = { it },
+  val formatPokemonName: (String, String?) -> String = { name, _ -> name },
   val formatPokemonTrait: (String) -> String = { it },
 ) {
 
@@ -180,21 +180,21 @@ class PokepasteParser(
     if (line.count { it == ')' } != nbParenthesis) throw PokePasteParseException(headerLine)
     when (nbParenthesis) {
       // no surname and no specific gender
-      0 -> name = formatPokemonName(line.trim())
+      0 -> name = formatPokemonName(line.trim(), item)
       1 -> { // surname or gender
         val content = parenthesisContent(line)
         if (content == GENDER_MALE || content == GENDER_FEMALE) {
-          name = formatPokemonName(beforeParenthesisContent(line))
+          name = formatPokemonName(beforeParenthesisContent(line), item)
           gender = if (content == GENDER_MALE) Gender.MALE else Gender.FEMALE
         } else {
-          name = formatPokemonName(content)
+          name = formatPokemonName(content, item)
           surname = beforeParenthesisContent(line)
         }
       }
 
       2 -> { // both surname and gender
         surname = beforeParenthesisContent(line)
-        name = formatPokemonName(parenthesisContent(line))
+        name = formatPokemonName(parenthesisContent(line), item)
         gender = if (lastParenthesisContent(line) == GENDER_MALE) Gender.MALE else Gender.FEMALE
       }
 

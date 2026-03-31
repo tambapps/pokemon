@@ -314,4 +314,19 @@ class PokePasteParserTest {
     val pokepaste = parser.parse(PokePastes.OTS)
     assertEquals(true, pokepaste.isOts)
   }
+
+  @Test
+  fun testFormatPokemonNameWithItem() {
+    val itemAwareParser = PokepasteParser(
+      formatPokemonName = { name, item ->
+        when (item) {
+          "Rusted Shield" -> "Zamazenta-Crowned"
+          else -> name
+        }
+      }
+    )
+    val pokepaste = itemAwareParser.parse(PokePastes.ZAMAZENTA_RUSTED_SHIELD)
+    assertEquals(PokemonName("Zamazenta-Crowned"), pokepaste.pokemons[0].name)
+    assertEquals(PokemonName("Zamazenta"), pokepaste.pokemons[1].name)
+  }
 }

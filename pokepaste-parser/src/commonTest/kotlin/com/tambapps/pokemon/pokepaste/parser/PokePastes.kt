@@ -161,6 +161,31 @@ IVs: 0 Atk
 
   """
 
+  const val ZAMAZENTA_RUSTED_SHIELD = """
+Zamazenta @ Rusted Shield
+Ability: Dauntless Shield
+Level: 50
+Tera Type: Steel
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
+- Body Press
+- Protect
+- Howl
+- Wide Guard
+
+Zamazenta @ Choice Band
+Ability: Dauntless Shield
+Level: 50
+Tera Type: Steel
+EVs: 252 HP / 252 Def / 4 SpD
+Impish Nature
+- Body Press
+- Protect
+- Howl
+- Wide Guard
+
+  """
+
   const val OTS = """
 Ursaluna @ Flame Orb  
 Ability: Guts  
