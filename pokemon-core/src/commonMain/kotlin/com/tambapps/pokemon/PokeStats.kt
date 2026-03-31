@@ -22,6 +22,11 @@ data class PokeStats(
       PokeStats(defaultValue, defaultValue, defaultValue, defaultValue, defaultValue, defaultValue)
 
     fun compute(
+      pokemon: Pokemon,
+      baseStats: PokeStats,
+    ) = compute(baseStats = baseStats, evs = pokemon.evs, ivs = pokemon.ivs, nature = pokemon.nature ?: Nature.QUIRKY, level = pokemon.level)
+
+    fun compute(
       baseStats: PokeStats,
       evs: PokeStats,
       ivs: PokeStats = default(31),
@@ -34,8 +39,9 @@ data class PokeStats(
       defense = computeStat(stat = Stat.DEFENSE, base = baseStats.defense, ev = evs.defense, iv = ivs.defense, nature = nature, level = level),
       specialDefense = computeStat(stat = Stat.SPECIAL_DEFENSE, base = baseStats.specialDefense, ev = evs.specialDefense, iv = ivs.specialDefense, nature = nature, level = level),
     )
-
   }
+
+  fun all(predicate: (Int) -> Boolean) = Stat.entries.all { predicate(get(it)) }
 
   operator fun get(stat: Stat) = when (stat) {
     Stat.ATTACK -> attack
