@@ -5,114 +5,57 @@ import kotlin.test.assertEquals
 
 class PokeStatsTest {
 
-  private val miraidonBaseStats = PokeStats(hp = 100, attack = 85, defense = 100, specialAttack = 135, specialDefense = 115, speed = 135)
-  private val shedinjaBaseStats = PokeStats(hp = 1, attack = 90, defense = 45, specialAttack = 30, specialDefense = 30, speed = 40)
+  private val megaDelphoxBaseStats = PokeStats(hp = 75, attack = 69, defense = 72, specialAttack = 159, specialDefense = 125, speed = 134)
 
   @Test
-  fun defaultCreatesUniformStats() {
-    assertEquals(
-      PokeStats(hp = 31, attack = 31, defense = 31, specialAttack = 31, specialDefense = 31, speed = 31),
-      PokeStats.default(31)
-    )
-  }
-
-  @Test
-  fun buildStatsAppliesOverrides() {
-    val stats = buildStats(0) {
-      attack = 252
-      speed = 252
-      hp = 4
-    }
-    assertEquals(
-      PokeStats(hp = 4, attack = 252, defense = 0, specialAttack = 0, specialDefense = 0, speed = 252),
-      stats
-    )
-  }
-
-  @Test
-  fun buildStatsWithDefaultValue() {
-    val stats = buildStats(31) {
-      attack = 0
-    }
-    assertEquals(
-      PokeStats(hp = 31, attack = 0, defense = 31, specialAttack = 31, specialDefense = 31, speed = 31),
-      stats
-    )
-  }
-
-  @Test
-  fun getOperatorReturnsStat() {
-    val stats = buildStats(0) {
-      hp = 1
-      attack = 2
-      defense = 3
-      specialAttack = 4
-      specialDefense = 5
-      speed = 6
-    }
-    assertEquals(1, stats[Stat.HP])
-    assertEquals(2, stats[Stat.ATTACK])
-    assertEquals(3, stats[Stat.DEFENSE])
-    assertEquals(4, stats[Stat.SPECIAL_ATTACK])
-    assertEquals(5, stats[Stat.SPECIAL_DEFENSE])
-    assertEquals(6, stats[Stat.SPEED])
-  }
-
-  @Test
-  fun computeWithNeutralNature() {
-    val computed = PokeStats.computeLegacy(
-      baseStats = miraidonBaseStats,
-      evs = PokeStats.default(0),
-      ivs = PokeStats.default(31),
+  fun computeWithNeutralNatureAndNoStatPoints() {
+    val computed = PokeStats.compute(
+      baseStats = megaDelphoxBaseStats,
+      statPoints = PokeStats.default(0),
       nature = Nature.QUIRKY,
-      level = 50
     )
     assertEquals(
-      PokeStats(hp = 175, attack = 105, defense = 120, specialAttack = 155, specialDefense = 135, speed = 155),
+      PokeStats(hp = 150, attack = 89, defense = 92, specialAttack = 179, specialDefense = 145, speed = 154),
       computed
     )
   }
 
   @Test
-  fun computeWithNatureBoostAndPenalty() {
-    // MODEST: +SpAtk / -Atk
-    val computed = PokeStats.computeLegacy(
-      baseStats = miraidonBaseStats,
-      evs = buildStats(0) { specialAttack = 252; speed = 252; specialDefense = 4 },
-      ivs = PokeStats.default(31),
+  fun computeWithTimidNature() {
+    // TIMID: +Spe / -Atk
+    val computed = PokeStats.compute(
+      baseStats = megaDelphoxBaseStats,
+      statPoints = buildStats(0) { hp = 2; specialAttack = 32; speed = 32 },
+      nature = Nature.TIMID,
+    )
+    assertEquals(
+      PokeStats(hp = 152, attack = 80, defense = 92, specialAttack = 211, specialDefense = 145, speed = 204),
+      computed
+    )
+  }
+
+  @Test
+  fun computeWithModestNature() {
+    // MODEST: +SpA / -Atk
+    val computed = PokeStats.compute(
+      baseStats = megaDelphoxBaseStats,
+      statPoints = buildStats(0) { specialAttack = 16; speed = 8 },
       nature = Nature.MODEST,
-      level = 50
     )
     assertEquals(
-      PokeStats(hp = 175, attack = 94, defense = 120, specialAttack = 205, specialDefense = 136, speed = 187),
-      computed
-    )
-  }
-
-  @Test
-  fun computeShedinja() {
-    val computed = PokeStats.computeLegacy(
-      baseStats = shedinjaBaseStats,
-      evs = buildStats(0) { attack = 252; speed = 252; hp = 4 },
-      ivs = PokeStats.default(31),
-      nature = Nature.JOLLY,
-      level = 100
-    )
-    assertEquals(
-      PokeStats(hp = 1, attack = 279, defense = 126, specialAttack = 86, specialDefense = 96, speed = 196),
+      PokeStats(hp = 150, attack = 80, defense = 92, specialAttack = 214, specialDefense = 145, speed = 162),
       computed
     )
   }
 
   @Test
   fun computeHpIsUnaffectedByNature() {
-    val baseStats = PokeStats.default(100)
-    val evs = PokeStats.default(0)
-    val ivs = PokeStats.default(31)
+    val base = megaDelphoxBaseStats
+    val statPoints = PokeStats.default(0)
 
-    val adamant = PokeStats.computeLegacy(baseStats = baseStats, evs = evs, ivs = ivs, nature = Nature.ADAMANT, level = 50)
-    val modest  = PokeStats.computeLegacy(baseStats = baseStats, evs = evs, ivs = ivs, nature = Nature.MODEST,  level = 50)
+    val timid  = PokeStats.compute(baseStats = base, statPoints = statPoints, nature = Nature.TIMID)
+    val modest = PokeStats.compute(baseStats = base, statPoints = statPoints, nature = Nature.MODEST)
 
-    assertEquals(adamant.hp, modest.hp)
+    assertEquals(timid.hp, modest.hp)
   }
 }

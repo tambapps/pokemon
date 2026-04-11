@@ -1,5 +1,22 @@
 package com.tambapps.pokemon
 
+/*
+ * Non-legacy system (level 50)
+ * HP    = base + statPoints + 75
+ * Other = floor(nature × (base + statPoints + 20))
+ */
+internal fun computeHpStat(
+  base: Int,
+  statPoints: Int,
+) = base + statPoints + 75
+
+internal fun computeStat(
+  stat: Stat,
+  base: Int,
+  statPoints: Int,
+  nature: Nature,
+) = (nature.coefficient(stat) * (base + statPoints + 20)).toInt()
+
 
 /*
  * Legacy system

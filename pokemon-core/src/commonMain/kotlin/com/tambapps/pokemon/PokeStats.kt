@@ -27,7 +27,7 @@ data class PokeStats(
       legacySystem: Boolean
     ) = when {
       legacySystem -> computeLegacy(pokemon, baseStats)
-      else -> TODO()
+      else -> compute(pokemon, baseStats)
     }
 
     fun compute(
@@ -38,9 +38,28 @@ data class PokeStats(
       level: Int,
       legacySystem: Boolean) = when {
       legacySystem -> computeLegacy(baseStats = baseStats, evs = evs, ivs = ivs, nature = nature, level = level)
-      else -> TODO()
+      else -> compute(baseStats = baseStats, statPoints = evs, nature = nature)
     }
 
+    fun compute(
+      pokemon: Pokemon,
+      baseStats: PokeStats,
+    ) = compute(baseStats = baseStats, statPoints = pokemon.evs, nature = pokemon.nature ?: Nature.QUIRKY)
+
+    fun compute(
+      baseStats: PokeStats,
+      statPoints: PokeStats,
+      nature: Nature,
+    ) = PokeStats(
+      hp = computeHpStat(base = baseStats.hp, statPoints = statPoints.hp),
+      speed = computeStat(stat = Stat.SPEED, base = baseStats.speed, statPoints = statPoints.speed, nature = nature),
+      attack = computeStat(stat = Stat.ATTACK, base = baseStats.attack, statPoints = statPoints.attack, nature = nature),
+      specialAttack = computeStat(stat = Stat.SPECIAL_ATTACK, base = baseStats.specialAttack, statPoints = statPoints.specialAttack, nature = nature),
+      defense = computeStat(stat = Stat.DEFENSE, base = baseStats.defense, statPoints = statPoints.defense, nature = nature),
+      specialDefense = computeStat(stat = Stat.SPECIAL_DEFENSE, base = baseStats.specialDefense, statPoints = statPoints.specialDefense, nature = nature),
+    )
+
+    // pre-champions calculation
     fun computeLegacy(
       pokemon: Pokemon,
       baseStats: PokeStats,
