@@ -14,6 +14,8 @@ value class PokemonName(val value: String) {
   fun baseMatches(name: PokemonName) = PokemonNormalizer.baseMatches(value, name.value)
 
   fun matches(name: PokemonName) = PokemonNormalizer.matches(value, name.value)
+
+  val isMega get() = normalized.value.endsWith("-mega")
 }
 
 @JvmInline
@@ -147,4 +149,9 @@ enum class TeraType {
   PSYCHIC,
   BUG,
   STELLAR,
+}
+
+enum class Mecanic {
+  TERASTALLIZATION,
+  MEGA_EVOLUTION
 }

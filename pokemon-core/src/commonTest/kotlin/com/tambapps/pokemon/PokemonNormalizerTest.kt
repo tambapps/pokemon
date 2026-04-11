@@ -87,6 +87,15 @@ class PokemonNormalizerTest {
     assertEquals("thundurus", PokemonNormalizer.normalizeToBase("Thundurus-Incarnate"))
     assertEquals("landorus", PokemonNormalizer.normalizeToBase("Landorus-Incarnate"))
 
+    // Test Mega forms (only "-mega" suffix is stripped; "-mega-x/y" variants are left as-is)
+    assertEquals("venusaur", PokemonNormalizer.normalizeToBase("Venusaur-Mega"))
+    assertEquals("gengar", PokemonNormalizer.normalizeToBase("Gengar-Mega"))
+    assertEquals("lucario", PokemonNormalizer.normalizeToBase("Lucario-Mega"))
+    assertEquals("charizard", PokemonNormalizer.normalizeToBase("Charizard-Mega-X"))
+    assertEquals("charizard", PokemonNormalizer.normalizeToBase("Charizard-Mega-Y"))
+    assertEquals("mewtwo", PokemonNormalizer.normalizeToBase("Mewtwo-Mega-X"))
+    assertEquals("mewtwo", PokemonNormalizer.normalizeToBase("Mewtwo-Mega-Y"))
+
     // other forms
     assertEquals("tatsugiri", PokemonNormalizer.normalizeToBase("Tatsugiri-Droopy"))
     assertEquals("indeedee", PokemonNormalizer.normalizeToBase("Indeedee-F"))

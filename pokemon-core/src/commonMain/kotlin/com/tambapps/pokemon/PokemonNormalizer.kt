@@ -60,10 +60,9 @@ object PokemonNormalizer {
           || s.endsWith("-galar")
           || s.endsWith("-alola") -> s.dropLast(6)
       s.endsWith("-incarnate") -> s.dropLast(10)
-      s.contains("-paldea") -> {
-        // because of Tauros-Paldea-Aqua
-        s.substringBefore("-paldea")
-      }
+      // because of Tauros-Paldea-Aqua
+      s.contains("-paldea") -> s.substringBefore("-paldea")
+      s.endsWith("-mega") -> s.substringBefore("-mega")
       else -> s
     }
   }

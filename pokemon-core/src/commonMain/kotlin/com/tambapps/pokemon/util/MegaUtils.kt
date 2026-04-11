@@ -1,0 +1,57 @@
+package com.tambapps.pokemon.util
+
+import com.tambapps.pokemon.ItemName
+import com.tambapps.pokemon.PokemonName
+
+object MegaUtils {
+
+  val MEGA_STONE_TO_POKEMON: Map<ItemName, PokemonName> = mapOf(
+    ItemName("abomasite") to PokemonName("abomasnow-mega"),
+    ItemName("absolite") to PokemonName("absol-mega"),
+    ItemName("aerodactylite") to PokemonName("aerodactyl-mega"),
+    ItemName("aggronite") to PokemonName("aggron-mega"),
+    ItemName("alakazite") to PokemonName("alakazam-mega"),
+    ItemName("altarianite") to PokemonName("altaria-mega"),
+    ItemName("ampharosite") to PokemonName("ampharos-mega"),
+    ItemName("audinite") to PokemonName("audino-mega"),
+    ItemName("banettite") to PokemonName("banette-mega"),
+    ItemName("beedrillite") to PokemonName("beedrill-mega"),
+    ItemName("blastoisinite") to PokemonName("blastoise-mega"),
+    ItemName("blazikenite") to PokemonName("blaziken-mega"),
+    ItemName("cameruptite") to PokemonName("camerupt-mega"),
+    ItemName("charizardite-x") to PokemonName("charizard-mega-x"),
+    ItemName("charizardite-y") to PokemonName("charizard-mega-y"),
+    ItemName("diancite") to PokemonName("diancie-mega"),
+    ItemName("galladite") to PokemonName("gallade-mega"),
+    ItemName("garchompite") to PokemonName("garchomp-mega"),
+    ItemName("gardevoirite") to PokemonName("gardevoir-mega"),
+    ItemName("gengarite") to PokemonName("gengar-mega"),
+    ItemName("glalitite") to PokemonName("glalie-mega"),
+    ItemName("gyaradosite") to PokemonName("gyarados-mega"),
+    ItemName("heracronite") to PokemonName("heracross-mega"),
+    ItemName("houndoominite") to PokemonName("houndoom-mega"),
+    ItemName("kangaskhanite") to PokemonName("kangaskhan-mega"),
+    ItemName("latiasite") to PokemonName("latias-mega"),
+    ItemName("latiosite") to PokemonName("latios-mega"),
+    ItemName("lopunnite") to PokemonName("lopunny-mega"),
+    ItemName("lucarionite") to PokemonName("lucario-mega"),
+    ItemName("manectite") to PokemonName("manectric-mega"),
+    ItemName("mawilite") to PokemonName("mawile-mega"),
+    ItemName("medichamite") to PokemonName("medicham-mega"),
+    ItemName("metagrossite") to PokemonName("metagross-mega"),
+    ItemName("mewtwonite-x") to PokemonName("mewtwo-mega-x"),
+    ItemName("mewtwonite-y") to PokemonName("mewtwo-mega-y"),
+    ItemName("pidgeotite") to PokemonName("pidgeot-mega"),
+    ItemName("pinsirite") to PokemonName("pinsir-mega"),
+    ItemName("sablenite") to PokemonName("sableye-mega"),
+    ItemName("salamencite") to PokemonName("salamence-mega"),
+    ItemName("sceptilite") to PokemonName("sceptile-mega"),
+    ItemName("scizorite") to PokemonName("scizor-mega"),
+    ItemName("sharpedonite") to PokemonName("sharpedo-mega"),
+    ItemName("slowbronite") to PokemonName("slowbro-mega"),
+    ItemName("steelixite") to PokemonName("steelix-mega"),
+    ItemName("swampertite") to PokemonName("swampert-mega"),
+    ItemName("tyranitarite") to PokemonName("tyranitar-mega"),
+    ItemName("venusaurite") to PokemonName("venusaur-mega"),
+  )
+}
