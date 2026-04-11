@@ -5,7 +5,7 @@ import com.tambapps.pokemon.PokemonName
 
 object MegaUtils {
 
-  val MEGA_STONE_TO_POKEMON: Map<ItemName, PokemonName> = mapOf(
+  private val MEGA_STONE_TO_POKEMON: Map<ItemName, PokemonName> = mapOf(
     ItemName("abomasite") to PokemonName("abomasnow-mega"),
     ItemName("absolite") to PokemonName("absol-mega"),
     ItemName("aerodactylite") to PokemonName("aerodactyl-mega"),
@@ -54,4 +54,6 @@ object MegaUtils {
     ItemName("tyranitarite") to PokemonName("tyranitar-mega"),
     ItemName("venusaurite") to PokemonName("venusaur-mega"),
   )
+
+  fun getMegaPokemon(item: ItemName?) = MEGA_STONE_TO_POKEMON[item?.normalized]
 }
