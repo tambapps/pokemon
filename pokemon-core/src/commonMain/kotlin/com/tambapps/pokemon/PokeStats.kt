@@ -24,24 +24,46 @@ data class PokeStats(
     fun compute(
       pokemon: Pokemon,
       baseStats: PokeStats,
-    ) = compute(baseStats = baseStats, evs = pokemon.evs, ivs = pokemon.ivs, nature = pokemon.nature ?: Nature.QUIRKY, level = pokemon.level)
+      legacySystem: Boolean
+    ) = when {
+      legacySystem -> computeLegacy(pokemon, baseStats)
+      else -> TODO()
+    }
 
     fun compute(
       baseStats: PokeStats,
       evs: PokeStats,
       ivs: PokeStats = default(31),
-      nature: Nature = Nature.QUIRKY,
+      nature: Nature,
+      level: Int,
+      legacySystem: Boolean) = when {
+      legacySystem -> computeLegacy(baseStats = baseStats, evs = evs, ivs = ivs, nature = nature, level = level)
+      else -> TODO()
+    }
+
+    fun computeLegacy(
+      pokemon: Pokemon,
+      baseStats: PokeStats,
+    ) = computeLegacy(baseStats = baseStats, evs = pokemon.evs, ivs = pokemon.ivs, nature = pokemon.nature ?: Nature.QUIRKY, level = pokemon.level)
+
+    fun computeLegacy(
+      baseStats: PokeStats,
+      evs: PokeStats,
+      ivs: PokeStats = default(31),
+      nature: Nature,
       level: Int) = PokeStats(
-      hp = computeHpStat(base = baseStats.hp, ev = evs.hp, iv = ivs.hp, level = level),
-      speed = computeStat(stat = Stat.SPEED, base = baseStats.speed, ev = evs.speed, iv = ivs.speed, nature = nature, level = level),
-      attack = computeStat(stat = Stat.ATTACK, base = baseStats.attack, ev = evs.attack, iv = ivs.attack, nature = nature, level = level),
-      specialAttack = computeStat(stat = Stat.SPECIAL_ATTACK, base = baseStats.specialAttack, ev = evs.specialAttack, iv = ivs.specialAttack, nature = nature, level = level),
-      defense = computeStat(stat = Stat.DEFENSE, base = baseStats.defense, ev = evs.defense, iv = ivs.defense, nature = nature, level = level),
-      specialDefense = computeStat(stat = Stat.SPECIAL_DEFENSE, base = baseStats.specialDefense, ev = evs.specialDefense, iv = ivs.specialDefense, nature = nature, level = level),
+      hp = computeLegacyHpStat(base = baseStats.hp, ev = evs.hp, iv = ivs.hp, level = level),
+      speed = computeLegacyStat(stat = Stat.SPEED, base = baseStats.speed, ev = evs.speed, iv = ivs.speed, nature = nature, level = level),
+      attack = computeLegacyStat(stat = Stat.ATTACK, base = baseStats.attack, ev = evs.attack, iv = ivs.attack, nature = nature, level = level),
+      specialAttack = computeLegacyStat(stat = Stat.SPECIAL_ATTACK, base = baseStats.specialAttack, ev = evs.specialAttack, iv = ivs.specialAttack, nature = nature, level = level),
+      defense = computeLegacyStat(stat = Stat.DEFENSE, base = baseStats.defense, ev = evs.defense, iv = ivs.defense, nature = nature, level = level),
+      specialDefense = computeLegacyStat(stat = Stat.SPECIAL_DEFENSE, base = baseStats.specialDefense, ev = evs.specialDefense, iv = ivs.specialDefense, nature = nature, level = level),
     )
   }
 
   fun all(predicate: (Int) -> Boolean) = Stat.entries.all { predicate(get(it)) }
+
+  fun any(predicate: (Int) -> Boolean) = Stat.entries.any { predicate(get(it)) }
 
   operator fun get(stat: Stat) = when (stat) {
     Stat.ATTACK -> attack
@@ -72,38 +94,4 @@ class PokeStatsBuilder(defaultValue: Int) {
   var specialAttack = defaultValue
   var defense = defaultValue
   var specialDefense = defaultValue
-}
-
-private fun computeCoreStat(
-  base: Int,
-  ev: Int,
-  iv: Int,
-  level: Int
-) = ((2f * base + iv + (ev / 4)) * level) / 100f
-
-private fun computeStat(
-  stat: Stat,
-  base: Int,
-  ev: Int,
-  iv: Int,
-  nature: Nature,
-  level: Int
-) = (
-    (computeCoreStat(base=base, ev=ev, iv=iv, level=level) + 5) * nature.coefficient(stat)
-    ).toInt()
-
-private fun Nature.coefficient(stat: Stat) = when {
-  bonusStat == stat -> 1.1f
-  malusStat == stat -> 0.9f
-  else -> 1f
-}
-
-private fun computeHpStat(
-  base: Int,
-  ev: Int,
-  iv: Int,
-  level: Int
-) = when {
-  base > 1 -> (computeCoreStat(base=base, ev=ev, iv=iv, level=level) + level + 10).toInt()
-  else -> 1
 }

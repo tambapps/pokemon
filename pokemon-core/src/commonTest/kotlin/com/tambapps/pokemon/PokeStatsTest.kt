@@ -60,7 +60,7 @@ class PokeStatsTest {
 
   @Test
   fun computeWithNeutralNature() {
-    val computed = PokeStats.compute(
+    val computed = PokeStats.computeLegacy(
       baseStats = miraidonBaseStats,
       evs = PokeStats.default(0),
       ivs = PokeStats.default(31),
@@ -76,7 +76,7 @@ class PokeStatsTest {
   @Test
   fun computeWithNatureBoostAndPenalty() {
     // MODEST: +SpAtk / -Atk
-    val computed = PokeStats.compute(
+    val computed = PokeStats.computeLegacy(
       baseStats = miraidonBaseStats,
       evs = buildStats(0) { specialAttack = 252; speed = 252; specialDefense = 4 },
       ivs = PokeStats.default(31),
@@ -91,7 +91,7 @@ class PokeStatsTest {
 
   @Test
   fun computeShedinja() {
-    val computed = PokeStats.compute(
+    val computed = PokeStats.computeLegacy(
       baseStats = shedinjaBaseStats,
       evs = buildStats(0) { attack = 252; speed = 252; hp = 4 },
       ivs = PokeStats.default(31),
@@ -110,8 +110,8 @@ class PokeStatsTest {
     val evs = PokeStats.default(0)
     val ivs = PokeStats.default(31)
 
-    val adamant = PokeStats.compute(baseStats = baseStats, evs = evs, ivs = ivs, nature = Nature.ADAMANT, level = 50)
-    val modest  = PokeStats.compute(baseStats = baseStats, evs = evs, ivs = ivs, nature = Nature.MODEST,  level = 50)
+    val adamant = PokeStats.computeLegacy(baseStats = baseStats, evs = evs, ivs = ivs, nature = Nature.ADAMANT, level = 50)
+    val modest  = PokeStats.computeLegacy(baseStats = baseStats, evs = evs, ivs = ivs, nature = Nature.MODEST,  level = 50)
 
     assertEquals(adamant.hp, modest.hp)
   }
