@@ -151,7 +151,7 @@ enum class TeraType {
   STELLAR,
 }
 
-enum class Mecanic {
+enum class Mechanic {
   TERASTALLIZATION,
   MEGA_EVOLUTION
 }
