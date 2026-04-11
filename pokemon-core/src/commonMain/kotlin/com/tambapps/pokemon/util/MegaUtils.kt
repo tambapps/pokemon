@@ -117,4 +117,8 @@ object MegaUtils {
   fun getMegaPokemon(item: ItemName?) = MEGA_STONE_TO_POKEMON[item?.normalized]
 
   val ItemName.isMegaStone: Boolean get() = normalized in MEGA_STONES
+
+  fun PokemonName.toMega(itemName: ItemName): PokemonName? = getMegaPokemon(itemName)?.takeIf { it.baseMatches(this) }
+
+  val PokemonName.canMega: Boolean get() = !isMega && MEGA_STONE_TO_POKEMON.values.any { it.baseMatches(this) }
 }

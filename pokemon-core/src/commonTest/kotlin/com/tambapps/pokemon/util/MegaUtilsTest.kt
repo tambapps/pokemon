@@ -2,7 +2,9 @@ package com.tambapps.pokemon.util
 
 import com.tambapps.pokemon.ItemName
 import com.tambapps.pokemon.PokemonName
+import com.tambapps.pokemon.util.MegaUtils.canMega
 import com.tambapps.pokemon.util.MegaUtils.isMegaStone
+import com.tambapps.pokemon.util.MegaUtils.toMega
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -63,5 +65,59 @@ class MegaUtilsTest {
     assertFalse(ItemName("choice-band").isMegaStone)
     assertFalse(ItemName("rusted-shield").isMegaStone)
     assertFalse(ItemName("").isMegaStone)
+  }
+
+  @Test
+  fun testToMega() {
+    assertEquals(PokemonName("venusaur-mega"), PokemonName("venusaur").toMega(MegaUtils.VENUSAURITE))
+    assertEquals(PokemonName("gengar-mega"), PokemonName("gengar").toMega(MegaUtils.GENGARITE))
+    assertEquals(PokemonName("lucario-mega"), PokemonName("lucario").toMega(MegaUtils.LUCARIONITE))
+  }
+
+  @Test
+  fun testToMegaDualForm() {
+    assertEquals(PokemonName("charizard-mega-x"), PokemonName("charizard").toMega(MegaUtils.CHARIZARDITE_X))
+    assertEquals(PokemonName("charizard-mega-y"), PokemonName("charizard").toMega(MegaUtils.CHARIZARDITE_Y))
+    assertEquals(PokemonName("mewtwo-mega-x"), PokemonName("mewtwo").toMega(MegaUtils.MEWTWONITE_X))
+    assertEquals(PokemonName("mewtwo-mega-y"), PokemonName("mewtwo").toMega(MegaUtils.MEWTWONITE_Y))
+  }
+
+  @Test
+  fun testToMegaWrongPokemon() {
+    assertNull(PokemonName("venusaur").toMega(MegaUtils.GENGARITE))
+    assertNull(PokemonName("charizard").toMega(MegaUtils.LUCARIONITE))
+    assertNull(PokemonName("mewtwo").toMega(MegaUtils.CHARIZARDITE_X))
+  }
+
+  @Test
+  fun testToMegaNonMegaStone() {
+    assertNull(PokemonName("venusaur").toMega(ItemName("choice-band")))
+    assertNull(PokemonName("charizard").toMega(ItemName("")))
+  }
+
+  @Test
+  fun testToMegaNoMegaEvolution() {
+    assertNull(PokemonName("pikachu").toMega(ItemName("pikachite")))
+  }
+
+  @Test
+  fun testCanMega() {
+    assertTrue(PokemonName("venusaur").canMega)
+    assertTrue(PokemonName("gengar").canMega)
+    assertTrue(PokemonName("charizard").canMega)
+    assertTrue(PokemonName("charizard").canMega)
+    assertTrue(PokemonName("mewtwo").canMega)
+  }
+
+  @Test
+  fun testCanMega_normalization() {
+    assertTrue(PokemonName("Venusaur").canMega)
+    assertTrue(PokemonName("Charizard").canMega)
+  }
+
+  @Test
+  fun testCanMega_false() {
+    assertFalse(PokemonName("arceus").canMega)
+    assertFalse(PokemonName("pikachu").canMega)
   }
 }
