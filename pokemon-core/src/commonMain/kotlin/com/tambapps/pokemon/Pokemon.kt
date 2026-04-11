@@ -9,13 +9,24 @@ value class PokemonName(val value: String) {
 
   val baseNormalized get() = PokemonName(PokemonNormalizer.normalizeToBase(value))
 
-  val pretty get() = PokemonNormalizer.pretty(value)
+  val pretty: String get() {
+    if (!isMega) return PokemonNormalizer.pretty(value)
+    val n = normalized.value
+    return if (n.contains("-mega-")) {
+      val megaIndex = n.indexOf("-mega-")
+      val base = n.substring(0, megaIndex)
+      val suffix = n.substring(megaIndex + 6) // skip "-mega-"
+      "Mega ${PokemonNormalizer.pretty(base)} ${PokemonNormalizer.pretty(suffix)}"
+    } else {
+      "Mega ${PokemonNormalizer.pretty(n.dropLast(5))}" // drop "-mega"
+    }
+  }
 
   fun baseMatches(name: PokemonName) = PokemonNormalizer.baseMatches(value, name.value)
 
   fun matches(name: PokemonName) = PokemonNormalizer.matches(value, name.value)
 
-  val isMega get() = normalized.value.endsWith("-mega")
+  val isMega get() = normalized.value.let { it.endsWith("-mega") || it.contains("-mega-") }
 }
 
 @JvmInline
