@@ -199,4 +199,9 @@ class SdReplayLogVisitorTest {
     assertWinLog("|win|jarmanvgc", "jarmanvgc")
   }
 
+  @Test
+  fun visitMega() {
+    assertMegaLog("|-mega|p2a: Delphox|Delphox|Delphoxite", P2A, "Delphox", "Delphoxite")
+  }
+
 }

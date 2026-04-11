@@ -13,6 +13,7 @@ interface SdReplayLogVisitor {
     private const val LOG_DRAG = "drag"
     private const val LOG_SWITCH = "switch"
     private const val LOG_TERASTALLIZE = "-terastallize"
+    private const val LOG_MEGA = "-mega"
     private const val LOG_WIN = "win"
     private const val LOG_SHOW_TEAM = "showteam"
     private const val LOG_JOIN = "j"
@@ -167,6 +168,12 @@ interface SdReplayLogVisitor {
         val teraType = tokens[3]
         visitTerastallizeLog(pokemonSlot, pokemonName, teraType)
       }
+      LOG_MEGA -> {
+        val pokemonSlot = tokens[2].split(':')[0]
+        val pokemonName = formatPokemonName(tokens[3].trim())
+        val item = tokens[4].trim()
+        visitMegaLog(pokemonSlot, pokemonName, item)
+      }
       LOG_MOVE -> {
         val sourceFields = tokens[2].split(':')
         val sourcePokemonSlot = sourceFields.first()
@@ -310,6 +317,7 @@ interface SdReplayLogVisitor {
   fun visitStartStatusLog(pokemonSlot: String, status: String) {}
   fun visitTurnLog(turnNumber: Int) {}
   fun visitTerastallizeLog(pokemonSlot: String, pokemonName: String, teraType: String) {}
+  fun visitMegaLog(pokemonSlot: String, pokemonName: String, item: String) {}
   fun visitMoveLog(sourcePokemonSlot: String, sourcePokemonName: String, moveName: String, targetPokemonSlot: String?, targetPokemonName: String?, isSpread: Boolean, isStill: Boolean, additionalInfo: String) {}
   fun visitDamageLog(pokemonSlot: String, hpStatus: String, source: String?) {}
   fun visitSuperEffectiveLog(pokemonSlot: String) {}

@@ -6,7 +6,7 @@ import com.tambapps.pokemon.TeraType
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
-
+@Deprecated("Use SdReplayLogVisitor instead")
 class SdReplayParser(
   val formatPokemonName: (String) -> String = { it },
   val formatPokemonTrait: (String) -> String = { it },

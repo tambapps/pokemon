@@ -330,6 +330,20 @@ fun assertRatingUpdateRawLog(log: String, expectedContent: String, expectedPlaye
   assertTrue(visited, "Should have visited")
 }
 
+fun assertMegaLog(log: String, expectedPokemonSlot: String, expectedPokemonName: String, expectedItem: String) {
+  var visited = false
+  val visitor = object: SdReplayLogVisitor {
+    override fun visitMegaLog(pokemonSlot: String, pokemonName: String, item: String) {
+      visited = true
+      assertEquals(expectedPokemonSlot, pokemonSlot)
+      assertEquals(expectedPokemonName, pokemonName)
+      assertEquals(expectedItem, item)
+    }
+  }
+  visitor.visitLog(log)
+  assertTrue(visited, "Should have visited")
+}
+
 fun assertWinLog(log: String, expectedWinner: String) {
   var visited = false
   val visitor = object: SdReplayLogVisitor {
