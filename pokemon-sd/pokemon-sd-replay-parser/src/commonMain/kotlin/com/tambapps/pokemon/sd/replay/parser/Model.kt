@@ -1,5 +1,6 @@
 package com.tambapps.pokemon.sd.replay.parser
 
+import com.tambapps.pokemon.ItemName
 import com.tambapps.pokemon.PokemonName
 import com.tambapps.pokemon.TeraType
 import kotlinx.serialization.SerialName
@@ -8,6 +9,11 @@ import kotlinx.serialization.Serializable
 data class Terastallization(
   val pokemon: PokemonName,
   val type: TeraType
+)
+
+data class MegaEvolution(
+  val pokemon: PokemonName,
+  val item: ItemName
 )
 
 data class SdReplay(
@@ -52,6 +58,7 @@ data class Player(
   val beforeElo: Int?,
   val afterElo: Int?,
   val terastallization: Terastallization?,
+  val megaEvolution: MegaEvolution?,
   val ots: OpenTeamSheet?,
   val movesUsage: Map<PokemonName, Map<String, Int>>
 ) {
@@ -64,6 +71,7 @@ data class PlayerBuilder(
   var beforeElo: Int? = null,
   var afterElo: Int? = null,
   var terastallization: Terastallization? = null,
+  var megaEvolution: MegaEvolution? = null,
   var ots: OpenTeamSheet? = null,
   val movesUsage: MutableMap<PokemonName, MutableMap<String, Int>> = mutableMapOf(),
 ) {
@@ -90,6 +98,7 @@ data class PlayerBuilder(
     beforeElo = beforeElo,
     afterElo = afterElo,
     terastallization = terastallization,
+    megaEvolution = megaEvolution,
     ots = ots,
     movesUsage = movesUsage.toMap()
   )

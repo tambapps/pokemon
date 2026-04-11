@@ -1,5 +1,6 @@
 package com.tambapps.pokemon.sd.replay.parser
 
+import com.tambapps.pokemon.ItemName
 import com.tambapps.pokemon.PokemonName
 import com.tambapps.pokemon.TeraType
 import kotlinx.serialization.SerializationException
@@ -20,6 +21,7 @@ class SdReplayParser(
     private const val LOG_DRAG = "drag"
     private const val LOG_SWITCH = "switch"
     private const val LOG_TERASTALLIZE = "-terastallize"
+    private const val LOG_MEGA = "-mega"
     private const val LOG_WIN = "win"
     private const val LOG_SHOW_TEAM = "showteam"
 
@@ -102,6 +104,13 @@ class SdReplayParser(
             type =  try {
               TeraType.valueOf(tokens[3].uppercase())
             } catch (e: IllegalArgumentException) { throw SdReplayParseException("Unknown terastallize type ${tokens[3]}") }
+          )
+        }
+
+        LOG_MEGA -> {
+          playerBuilder.megaEvolution = MegaEvolution(
+            pokemon = PokemonName(formatPokemonName(tokens[3].trim())),
+            item = ItemName(formatPokemonTrait(tokens[4].trim()))
           )
         }
 

@@ -1,10 +1,12 @@
 package com.tambapps.pokemon.sd.replay.parser
 
+import com.tambapps.pokemon.ItemName
 import com.tambapps.pokemon.PokemonName
 import com.tambapps.pokemon.TeraType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class SdReplayParserTest {
 
@@ -65,5 +67,20 @@ class SdReplayParserTest {
     // Test move usages
     assertNotNull(player1.movesUsage)
     println(player1.movesUsage)
+  }
+
+  @Test
+  fun megaEvolutionTest() {
+    val replay = parser.parse(parser.parse(SdReplays.REPLAY_WITH_MEGA))
+
+    val player1 = replay.player1
+    val player2 = replay.player2
+
+    assertNull(player1.megaEvolution, "Player 1 should not have a mega evolution")
+
+    val mega = player2.megaEvolution
+    assertNotNull(mega, "Player 2 should have a mega evolution")
+    assertEquals(PokemonName("Delphox"), mega.pokemon)
+    assertEquals(ItemName("Delphoxite"), mega.item)
   }
 }
