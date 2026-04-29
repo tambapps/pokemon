@@ -21,6 +21,7 @@ object MegaUtils {
   val CHARIZARDITE_X = ItemName("charizardite-x")
   val CHARIZARDITE_Y = ItemName("charizardite-y")
   val DIANCITE = ItemName("diancite")
+  val FLOETTITE = ItemName("floettite")
   val GALLADITE = ItemName("galladite")
   val GARCHOMPITE = ItemName("garchompite")
   val GARDEVOIRITE = ItemName("gardevoirite")
@@ -56,7 +57,7 @@ object MegaUtils {
   private val MEGA_STONES: Set<ItemName> = setOf(
     ABOMASITE, ABSOLITE, AERODACTYLITE, AGGRONITE, ALAKAZITE, ALTARIANITE,
     AMPHAROSITE, AUDINITE, BANETTITE, BEEDRILLITE, BLASTOISINITE, BLAZIKENITE,
-    CAMERUPTITE, CHARIZARDITE_X, CHARIZARDITE_Y, DIANCITE, GALLADITE, GARCHOMPITE,
+    CAMERUPTITE, CHARIZARDITE_X, CHARIZARDITE_Y, DIANCITE, FLOETTITE, GALLADITE, GARCHOMPITE,
     GARDEVOIRITE, GENGARITE, GLALITITE, GYARADOSITE, HERACRONITE, HOUNDOOMINITE,
     KANGASKHANITE, LATIASITE, LATIOSITE, LOPUNNITE, LUCARIONITE, MANECTITE,
     MAWILITE, MEDICHAMITE, METAGROSSITE, MEWTWONITE_X, MEWTWONITE_Y, PIDGEOTITE,
@@ -81,6 +82,7 @@ object MegaUtils {
     CHARIZARDITE_X to PokemonName("charizard-mega-x"),
     CHARIZARDITE_Y to PokemonName("charizard-mega-y"),
     DIANCITE to PokemonName("diancie-mega"),
+    FLOETTITE to PokemonName("floette-mega"),
     GALLADITE to PokemonName("gallade-mega"),
     GARCHOMPITE to PokemonName("garchomp-mega"),
     GARDEVOIRITE to PokemonName("gardevoir-mega"),
