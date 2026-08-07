@@ -26,6 +26,8 @@ class MegaUtilsTest {
     assertEquals(PokemonName("charizard-mega-y"), MegaUtils.getMegaPokemon(MegaUtils.CHARIZARDITE_Y))
     assertEquals(PokemonName("mewtwo-mega-x"), MegaUtils.getMegaPokemon(MegaUtils.MEWTWONITE_X))
     assertEquals(PokemonName("mewtwo-mega-y"), MegaUtils.getMegaPokemon(MegaUtils.MEWTWONITE_Y))
+    assertEquals(PokemonName("raichu-mega-x"), MegaUtils.getMegaPokemon(MegaUtils.RAICHUNITE_X))
+    assertEquals(PokemonName("raichu-mega-y"), MegaUtils.getMegaPokemon(MegaUtils.RAICHUNITE_Y))
   }
 
   @Test
@@ -80,6 +82,15 @@ class MegaUtilsTest {
     assertEquals(PokemonName("charizard-mega-y"), PokemonName("charizard").toMega(MegaUtils.CHARIZARDITE_Y))
     assertEquals(PokemonName("mewtwo-mega-x"), PokemonName("mewtwo").toMega(MegaUtils.MEWTWONITE_X))
     assertEquals(PokemonName("mewtwo-mega-y"), PokemonName("mewtwo").toMega(MegaUtils.MEWTWONITE_Y))
+  }
+
+  @Test
+  fun testToMegaRaichu() {
+    assertEquals(PokemonName("raichu-mega-x"), PokemonName("raichu").toMega(MegaUtils.RAICHUNITE_X))
+    assertEquals(PokemonName("raichu-mega-y"), PokemonName("raichu").toMega(MegaUtils.RAICHUNITE_Y))
+    assertNull(PokemonName("raichu").toMega(MegaUtils.CHARIZARDITE_X))
+    assertNull(PokemonName("pikachu").toMega(MegaUtils.RAICHUNITE_X))
+    assertTrue(PokemonName("raichu").canMega)
   }
 
   @Test

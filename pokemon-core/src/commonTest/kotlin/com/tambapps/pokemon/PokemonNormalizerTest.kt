@@ -95,6 +95,8 @@ class PokemonNormalizerTest {
     assertEquals("charizard", PokemonNormalizer.normalizeToBase("Charizard-Mega-Y"))
     assertEquals("mewtwo", PokemonNormalizer.normalizeToBase("Mewtwo-Mega-X"))
     assertEquals("mewtwo", PokemonNormalizer.normalizeToBase("Mewtwo-Mega-Y"))
+    assertEquals("raichu", PokemonNormalizer.normalizeToBase("Raichu-Mega-X"))
+    assertEquals("raichu", PokemonNormalizer.normalizeToBase("Raichu-Mega-Y"))
 
     // other forms
     assertEquals("tatsugiri", PokemonNormalizer.normalizeToBase("Tatsugiri-Droopy"))
