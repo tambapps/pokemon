@@ -65,6 +65,7 @@ object PokemonNormalizer {
       // because of Tauros-Paldea-Aqua
       s.contains("-paldea") -> s.substringBefore("-paldea")
       s.endsWith("-mega") || s.contains("-mega-") -> s.substringBefore("-mega")
+      s == "floette-eternal" -> "floette"
       else -> s
     }
   }

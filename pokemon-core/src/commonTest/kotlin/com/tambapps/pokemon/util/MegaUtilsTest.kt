@@ -18,6 +18,8 @@ class MegaUtilsTest {
     assertEquals(PokemonName("venusaur-mega"), MegaUtils.getMegaPokemon(MegaUtils.VENUSAURITE))
     assertEquals(PokemonName("gengar-mega"), MegaUtils.getMegaPokemon(MegaUtils.GENGARITE))
     assertEquals(PokemonName("lucario-mega"), MegaUtils.getMegaPokemon(MegaUtils.LUCARIONITE))
+    assertEquals(PokemonName("floette-mega"), MegaUtils.getMegaPokemon(MegaUtils.FLOETTITE))
+    assertEquals(PokemonName("floette-mega"), MegaUtils.getMegaPokemon(MegaUtils.FLOETTITE))
   }
 
   @Test
@@ -118,6 +120,8 @@ class MegaUtilsTest {
     assertTrue(PokemonName("charizard").canMega)
     assertTrue(PokemonName("charizard").canMega)
     assertTrue(PokemonName("mewtwo").canMega)
+    assertTrue(PokemonName("floette-eternal").canMega)
+    assertTrue(PokemonName("floette").canMega)
   }
 
   @Test
