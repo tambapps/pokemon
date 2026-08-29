@@ -218,6 +218,12 @@ object MegaUtils {
     .map { it.value }
     .toSet()
 
+  fun getMegaStones(name: PokemonName): Set<ItemName> = MEGA_STONE_TO_POKEMON.entries
+    .asSequence()
+    .filter { it.value.baseMatches(name) }
+    .map { it.key }
+    .toSet()
+
   fun getMegaPokemon(item: ItemName?) = MEGA_STONE_TO_POKEMON[item?.normalized]
 
   val ItemName.isMegaStone: Boolean get() = normalized in MEGA_STONES

@@ -4,6 +4,7 @@ import com.tambapps.pokemon.ItemName
 import com.tambapps.pokemon.PokemonName
 import com.tambapps.pokemon.util.MegaUtils.canMega
 import com.tambapps.pokemon.util.MegaUtils.getMegaPokemons
+import com.tambapps.pokemon.util.MegaUtils.getMegaStones
 import com.tambapps.pokemon.util.MegaUtils.isMegaStone
 import com.tambapps.pokemon.util.MegaUtils.toMega
 import kotlin.test.Test
@@ -119,6 +120,13 @@ class MegaUtilsTest {
     assertEquals(setOf(PokemonName("charizard-mega-x"), PokemonName("charizard-mega-y")), getMegaPokemons(PokemonName("charizard")))
     assertEquals(setOf(PokemonName("raichu-mega-x"), PokemonName("raichu-mega-y")), getMegaPokemons(PokemonName("raichu")))
     assertEquals(setOf(PokemonName("floette-mega")), getMegaPokemons(PokemonName("floette-eternal")))
+  }
+
+  @Test
+  fun testGetMegaStones() {
+    assertEquals(setOf(ItemName("charizardite-x"), ItemName("charizardite-y")), getMegaStones(PokemonName("charizard")))
+    assertEquals(setOf(ItemName("raichunite-x"), ItemName("raichunite-y")), getMegaStones(PokemonName("raichu")))
+    assertEquals(setOf(ItemName("floettite")), getMegaStones(PokemonName("floette-eternal")))
   }
 
   @Test
