@@ -3,6 +3,7 @@ package com.tambapps.pokemon.util
 import com.tambapps.pokemon.ItemName
 import com.tambapps.pokemon.PokemonName
 import com.tambapps.pokemon.util.MegaUtils.canMega
+import com.tambapps.pokemon.util.MegaUtils.getMegaPokemons
 import com.tambapps.pokemon.util.MegaUtils.isMegaStone
 import com.tambapps.pokemon.util.MegaUtils.toMega
 import kotlin.test.Test
@@ -111,6 +112,13 @@ class MegaUtilsTest {
   @Test
   fun testToMegaNoMegaEvolution() {
     assertNull(PokemonName("pikachu").toMega(ItemName("pikachite")))
+  }
+
+  @Test
+  fun testGetMegaPokemons() {
+    assertEquals(setOf(PokemonName("charizard-mega-x"), PokemonName("charizard-mega-y")), getMegaPokemons(PokemonName("charizard")))
+    assertEquals(setOf(PokemonName("raichu-mega-x"), PokemonName("raichu-mega-y")), getMegaPokemons(PokemonName("raichu")))
+    assertEquals(setOf(PokemonName("floette-mega")), getMegaPokemons(PokemonName("floette-eternal")))
   }
 
   @Test

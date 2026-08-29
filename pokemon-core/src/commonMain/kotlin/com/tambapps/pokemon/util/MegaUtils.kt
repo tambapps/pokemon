@@ -212,6 +212,12 @@ object MegaUtils {
     ZYGARDITE to PokemonName("zygarde-mega"),
   )
 
+  fun getMegaPokemons(name: PokemonName): Set<PokemonName> = MEGA_STONE_TO_POKEMON.entries
+    .asSequence()
+    .filter { it.value.baseMatches(name) }
+    .map { it.value }
+    .toSet()
+
   fun getMegaPokemon(item: ItemName?) = MEGA_STONE_TO_POKEMON[item?.normalized]
 
   val ItemName.isMegaStone: Boolean get() = normalized in MEGA_STONES
