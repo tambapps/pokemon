@@ -355,3 +355,16 @@ fun assertWinLog(log: String, expectedWinner: String) {
   visitor.visitLog(log)
   assertTrue(visited, "Should have visited")
 }
+
+fun assertShowTeamLog(log: String, expectedPlayerSlot: String, expectedPokemons: List<OtsPokemon>) {
+  var visited = false
+  val visitor = object: SdReplayLogVisitor {
+    override fun visitShowTeamLog(playerSlot: String, otsPokemons: List<OtsPokemon>) {
+      visited = true
+      assertEquals(expectedPlayerSlot, playerSlot)
+      assertEquals(expectedPokemons, otsPokemons)
+    }
+  }
+  visitor.visitLog(log)
+  assertTrue(visited, "Should have visited")
+}

@@ -1,6 +1,7 @@
 package com.tambapps.pokemon.sd.replay.parser
 
 import com.tambapps.pokemon.ItemName
+import com.tambapps.pokemon.Nature
 import com.tambapps.pokemon.PokemonName
 import com.tambapps.pokemon.TeraType
 import kotlinx.serialization.SerialName
@@ -39,6 +40,7 @@ data class OtsPokemon(
   val ability: String,
   val moves: List<String>,
   val level: Int,
+  val nature: Nature?,
   val teraType: TeraType?
 )
 

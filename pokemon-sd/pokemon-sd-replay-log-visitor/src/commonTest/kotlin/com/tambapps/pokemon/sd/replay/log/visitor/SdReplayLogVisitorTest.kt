@@ -1,5 +1,7 @@
 package com.tambapps.pokemon.sd.replay.log.visitor
 
+import com.tambapps.pokemon.Nature
+import com.tambapps.pokemon.PokemonName
 import kotlin.test.Test
 
 class SdReplayLogVisitorTest {
@@ -202,6 +204,26 @@ class SdReplayLogVisitorTest {
   @Test
   fun visitMega() {
     assertMegaLog("|-mega|p2a: Delphox|Delphox|Delphoxite", P2A, "Delphox", "Delphoxite")
+  }
+
+  @Test
+  fun visitShowTeamWithNature() {
+    val log = "|showteam|p1|Gholdengo||LifeOrb|GoodasGold|MakeItRain,ShadowBall,NastyPlot,Protect|Modest|||||50|" +
+      "]Incineroar||SitrusBerry|Intimidate|PartingShot,FlareBlitz,ThroatChop,FakeOut|Careful||F|||50|" +
+      "]Sinistcha||ColburBerry|Hospitality|MatchaGotcha,RagePowder,TrickRoom,Protect|Relaxed|||||50|" +
+      "]Arcanine-Hisui||FocusSash|RockHead|FlareBlitz,HeadSmash,ExtremeSpeed,Protect|Jolly||M|||50|" +
+      "]Staraptor||Staraptite|Intimidate|CloseCombat,DualWingbeat,Tailwind,Protect|Jolly||M|||50|" +
+      "]Ninetales-Alola||NeverMeltIce|SnowWarning|Blizzard,FreezeDry,Encore,Protect|Timid||M|||50|"
+    assertShowTeamLog(
+      log, "p1", listOf(
+        OtsPokemon(PokemonName("Gholdengo"), "Life Orb", "Goodas Gold", listOf("Make It Rain", "Shadow Ball", "Nasty Plot", "Protect"), 50, Nature.MODEST, null),
+        OtsPokemon(PokemonName("Incineroar"), "Sitrus Berry", "Intimidate", listOf("Parting Shot", "Flare Blitz", "Throat Chop", "Fake Out"), 50, Nature.CAREFUL, null),
+        OtsPokemon(PokemonName("Sinistcha"), "Colbur Berry", "Hospitality", listOf("Matcha Gotcha", "Rage Powder", "Trick Room", "Protect"), 50, Nature.RELAXED, null),
+        OtsPokemon(PokemonName("Arcanine-Hisui"), "Focus Sash", "Rock Head", listOf("Flare Blitz", "Head Smash", "Extreme Speed", "Protect"), 50, Nature.JOLLY, null),
+        OtsPokemon(PokemonName("Staraptor"), "Staraptite", "Intimidate", listOf("Close Combat", "Dual Wingbeat", "Tailwind", "Protect"), 50, Nature.JOLLY, null),
+        OtsPokemon(PokemonName("Ninetales-Alola"), "Never Melt Ice", "Snow Warning", listOf("Blizzard", "Freeze Dry", "Encore", "Protect"), 50, Nature.TIMID, null),
+      )
+    )
   }
 
 }
