@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.tambapps.pokemon"
-version = "1.0-SNAPSHOT"
+version = "1.1-SNAPSHOT"
 
 subprojects {
   group = rootProject.group

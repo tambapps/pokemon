@@ -43,3 +43,17 @@ A parser for Pokémon Showdown battle replay data:
 - Tracks move usage statistics for competitive analysis
 - Customizable name formatting for consistent data representation
 
+### pokemon-champions-calculator
+
+A damage-calculation engine for the Pokémon Champions format, ported from
+[NCP-VGC-Damage-Calculator](https://github.com/nerd-of-now/NCP-VGC-Damage-Calculator)
+and cross-validated hit-for-hit against it:
+
+- **champions-data**: Pokémon/move/type/ability/item definitions legal in
+  Champions, built on `pokemon-core`'s `PokemonName`, `MoveName`,
+  `PokeType`, `PokeStats` and `Nature`
+- **champions-engine**: the damage formula, stat calculation and KO-chance
+  math
+- See [pokemon-champions-calculator/README.md](pokemon-champions-calculator/README.md)
+  for usage and known limitations
+
