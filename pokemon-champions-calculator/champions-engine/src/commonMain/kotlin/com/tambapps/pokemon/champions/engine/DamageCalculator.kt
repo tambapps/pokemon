@@ -27,7 +27,7 @@ object DamageCalculator {
       return DamageResult.noDamage(typeEffectiveness = 0.0)
     }
 
-    val typeEffectiveness = TypeEffectivenessCalculator.effectivenessOf(move, effectiveType, defender, field)
+    val typeEffectiveness = TypeEffectivenessCalculator.effectivenessOf(move, effectiveType, attacker, defender, field)
     val effectiveCategory = effectiveCategoryOf(move, attacker, defender)
     val hitsPhysical = hitsPhysicalDefense(move, effectiveCategory)
     val isCritical = moveUse.isCritical || move.alwaysCrits

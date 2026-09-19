@@ -72,6 +72,14 @@ load('damage_SV.js');
 const { POKEDEX_CHAMPIONS, MOVES_CHAMPIONS, NATURES, STATS_GSC, TYPE_CHART_SV } = sandbox;
 sandbox.STATS = STATS_GSC;
 sandbox.typeChart = TYPE_CHART_SV;
+// Needed by additionalDamageCalcs (Parental Bond, multi-hit moves, Multiscale-breaks...), which
+// re-attaches this to its deep-cloned Pokemon copies. Same definition as ap_calc.js's.
+sandbox.setHasTypeFunc = function (...types) {
+  for (const type of types) {
+    if ([this.type1, this.type2].includes(type)) return true;
+  }
+  return false;
+};
 sandbox.moves = MOVES_CHAMPIONS;
 sandbox.pokedex = POKEDEX_CHAMPIONS;
 const [AT, DF, SA, SD, SP] = STATS_GSC;

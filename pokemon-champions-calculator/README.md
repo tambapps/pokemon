@@ -78,21 +78,36 @@ val chance = KoChanceCalculator.minimumHitsToKo(result.rolls, targetHp = toxapex
 // KoChanceResult(hits = 2, chance = 1.0) -> "guaranteed 2HKO"
 ```
 
-## Correctness: cross-validated against the source calculator
+## Correctness: cross-validated against the source calculator, plus direct unit coverage
 
-Every mechanic here is checked against **actual output from the real
-`damage_MASTER.js`/`damage_SV.js`**, run directly in Node (bypassing its
-jQuery/DOM UI) — not just reasoned about by reading the source. See
-[`tools/oracle.js`](tools/oracle.js) and
-[`DamageCalculatorCrossValidationTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/DamageCalculatorCrossValidationTest.kt),
-which asserts this port's output matches the JS engine hit-for-hit across
-STAB, type effectiveness, critical hits, weather, type-boosting items,
-screens, Life Orb, burn, Body Press/Foul Play's stat swaps, Gyro Ball,
-Expert Belt, Friend Guard, Rivalry, resist berries, Multiscale, the
-spread-move penalty, Acrobatics, Facade, multi-hit base power, Sturdy vs.
-OHKO moves, ability-granted type immunity, and (new to this module) that
-`AbilityName` resolution is case/spacing-insensitive and that an
-unrecognized ability degrades to "no ability" rather than erroring.
+Two layers of tests, for two different jobs:
+
+- **Full-pipeline, cross-validated against the real JS.** Every scenario in
+  [`tools/scenarios.json`](tools/scenarios.json) is run through the actual
+  `damage_MASTER.js`/`damage_SV.js` (via [`tools/oracle.js`](tools/oracle.js),
+  bypassing its jQuery/DOM UI) to get ground-truth expected rolls, which are
+  hand-copied into
+  [`DamageCalculatorCrossValidationTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/DamageCalculatorCrossValidationTest.kt)
+  and [`DamageCalculatorTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/DamageCalculatorTest.kt).
+  Covers STAB, type effectiveness, critical hits, weather, type-boosting
+  items, screens, Life Orb, burn, Body Press/Foul Play's stat swaps, Gyro
+  Ball, Expert Belt, Friend Guard, Rivalry, resist berries, Multiscale, the
+  spread-move penalty, Acrobatics, Facade, multi-hit base power, Sturdy vs.
+  OHKO moves, ability-granted type immunity, Struggle, Parental Bond,
+  Piercing Drill vs. Protect, Glaive Rush, and that `AbilityName` resolution
+  is case/spacing-insensitive with an unrecognized ability degrading to "no
+  ability" rather than erroring.
+- **Direct unit tests for every internal resolver** (`ImmunityChecker`,
+  `TypeEffectivenessCalculator`, `Grounded`, `SpeedCalculator`,
+  `StabResolver`, `BasePowerResolver`/`BasePowerMods`, `AttackStatResolver`/
+  `AttackStatMods`, `DefenseStatResolver`/`DefenseStatMods`, `FinalMods`,
+  `EffectiveMoveType`/`EffectiveMoveCategory`), with hand-verified expected
+  values — these exercise ability/item/terrain/weather branches the 28
+  full-pipeline scenarios don't happen to combine, and they're what caught
+  the one real bug this port had: Scrappy's Ghost-immunity bypass was keyed
+  off the *defender's* ability instead of the *attacker's* (Scrappy is an
+  offensive ability), silently never triggering because no cross-validation
+  scenario had ever exercised it.
 
 ## `tools/`
 

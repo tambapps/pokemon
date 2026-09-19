@@ -10,20 +10,21 @@ import com.tambapps.pokemon.champions.data.Move
 object TypeEffectivenessCalculator {
 
   /** [effectiveType] is the move's type after Weather Ball/Terrain Pulse/-ate-ability resolution -- see [effectiveTypeOf]. */
-  fun effectivenessOf(move: Move, effectiveType: PokeType, defender: BattlePokemon, field: Battlefield): Double {
+  fun effectivenessOf(move: Move, effectiveType: PokeType, attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield): Double {
     // Struggle is Typeless: always neutral, no immunities, regardless of the defender's types.
     if (move.name.value == STRUGGLE_MOVE_NAME) return 1.0
 
-    val primary = singleTypeEffectiveness(move, effectiveType, defender.species.primaryType, defender, field)
+    val primary = singleTypeEffectiveness(move, effectiveType, defender.species.primaryType, attacker, defender, field)
     val secondary = defender.species.secondaryType
       ?.takeIf { it != defender.species.primaryType }
-      ?.let { singleTypeEffectiveness(move, effectiveType, it, defender, field) }
+      ?.let { singleTypeEffectiveness(move, effectiveType, it, attacker, defender, field) }
       ?: 1.0
     return primary * secondary
   }
 
-  private fun singleTypeEffectiveness(move: Move, effectiveType: PokeType, defendingType: PokeType, defender: BattlePokemon, field: Battlefield): Double {
-    val bypassesGhostImmunity = defender.resolvedAbility == Ability.SCRAPPY &&
+  private fun singleTypeEffectiveness(move: Move, effectiveType: PokeType, defendingType: PokeType, attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield): Double {
+    // Scrappy/Mind's Eye are the ATTACKER's ability: they let normally-blocked Normal/Fighting moves hit Ghosts.
+    val bypassesGhostImmunity = attacker.resolvedAbility == Ability.SCRAPPY &&
       defendingType == PokeType.GHOST &&
       (effectiveType == PokeType.NORMAL || effectiveType == PokeType.FIGHTING)
     if (bypassesGhostImmunity) return 1.0

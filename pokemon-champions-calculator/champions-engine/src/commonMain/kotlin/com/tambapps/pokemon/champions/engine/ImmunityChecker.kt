@@ -12,7 +12,7 @@ object ImmunityChecker {
 
   /** True if [defender] takes no damage at all from [move] under [field], regardless of the raw damage roll. */
   fun isImmune(move: Move, effectiveType: PokeType, attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield): Boolean {
-    if (TypeEffectivenessCalculator.effectivenessOf(move, effectiveType, defender, field) == 0.0) return true
+    if (TypeEffectivenessCalculator.effectivenessOf(move, effectiveType, attacker, defender, field) == 0.0) return true
     if (typeImmunityAbilityBlocks(effectiveType, defender)) return true
     if (groundImmunityBlocks(effectiveType, defender, field)) return true
     if (move.isBullet && defender.resolvedAbility == Ability.BULLETPROOF) return true
