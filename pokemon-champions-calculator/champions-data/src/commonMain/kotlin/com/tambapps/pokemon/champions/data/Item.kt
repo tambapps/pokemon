@@ -14,7 +14,8 @@ import com.tambapps.pokemon.PokemonNormalizer
  * written, not silently do nothing. [from] bridges the two: given the general-purpose
  * [com.tambapps.pokemon.ItemName] a caller actually has, resolve it to this closed set once, up
  * front. An unrecognized name resolves to null, which the engine already treats as "no held
- * item effect" -- by design, not by accident.
+ * item effect" -- by design, not by accident. Unlike [Ability], null is the right shape here: a
+ * Pokemon can genuinely hold nothing.
  */
 enum class Item(val displayName: String) {
   ABOMASITE("Abomasite"),

@@ -80,7 +80,8 @@ class ChampionsDexTest {
   fun resolvesAbilityFromNormalizedAbilityName() {
     assertEquals(Ability.ROUGH_SKIN, Ability.from(AbilityName("rough skin")))
     assertEquals(Ability.ROUGH_SKIN, Ability.from(AbilityName("Rough Skin")))
-    assertNull(Ability.from(AbilityName("not-a-real-ability")))
+    // Every Pokemon has some ability, so an unrecognized name resolves to a sentinel, not null.
+    assertEquals(Ability.NO_ABILITY, Ability.from(AbilityName("not-a-real-ability")))
   }
 
   @Test

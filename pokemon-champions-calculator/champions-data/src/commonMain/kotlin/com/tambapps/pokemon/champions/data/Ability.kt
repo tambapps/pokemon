@@ -13,10 +13,13 @@ import com.tambapps.pokemon.PokemonNormalizer
  * around ninety different mechanics, and a typo'd or since-removed ability name should fail to
  * compile when that logic is written, not silently do nothing. [from] bridges the two: given
  * the general-purpose [com.tambapps.pokemon.AbilityName] a caller actually has, resolve it to
- * this closed set once, up front. An unrecognized name resolves to null, which the engine
- * already treats as "no special ability" -- by design, not by accident.
+ * this closed set once, up front. Every Pokemon has *some* ability, so unlike [Item] this has
+ * no null case: an unrecognized name resolves to [NO_ABILITY], which the engine already treats
+ * as "no special ability" -- by design, not by accident.
  */
 enum class Ability(val displayName: String) {
+  /** Every Pokemon has some ability; this stands in for one this engine doesn't recognize (unset, a typo, or a name Champions doesn't currently support) so the field never needs to be null. */
+  NO_ABILITY(""),
   ADAPTABILITY("Adaptability"),
   AERILATE("Aerilate"),
   AFTERMATH("Aftermath"),
@@ -240,7 +243,7 @@ enum class Ability(val displayName: String) {
   companion object {
     private val byNormalizedName: Map<String, Ability> = entries.associateBy { PokemonNormalizer.normalize(it.displayName) }
 
-    /** Resolves a general-purpose [AbilityName] to this closed set, or null if it isn't legal in Champions. */
-    fun from(name: AbilityName): Ability? = byNormalizedName[name.normalized.value]
+    /** Resolves a general-purpose [AbilityName] to this closed set. Anything not legal in Champions (including an empty/unset name) resolves to [NO_ABILITY]. */
+    fun from(name: AbilityName): Ability = byNormalizedName[name.normalized.value] ?: NO_ABILITY
   }
 }

@@ -119,14 +119,27 @@ function toEnumConst(name) {
   if (/^[0-9]/.test(id)) id = 'N' + id;
   return id;
 }
-function writeEnum(fileName, className, wrapperType, names, doc) {
+// `sentinel`, when given, is a non-generated constant (e.g. NO_ABILITY) prepended before the
+// real entries; `from()` then returns it instead of null for anything unrecognized. Every
+// Pokemon has *some* ability, so this makes that "always present" property a real Kotlin type
+// instead of a nullability convention -- unlike a held item, which a Pokemon genuinely can lack.
+function writeEnum(fileName, className, wrapperType, names, doc, sentinel) {
   const seen = new Map();
+  if (sentinel) seen.set(sentinel.id, `<${sentinel.id} sentinel>`);
   const lines = names.map((name) => {
     const id = toEnumConst(name);
     if (seen.has(id)) throw new Error(`enum constant collision: ${id} from "${name}" and "${seen.get(id)}"`);
     seen.set(id, name);
     return `  ${id}("${name.replace(/"/g, '\\"')}"),`;
   });
+  const sentinelLine = sentinel ? `  /** ${sentinel.comment} */\n  ${sentinel.id}(""),\n` : '';
+  const fromBody = sentinel
+    ? `byNormalizedName[name.normalized.value] ?: ${sentinel.id}`
+    : `byNormalizedName[name.normalized.value]`;
+  const fromReturnType = sentinel ? className : `${className}?`;
+  const fromDoc = sentinel
+    ? `Resolves a general-purpose [${wrapperType}] to this closed set. Anything not legal in Champions (including an empty/unset name) resolves to [${sentinel.id}].`
+    : `Resolves a general-purpose [${wrapperType}] to this closed set, or null if it isn't legal in Champions.`;
   const content = `package com.tambapps.pokemon.champions.data
 
 import com.tambapps.pokemon.${wrapperType}
@@ -134,7 +147,7 @@ import com.tambapps.pokemon.PokemonNormalizer
 
 ${doc}
 enum class ${className}(val displayName: String) {
-${lines.join('\n')}
+${sentinelLine}${lines.join('\n')}
   ;
 
   override fun toString() = displayName
@@ -142,8 +155,8 @@ ${lines.join('\n')}
   companion object {
     private val byNormalizedName: Map<String, ${className}> = entries.associateBy { PokemonNormalizer.normalize(it.displayName) }
 
-    /** Resolves a general-purpose [${wrapperType}] to this closed set, or null if it isn't legal in Champions. */
-    fun from(name: ${wrapperType}): ${className}? = byNormalizedName[name.normalized.value]
+    /** ${fromDoc} */
+    fun from(name: ${wrapperType}): ${fromReturnType} = ${fromBody}
   }
 }
 `;
@@ -160,8 +173,9 @@ const abilityDoc = `/**
  * around ninety different mechanics, and a typo'd or since-removed ability name should fail to
  * compile when that logic is written, not silently do nothing. [from] bridges the two: given
  * the general-purpose [com.tambapps.pokemon.AbilityName] a caller actually has, resolve it to
- * this closed set once, up front. An unrecognized name resolves to null, which the engine
- * already treats as "no special ability" -- by design, not by accident.
+ * this closed set once, up front. Every Pokemon has *some* ability, so unlike [Item] this has
+ * no null case: an unrecognized name resolves to [NO_ABILITY], which the engine already treats
+ * as "no special ability" -- by design, not by accident.
  */`;
 const itemDoc = `/**
  * Every held item legal in the Champions format, as a closed enum.
@@ -174,9 +188,13 @@ const itemDoc = `/**
  * written, not silently do nothing. [from] bridges the two: given the general-purpose
  * [com.tambapps.pokemon.ItemName] a caller actually has, resolve it to this closed set once, up
  * front. An unrecognized name resolves to null, which the engine already treats as "no held
- * item effect" -- by design, not by accident.
+ * item effect" -- by design, not by accident. Unlike [Ability], null is the right shape here: a
+ * Pokemon can genuinely hold nothing.
  */`;
-writeEnum('Ability.kt', 'Ability', 'AbilityName', [...ABILITIES_CHAMPIONS].sort(), abilityDoc);
+writeEnum('Ability.kt', 'Ability', 'AbilityName', [...ABILITIES_CHAMPIONS].sort(), abilityDoc, {
+  id: 'NO_ABILITY',
+  comment: 'Every Pokemon has some ability; this stands in for one this engine doesn\'t recognize (unset, a typo, or a name Champions doesn\'t currently support) so the field never needs to be null.',
+});
 writeEnum('Item.kt', 'Item', 'ItemName', [...ITEMS_CHAMPIONS].sort(), itemDoc);
 
 console.log('species:', Object.keys(species).length);

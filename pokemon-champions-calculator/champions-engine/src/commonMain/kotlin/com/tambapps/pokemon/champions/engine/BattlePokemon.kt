@@ -41,8 +41,8 @@ data class BattlePokemon(
   /** True if this Pokemon used Glaive Rush on its last turn, making it take double damage until its next move. */
   val isVulnerableFromGlaiveRush: Boolean = false,
 ) {
-  /** [ability] resolved to Champions' closed ability set; null if [ability] isn't legal here, which the engine treats as no special ability. */
-  val resolvedAbility: Ability? by lazy { Ability.from(ability) }
+  /** [ability] resolved to Champions' closed ability set; [Ability.NO_ABILITY] if [ability] isn't legal here, which the engine treats as no special ability. */
+  val resolvedAbility: Ability by lazy { Ability.from(ability) }
 
   /** [item] resolved to Champions' closed item set; null if there's no item, or [item] isn't legal here, which the engine treats as no held-item effect. */
   val resolvedItem: Item? by lazy { item?.let(Item::from) }

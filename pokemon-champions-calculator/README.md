@@ -42,9 +42,18 @@ closed `Ability`/`Item` enums. That resolution is why every one of the
 ~150 ability/item checks across the modifier-chain code is a compile-time
 exhaustive match rather than a string comparison a typo or a since-removed
 Regulation entry could silently no-op — see the doc comments on `Ability`
-and `Item` for the full rationale. An unrecognized name resolves to `null`,
-which the engine already treats as "no special ability"/"no held item
-effect" — by design, not by accident.
+and `Item` for the full rationale.
+
+The two enums differ slightly on how "not recognized" is represented,
+because the two concepts aren't symmetric: a Pokémon can genuinely hold no
+item, but it always has *some* ability. `Item.from(...)` returns `Item?`,
+with `null` meaning "no item held or not one Champions recognizes."
+`Ability.from(...)` returns a non-null `Ability`, with an unrecognized name
+(including an empty/unset one) resolving to the `Ability.NO_ABILITY`
+sentinel instead of `null` — so `BattlePokemon.resolvedAbility` is never
+optional, matching the fact that every Pokémon has an ability slot. Either
+way the engine's modifier checks behave the same: `NO_ABILITY` never
+matches a real ability comparison, exactly like `null` never did.
 
 ## Usage
 
