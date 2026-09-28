@@ -305,7 +305,11 @@ engine handles every damage case the source does; what's left:
   Supersweet Syrup) and sets the weather/terrain from abilities like Drought
   or Electric Surge. The engine takes `abilityIsActive` and the
   `Battlefield` as given: an app mirroring the source should apply the same
-  defaults.
+  defaults. `Ability.hasActiveToggle`/`isActiveByDefault` and
+  `Ability.weatherSetOnField`/`terrainSetOnField` (AbilityToggles.kt) give
+  the source's toggle lists and auto field abilities; remembering the weather
+  and terrain the user picked manually (the source's `setField`) stays the
+  app's job.
 - **A few edge cases differ, all in combinations no real calc relies on:**
   a Klutz Pokémon failing to Fling is described without the source's
   "Klutz" item text; the hits after a Weak Armor/Gooey speed change use the
