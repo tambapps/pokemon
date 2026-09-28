@@ -67,8 +67,10 @@ class TypeEffectivenessCalculatorTest {
 
   @Test
   fun defenderHoldingIronBallLosesGroundImmunityToo() {
+    // like the source's overrideTypeEffectiveness, a Flying type grounded by an Iron Ball takes neutral Ground damage,
+    // whatever its other type: https://bulbapedia.bulbagarden.net/wiki/Iron_Ball
     val charizard = testPokemon("Charizard", item = "Iron Ball")
-    assertEquals(2.0, effectiveness("Earthquake", PokeType.GROUND, charizard))
+    assertEquals(1.0, effectiveness("Earthquake", PokeType.GROUND, charizard))
   }
 
   @Test

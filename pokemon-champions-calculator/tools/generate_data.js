@@ -115,7 +115,7 @@ const MOVE_FIELDS = [
   'isBite', 'isPunch', 'isSlice', 'isSpread', 'isOHKO', 'hasSecondaryEffect',
   'ignoresBurn', 'ignoresDefenseBoosts', 'ignoresScreens', 'dealsPhysicalDamage',
   'hitRange', 'isTripleHit', 'alwaysCrit', 'canDouble', 'linearAddBP', 'isPriority',
-  'recoilHP', 'hasCrash',
+  'recoilHP', 'hasCrash', 'statChange',
 ];
 const moves = {};
 for (const [name, mv] of Object.entries(MOVES_CHAMPIONS)) {

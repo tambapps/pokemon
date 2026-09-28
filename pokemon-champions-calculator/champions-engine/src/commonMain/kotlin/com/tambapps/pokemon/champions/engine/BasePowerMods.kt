@@ -9,6 +9,8 @@ import com.tambapps.pokemon.champions.data.MoveCategory
 import com.tambapps.pokemon.champions.engine.description.CalcFactsBuilder
 import com.tambapps.pokemon.champions.engine.description.RivalryEffect
 
+internal const val LASH_OUT = "Lash Out"
+
 /** Ported from calcBPMods, scoped to Champions. Order matters: chainMods rounds after every step. */
 internal object BasePowerMods {
 
@@ -24,6 +26,7 @@ internal object BasePowerMods {
     defender: BattlePokemon,
     field: Battlefield,
     facts: CalcFactsBuilder = CalcFactsBuilder(),
+    defenderAbility: Ability = defender.resolvedAbility,
   ): List<Int> {
     val mods = mutableListOf<Int>()
     val effectiveCategory = effectiveCategoryOf(move, attacker, defender)
@@ -49,7 +52,7 @@ internal object BasePowerMods {
       mods.add(0x1800)
       facts.isSteelySpirit = true
     }
-    offensiveAbilityMod(move, effectiveType, attacker, defender, field)?.let {
+    offensiveAbilityMod(move, effectiveType, effectiveCategory, attacker, defender, field)?.let {
       mods.add(it)
       facts.attackerAbility(attacker.resolvedAbility)
       if (attacker.resolvedAbility == Ability.SAND_FORCE) facts.weather(field.weather)
@@ -59,8 +62,8 @@ internal object BasePowerMods {
       mods.add(0x1548)
       if (attacker.resolvedAbility == Ability.FAIRY_AURA) {
         facts.attackerAbility(attacker.resolvedAbility)
-      } else if (defender.resolvedAbility == Ability.FAIRY_AURA) {
-        facts.defenderAbility(defender.resolvedAbility)
+      } else if (defenderAbility == Ability.FAIRY_AURA) {
+        facts.defenderAbility(defenderAbility)
       }
     }
 
@@ -71,9 +74,9 @@ internal object BasePowerMods {
       facts.attackerAbility(attacker.resolvedAbility)
     }
 
-    if (defender.resolvedAbility == Ability.DRY_SKIN && effectiveType == PokeType.FIRE) {
+    if (defenderAbility == Ability.DRY_SKIN && effectiveType == PokeType.FIRE) {
       mods.add(0x1400)
-      facts.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defenderAbility)
     }
     itemPowerMod(effectiveType, attacker, effectiveCategory)?.let {
       mods.add(it)
@@ -84,6 +87,10 @@ internal object BasePowerMods {
       facts.moveBP = move.basePower / 2.0
       facts.weather(field.weather)
     }
+    if (isOneAndHalfPowerMove(move, attacker, defender, field)) {
+      mods.add(0x1800)
+      facts.moveBP = move.basePower * 1.5
+    }
     if (field.attackerSide.hasHelpingHand) {
       mods.add(0x1800)
       facts.isHelpingHand = true
@@ -92,7 +99,7 @@ internal object BasePowerMods {
       mods.add(0x2000)
       facts.charged = true
     }
-    if (isDoubledByCondition(move, attacker, defender)) {
+    if (isDoubledByCondition(move, moveUse, attacker, defender)) {
       mods.add(0x2000)
       facts.moveBP = move.basePower * 2.0
     }
@@ -109,12 +116,26 @@ internal object BasePowerMods {
       facts.attackerAbility(attacker.resolvedAbility)
       facts.faintedAllies = moveUse.faintedAllyCount
     }
-    if (move.name.value == "Knock Off" && defender.effectiveItem != null) {
-      mods.add(0x1800)
-      facts.moveBP = move.basePower * 1.5
-    }
 
     return mods
+  }
+
+  /** Knock Off against a removable item, Grav Apple under Gravity, Misty Explosion and Expanding Force in their terrain. */
+  private fun isOneAndHalfPowerMove(move: Move, attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield): Boolean =
+    when (move.name.value) {
+      "Knock Off" -> canRemoveItem(defender)
+      "Grav Apple" -> field.isGravity
+      "Misty Explosion" -> field.terrain == Terrain.MISTY && attacker.isGrounded(field)
+      "Expanding Force" -> field.terrain == Terrain.PSYCHIC && attacker.isGrounded(field)
+      else -> false
+    }
+
+  // cantRemoveItem: no item, or a mega holding its own mega stone
+  private fun canRemoveItem(defender: BattlePokemon): Boolean {
+    if (!defender.holdsItem) return false
+    if (defender.resolvedAbility == Ability.KLUTZ) return true
+    val item = defender.item ?: return false
+    return defender.species.megaStone?.let { item.matches(it) } != true
   }
 
   private fun rivalryMod(attacker: BattlePokemon, defender: BattlePokemon): Int? {
@@ -130,12 +151,19 @@ internal object BasePowerMods {
     else -> null
   }
 
-  private fun offensiveAbilityMod(move: Move, effectiveType: PokeType, attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield): Int? = when {
+  private fun offensiveAbilityMod(
+    move: Move,
+    effectiveType: PokeType,
+    effectiveCategory: MoveCategory,
+    attacker: BattlePokemon,
+    defender: BattlePokemon,
+    field: Battlefield,
+  ): Int? = when {
     attacker.resolvedAbility == Ability.SHEER_FORCE && move.hasSecondaryEffect -> 0x14CD
     attacker.resolvedAbility == Ability.SAND_FORCE && field.weather == Weather.SAND &&
       effectiveType in setOf(PokeType.ROCK, PokeType.GROUND, PokeType.STEEL) -> 0x14CD
     attacker.resolvedAbility == Ability.ANALYTIC && !attackerMovesFirst(attacker, defender, field) -> 0x14CD
-    attacker.resolvedAbility == Ability.TOUGH_CLAWS && move.makesContact -> 0x14CD
+    attacker.resolvedAbility == Ability.TOUGH_CLAWS && makesContact(move, attacker, effectiveCategory) -> 0x14CD
     attacker.resolvedAbility == Ability.PUNK_ROCK && move.isSound -> 0x14CD
     else -> null
   }
@@ -154,6 +182,7 @@ internal object BasePowerMods {
       item == Item.MUSCLE_BAND && effectiveCategory == MoveCategory.PHYSICAL -> 0x1199
       item == Item.WISE_GLASSES && effectiveCategory == MoveCategory.SPECIAL -> 0x1199
       boostsType(item, effectiveType) -> 0x1333
+      item == Item.NORMAL_GEM && effectiveType == PokeType.NORMAL -> 0x14CD
       else -> null
     }
   }
@@ -167,9 +196,10 @@ internal object BasePowerMods {
     effectiveType == PokeType.ELECTRIC &&
       (field.isCharge || (attacker.resolvedAbility == Ability.ELECTROMORPHOSIS && attacker.abilityIsActive))
 
-  private fun isDoubledByCondition(move: Move, attacker: BattlePokemon, defender: BattlePokemon): Boolean = when (move.name.value) {
+  private fun isDoubledByCondition(move: Move, moveUse: MoveUse, attacker: BattlePokemon, defender: BattlePokemon): Boolean = when (move.name.value) {
     "Facade" -> attacker.status.isNonHealthy
     "Venoshock", "Barb Barrage" -> defender.status in POISONED_STATUSES
+    LASH_OUT -> moveUse.isPowerDoubled
     else -> false
   }
 

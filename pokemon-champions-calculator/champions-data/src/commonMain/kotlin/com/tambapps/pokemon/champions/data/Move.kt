@@ -2,6 +2,7 @@ package com.tambapps.pokemon.champions.data
 
 import com.tambapps.pokemon.MoveName
 import com.tambapps.pokemon.PokeType
+import com.tambapps.pokemon.Stat
 
 /**
  * Static move data: the numbers and flags the damage engine needs to reproduce the game's
@@ -52,4 +53,9 @@ data class Move(
   val hasPriority: Boolean = false,
   /** Reckless boosts moves that hurt their own user on use (recoil) or on a miss (crash, e.g. Jump Kick). */
   val hasRecoil: Boolean = false,
+  /** The stat change the move always causes, e.g. Superpower lowering its user's Attack. Parental Bond's second hit is affected by it. */
+  val statChange: StatChange? = null,
 )
+
+/** A stat change a move always causes: [stages] stages of [stat], to its user or to its target. */
+data class StatChange(val stat: Stat, val stages: Int, val affectsUser: Boolean)

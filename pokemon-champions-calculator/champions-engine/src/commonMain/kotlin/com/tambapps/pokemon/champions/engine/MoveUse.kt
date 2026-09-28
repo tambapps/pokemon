@@ -20,9 +20,15 @@ data class MoveUse(
   val faintedAllyCount: Int = 0,
   /** Parental Bond hits twice; pass true for the second, weaker hit. See [DamageCalculator.calculateParentalBondHits]. */
   val isSecondParentalBondHit: Boolean = false,
+  /**
+   * Counter, Mirror Coat, Metal Burst, Comeuppance: the defender's move they return. Null (or a status move) means
+   * there's nothing to return, so no damage.
+   */
+  val counteredMove: MoveUse? = null,
 ) {
   init {
     requireValid(hitNumber >= 1) { "hitNumber is 1-based, got $hitNumber" }
+    requireValid(!isPowerDoubled || move.canBePowerDoubled) { "${move.name.value}'s power can't be doubled" }
     requireValid(priorPowerBoosts >= 0) { "priorPowerBoosts can't be negative, got $priorPowerBoosts" }
     requireValid(faintedAllyCount in 0..5) { "faintedAllyCount must be within 0..5, got $faintedAllyCount" }
   }

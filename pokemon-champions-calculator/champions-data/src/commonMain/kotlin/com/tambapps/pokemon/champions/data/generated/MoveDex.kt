@@ -3,11 +3,16 @@ package com.tambapps.pokemon.champions.data.generated
 import com.tambapps.pokemon.MoveName
 import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.PokemonNormalizer
+import com.tambapps.pokemon.Stat
 import com.tambapps.pokemon.champions.data.HitCount
 import com.tambapps.pokemon.champions.data.Move
 import com.tambapps.pokemon.champions.data.MoveCategory
+import com.tambapps.pokemon.champions.data.StatChange
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
 private data class MoveDto(
@@ -36,6 +41,21 @@ private data class MoveDto(
   val isPriority: Boolean = false,
   val recoilHP: List<Int>? = null,
   val hasCrash: Boolean = false,
+  // e.g. ["special defense", -2, "target"]
+  val statChange: JsonArray? = null,
+)
+
+private fun JsonArray.toStatChange() = StatChange(
+  stat = when (val name = this[0].jsonPrimitive.content) {
+    "attack" -> Stat.ATTACK
+    "defense" -> Stat.DEFENSE
+    "special attack" -> Stat.SPECIAL_ATTACK
+    "special defense" -> Stat.SPECIAL_DEFENSE
+    "speed" -> Stat.SPEED
+    else -> error("unknown stat $name")
+  },
+  stages = this[1].jsonPrimitive.int,
+  affectsUser = this[2].jsonPrimitive.content == "user",
 )
 
 private fun MoveDto.toDomain(name: String) = Move(
@@ -64,6 +84,7 @@ private fun MoveDto.toDomain(name: String) = Move(
   canBePowerDoubled = canDouble,
   hasPriority = isPriority,
   hasRecoil = recoilHP != null || hasCrash,
+  statChange = statChange?.toStatChange(),
 )
 
 /** Every move legal in the Champions format, keyed by normalized name, parsed once on first access. */

@@ -46,6 +46,10 @@ internal class CalcFactsBuilder(
   var isGlaiveMod: Boolean = false
   var isFriendGuard: Boolean = false
   var isQuarteredByProtect: Boolean = false
+  var countered: CounteredMove? = null
+
+  // not a fact: the defender's resist berry weakened this hit, so it's consumed for the next hits of the move
+  var consumedResistBerry: Boolean = false
 
   fun attackerAbility(ability: Ability) {
     attackerAbility = ability
@@ -108,5 +112,6 @@ internal class CalcFactsBuilder(
     isGlaiveRushVulnerable = isGlaiveMod,
     isFriendGuard = isFriendGuard,
     isQuarteredByProtect = isQuarteredByProtect,
+    countered = countered,
   )
 }
