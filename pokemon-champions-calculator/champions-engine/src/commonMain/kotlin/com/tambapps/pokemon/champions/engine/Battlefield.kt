@@ -21,6 +21,11 @@ data class SideConditions(
   val hasPowerSpot: Boolean = false,
   val hasAllySteelySpirit: Boolean = false,
   val hasHelpingHand: Boolean = false,
+  /**
+   * This side's Pokemon is charged (it used Charge, or Electromorphosis/Wind Power triggered): its Electric moves'
+   * power is doubled. Like the source's per-side Charge, only the attacker side's matters for its moves.
+   */
+  val isCharged: Boolean = false,
   val isProtected: Boolean = false,
   /** Spikes damage on switch-in, which the KO chance counts. */
   val spikesLayers: Int = 0,
@@ -57,8 +62,6 @@ data class Battlefield(
   val weather: Weather = Weather.NONE,
   val terrain: Terrain = Terrain.NONE,
   val isGravity: Boolean = false,
-  /** Electromorphosis/Wind Power's field-wide trigger (e.g. after Thunder Wave / a Charge user). */
-  val isCharge: Boolean = false,
   /** A Fairy Aura Pokemon is on the field: every Fairy-type move's power is boosted, whoever uses it. */
   val isFairyAura: Boolean = false,
   val attackerSide: SideConditions = SideConditions.NONE,

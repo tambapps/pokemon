@@ -163,8 +163,11 @@ class BasePowerModsTest {
 
   @Test
   fun chargeAndElectromorphosisBoostElectricMoves() {
-    val chargeField = Battlefield(isCharge = true)
+    val chargeField = Battlefield(attackerSide = SideConditions(isCharged = true))
     assertEquals(0x2000, combinedMod("Thunder Punch", testPokemon("Garchomp"), field = chargeField))
+    // the defender being charged doesn't boost the attacker's moves
+    val chargedDefender = Battlefield(defenderSide = SideConditions(isCharged = true))
+    assertEquals(0x1000, combinedMod("Thunder Punch", testPokemon("Garchomp"), field = chargedDefender))
 
     val electromorphosis = testPokemon("Garchomp", ability = "Electromorphosis", abilityIsActive = true)
     assertEquals(0x2000, combinedMod("Thunder Punch", electromorphosis))

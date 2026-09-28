@@ -194,7 +194,7 @@ internal object BasePowerMods {
 
   private fun chargeMod(effectiveType: PokeType, attacker: BattlePokemon, field: Battlefield): Boolean =
     effectiveType == PokeType.ELECTRIC &&
-      (field.isCharge || (attacker.resolvedAbility == Ability.ELECTROMORPHOSIS && attacker.abilityIsActive))
+      (field.attackerSide.isCharged || (attacker.resolvedAbility == Ability.ELECTROMORPHOSIS && attacker.abilityIsActive))
 
   private fun isDoubledByCondition(move: Move, moveUse: MoveUse, attacker: BattlePokemon, defender: BattlePokemon): Boolean = when (move.name.value) {
     "Facade" -> attacker.status.isNonHealthy

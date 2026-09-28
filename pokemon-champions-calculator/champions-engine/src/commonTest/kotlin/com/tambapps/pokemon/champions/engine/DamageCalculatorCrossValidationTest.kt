@@ -708,7 +708,8 @@ class DamageCalculatorCrossValidationTest {
       listOf(150, 150, 152, 152, 156, 158, 158, 162, 162, 164, 168, 168, 170, 170, 174, 176),
       "20 SpA Raichu Charged Thunderbolt vs. 20 HP  / 16 SpD Toxapex",
       "guaranteed OHKO",
-      specialAttacker("Raichu", "Lightning Rod", Nature.TIMID), toxapex(), moveUse("Thunderbolt"), Battlefield(isCharge = true),
+      specialAttacker("Raichu", "Lightning Rod", Nature.TIMID), toxapex(), moveUse("Thunderbolt"),
+      Battlefield(attackerSide = SideConditions(isCharged = true)),
     )
   }
 
