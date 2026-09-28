@@ -4,6 +4,9 @@ import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.HitCount
 import com.tambapps.pokemon.champions.data.Move
 import com.tambapps.pokemon.champions.data.MoveCategory
+import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
+import com.tambapps.pokemon.champions.engine.description.StatDisplay
+import com.tambapps.pokemon.champions.engine.description.StatInvestment
 import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.Stat
 import kotlin.math.floor
@@ -54,7 +57,7 @@ object DamageCalculator {
       val secondHit = calculateSingleHit(attacker, defender, moveUse.copy(isSecondParentalBondHit = true), field, statDisplay)
       description.attackerAbility(attacker.resolvedAbility)
       description.hits = 2
-      return MoveDamageResult(listOf(firstHit, secondHit), description.build(statDisplay))
+      return moveResult(listOf(firstHit, secondHit), description, statDisplay)
     }
     val firstMoveUse = if (move.hasEscalatingPower) moveUse.copy(hitNumber = 1) else moveUse
     val (firstHit, description) = describedHit(attacker, defender, firstMoveUse, field, statDisplay)
@@ -65,7 +68,12 @@ object DamageCalculator {
       // every hit is the same, no need to calculate it several times
       List(hits) { firstHit }
     }
-    return MoveDamageResult(allHits, description.build(statDisplay))
+    return moveResult(allHits, description, statDisplay)
+  }
+
+  private fun moveResult(hits: List<DamageResult>, description: DescriptionBuilder, statDisplay: StatDisplay): MoveDamageResult {
+    val calcDescription = description.build()
+    return MoveDamageResult(hits, calcDescription.format(statDisplay), calcDescription)
   }
 
   /** Parental Bond always hits twice: a full-power hit, then a second hit at a quarter of that base damage. */
@@ -90,9 +98,10 @@ object DamageCalculator {
     field: Battlefield,
     statDisplay: StatDisplay,
   ): Pair<DamageResult, DescriptionBuilder> {
-    val description = DescriptionBuilder(attacker.species.name.value, moveUse.move.name.value, defender.species.name.value)
+    val description = DescriptionBuilder(attacker.species.name, moveUse.move.name, defender.species.name)
     val hit = calculateHit(attacker, defender, moveUse, field, description)
-    return hit.copy(description = description.build(statDisplay)) to description
+    val calcDescription = description.build()
+    return hit.copy(description = calcDescription.format(statDisplay), calcDescription = calcDescription) to description
   }
 
   private fun calculateHit(attacker: BattlePokemon, defender: BattlePokemon, moveUse: MoveUse, field: Battlefield, description: DescriptionBuilder): DamageResult {

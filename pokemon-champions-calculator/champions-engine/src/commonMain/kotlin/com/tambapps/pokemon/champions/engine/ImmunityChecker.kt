@@ -4,6 +4,7 @@ import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Item
 import com.tambapps.pokemon.champions.data.Move
+import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
 
 /** Ported from immunityChecks, scoped to abilities/items/moves reachable in Champions. */
 object ImmunityChecker {

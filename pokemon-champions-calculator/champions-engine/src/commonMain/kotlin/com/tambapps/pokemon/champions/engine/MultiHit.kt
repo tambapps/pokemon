@@ -3,6 +3,7 @@ package com.tambapps.pokemon.champions.engine
 import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.HitCount
 import com.tambapps.pokemon.champions.data.Move
+import com.tambapps.pokemon.champions.engine.description.CalcDescription
 
 /** How many times [this] move can hit in a single use, e.g. 2..5 for Bullet Seed, 1..1 for a single-hit move. */
 val Move.hitCountRange: IntRange get() = when (val count = hitCount) {
@@ -31,8 +32,13 @@ fun defaultHitCount(move: Move, attacker: BattlePokemon): Int {
  *
  * @param description the source calculator's description of the calc, e.g. "20+ Atk Garchomp Bullet Seed (3 hits)
  * vs. 20 HP  / 20+ Def Toxapex": the first hit's [DamageResult.description] plus the number of hits and Parental Bond
+ * @param calcDescription the facts [description] was written from. Null only for a result not built by [DamageCalculator]
  */
-data class MoveDamageResult(val hits: List<DamageResult>, val description: String = "") {
+data class MoveDamageResult(
+  val hits: List<DamageResult>,
+  val description: String = "",
+  val calcDescription: CalcDescription? = null,
+) {
   val minDamage: Int get() = hits.sumOf { it.minDamage }
   val maxDamage: Int get() = hits.sumOf { it.maxDamage }
 }

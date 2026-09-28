@@ -8,6 +8,7 @@ import com.tambapps.pokemon.Nature
 import com.tambapps.pokemon.PokeStats
 import com.tambapps.pokemon.PokemonName
 import com.tambapps.pokemon.champions.data.ChampionsDex
+import com.tambapps.pokemon.champions.engine.description.StatDisplay
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

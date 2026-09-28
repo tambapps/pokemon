@@ -5,6 +5,8 @@ import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Item
 import com.tambapps.pokemon.champions.data.Move
 import com.tambapps.pokemon.champions.data.MoveCategory
+import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
+import com.tambapps.pokemon.champions.engine.description.Screen
 
 /** Ported from calcFinalMods, scoped to Champions. */
 internal object FinalMods {
@@ -68,9 +70,9 @@ internal object FinalMods {
   private fun screenMod(move: Move, effectiveCategory: MoveCategory, field: Battlefield, isCritical: Boolean, description: DescriptionBuilder): Int? {
     if (isCritical || move.ignoresScreens) return null
     when {
-      field.defenderSide.hasAuroraVeil -> description.isAuroraVeil = true
-      field.defenderSide.hasReflect && effectiveCategory == MoveCategory.PHYSICAL -> description.isReflect = true
-      field.defenderSide.hasLightScreen && effectiveCategory == MoveCategory.SPECIAL -> description.isLightScreen = true
+      field.defenderSide.hasAuroraVeil -> description.screen = Screen.AURORA_VEIL
+      field.defenderSide.hasReflect && effectiveCategory == MoveCategory.PHYSICAL -> description.screen = Screen.REFLECT
+      field.defenderSide.hasLightScreen && effectiveCategory == MoveCategory.SPECIAL -> description.screen = Screen.LIGHT_SCREEN
       else -> return null
     }
     return if (field.format != BattleFormat.SINGLES) 0xAAC else 0x800

@@ -1,6 +1,7 @@
 package com.tambapps.pokemon.champions.engine
 
 import com.tambapps.pokemon.champions.data.Ability
+import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
 
 /** Ported from calcDefMods, scoped to Champions -- most defensive items/abilities the games have (Eviolite, Assault Vest, Soul Dew...) aren't legal here. */
 internal object DefenseStatMods {

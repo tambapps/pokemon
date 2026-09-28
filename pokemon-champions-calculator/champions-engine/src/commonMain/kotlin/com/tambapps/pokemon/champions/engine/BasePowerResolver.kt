@@ -2,6 +2,7 @@ package com.tambapps.pokemon.champions.engine
 
 import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Move
+import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
 import kotlin.math.min
 
 /** Ported from basePowerFunc, scoped to the moves that exist in Champions and have a formula-driven power. */

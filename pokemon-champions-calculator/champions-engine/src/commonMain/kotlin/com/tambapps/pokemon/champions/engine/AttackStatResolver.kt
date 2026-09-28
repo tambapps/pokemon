@@ -3,6 +3,8 @@ package com.tambapps.pokemon.champions.engine
 import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Move
 import com.tambapps.pokemon.champions.data.MoveCategory
+import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
+import com.tambapps.pokemon.champions.engine.description.StatInvestment
 
 /** Ported from calcAttack, scoped to Champions. Resolves the (Special) Attack value a hit rolls damage off of, before [AttackStatMods]. */
 internal object AttackStatResolver {

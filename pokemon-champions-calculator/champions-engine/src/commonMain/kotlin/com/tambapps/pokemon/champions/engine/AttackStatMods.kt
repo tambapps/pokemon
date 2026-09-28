@@ -5,6 +5,7 @@ import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Item
 import com.tambapps.pokemon.champions.data.Move
 import com.tambapps.pokemon.champions.data.MoveCategory
+import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
 
 /** Ported from calcAtMods, scoped to Champions. */
 internal object AttackStatMods {

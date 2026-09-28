@@ -1,5 +1,7 @@
 package com.tambapps.pokemon.champions.engine
 
+import com.tambapps.pokemon.champions.engine.description.CalcDescription
+
 /**
  * Which stat a hit's attack is read from, and whose. Usually the attacker's Attack or Special
  * Attack, but Body Press uses the attacker's Defense and Foul Play the defender's Attack.
@@ -25,6 +27,11 @@ data class DamageResult(
    * whole-move facts (the number of hits, Parental Bond) [MoveDamageResult.description] adds.
    */
   val description: String = "",
+  /**
+   * The facts [description] was written from (which ability, item, weather... applied), e.g. to show them in
+   * another way. Null only for a result not built by [DamageCalculator].
+   */
+  val calcDescription: CalcDescription? = null,
 ) {
   val minDamage: Int get() = rolls.first()
   val maxDamage: Int get() = rolls.last()

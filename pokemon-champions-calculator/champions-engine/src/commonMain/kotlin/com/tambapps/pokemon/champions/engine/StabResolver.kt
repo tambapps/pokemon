@@ -3,6 +3,7 @@ package com.tambapps.pokemon.champions.engine
 import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Move
+import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
 
 /**
  * Same-Type Attack Bonus, as a fixed-point 0x1000-scaled multiplier. Ported from the

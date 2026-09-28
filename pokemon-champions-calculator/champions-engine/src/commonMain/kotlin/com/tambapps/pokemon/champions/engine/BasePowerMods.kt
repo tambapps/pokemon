@@ -6,6 +6,8 @@ import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Item
 import com.tambapps.pokemon.champions.data.Move
 import com.tambapps.pokemon.champions.data.MoveCategory
+import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
+import com.tambapps.pokemon.champions.engine.description.RivalryEffect
 
 /** Ported from calcBPMods, scoped to Champions. Order matters: chainMods rounds after every step. */
 internal object BasePowerMods {
@@ -28,7 +30,8 @@ internal object BasePowerMods {
 
     rivalryMod(attacker, defender)?.let {
       mods.add(it)
-      description.attackerAbility = if (it == 0x1400) "Rivalry (1.25x)" else "Rivalry (0.75x)"
+      description.attackerAbility(attacker.resolvedAbility)
+      description.rivalryEffect = if (it == 0x1400) RivalryEffect.SAME_GENDER else RivalryEffect.OPPOSITE_GENDER
     }
     offensiveBoostMod(move, attacker)?.let {
       mods.add(it)
@@ -103,8 +106,8 @@ internal object BasePowerMods {
     }
     supremeOverlordMod(attacker, moveUse)?.let {
       mods.add(it)
-      val allies = moveUse.faintedAllyCount
-      description.attackerAbility = "${attacker.resolvedAbility.displayName} ($allies ${if (allies > 1) "allies" else "ally"} down)"
+      description.attackerAbility(attacker.resolvedAbility)
+      description.faintedAllies = moveUse.faintedAllyCount
     }
     if (move.name.value == "Knock Off" && defender.effectiveItem != null) {
       mods.add(0x1800)
