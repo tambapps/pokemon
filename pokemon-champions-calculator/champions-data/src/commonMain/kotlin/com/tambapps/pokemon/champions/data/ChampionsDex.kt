@@ -18,6 +18,13 @@ object ChampionsDex {
   val allSpecies: Collection<PokemonSpecies> get() = ALL_SPECIES.values
   val allMoves: Collection<Move> get() = ALL_MOVES.values
 
+  /** Every species that isn't only another species' form: what a user picks before choosing its form (see [formsOf]). */
+  val pickableSpecies: List<PokemonSpecies> by lazy { ALL_SPECIES.values.filterNot { it.isAlternateForm } }
+
+  /** The forms [species] can be in, in the source calculator's order (base form first); just [species] if it has a single form. */
+  fun formsOf(species: PokemonSpecies): List<PokemonSpecies> =
+    species.forms.map(::species).ifEmpty { listOf(species) }
+
   fun species(name: PokemonName): PokemonSpecies =
     speciesOrNull(name) ?: throw ChampionsCalcException("Unknown Champions species: ${name.value}")
 

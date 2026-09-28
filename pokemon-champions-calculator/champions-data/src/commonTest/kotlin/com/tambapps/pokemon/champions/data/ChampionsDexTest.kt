@@ -102,6 +102,46 @@ class ChampionsDexTest {
   }
 
   @Test
+  fun listsTheFormsOfASpeciesInOrder() {
+    val charizard = ChampionsDex.species(PokemonName("Charizard"))
+    assertEquals(
+      listOf("Charizard", "Mega Charizard X", "Mega Charizard Y"),
+      ChampionsDex.formsOf(charizard).map { it.name.value },
+    )
+    val aegislash = ChampionsDex.species(PokemonName("Aegislash"))
+    assertEquals(listOf("Aegislash-Shield", "Aegislash-Blade"), ChampionsDex.formsOf(aegislash).map { it.name.value })
+  }
+
+  @Test
+  fun aSpeciesWithASingleFormIsItsOnlyForm() {
+    val incineroar = ChampionsDex.species(PokemonName("Incineroar"))
+    assertEquals(listOf(incineroar), ChampionsDex.formsOf(incineroar))
+  }
+
+  @Test
+  fun pickableSpeciesExcludeAlternateFormsButKeepSeparateSpecies() {
+    val pickable = ChampionsDex.pickableSpecies.map { it.name.value }.toSet()
+    assertTrue("Charizard" in pickable)
+    assertTrue("Aegislash" in pickable)
+    // regional forms and Rotom appliances are their own species, not forms
+    assertTrue("Raichu-Alola" in pickable)
+    assertTrue("Rotom-Wash" in pickable)
+    assertTrue("Mega Charizard X" !in pickable)
+    assertTrue("Aegislash-Shield" !in pickable)
+  }
+
+  @Test
+  fun everyMegaHasItsMegaStone() {
+    assertEquals(ItemName("Charizardite X"), ChampionsDex.species(PokemonName("Mega Charizard X")).megaStone)
+    assertEquals(ItemName("Charizardite Y"), ChampionsDex.species(PokemonName("Mega Charizard Y")).megaStone)
+    assertEquals(ItemName("Absolite Z"), ChampionsDex.species(PokemonName("Mega Absol Z")).megaStone)
+    assertNull(ChampionsDex.species(PokemonName("Charizard")).megaStone)
+    val megas = ChampionsDex.allSpecies.filter { it.name.value.startsWith("Mega ") }
+    // every stone is a real Champions item
+    assertTrue(megas.all { mega -> mega.megaStone?.let(Item::from) != null })
+  }
+
+  @Test
   fun lookupsThrowCalcExceptionForUnknownNames() {
     assertFailsWith<ChampionsCalcException> { ChampionsDex.species(PokemonName("not-a-real-pokemon")) }
     assertFailsWith<ChampionsCalcException> { ChampionsDex.move(MoveName("not-a-real-move")) }

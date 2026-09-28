@@ -95,6 +95,12 @@ For user input, `ChampionsDex.speciesOrNull`/`moveOrNull` return null instead of
 name Champions doesn't know, and `PokemonSpecies.defaultAbility` is the ability the source
 calculator pre-selects for a species (not an exhaustive list of its legal abilities).
 
+Species that switch forms in battle (megas, Aegislash's stances) list them in
+`PokemonSpecies.forms`, and `ChampionsDex.formsOf` resolves them; `ChampionsDex.pickableSpecies`
+leaves out the entries that only exist as a form (`isAlternateForm`), for a species picker. Each
+mega carries the `megaStone` needed to mega evolve into it, derived from the source's
+`MEGA_STONE_USER_LOOKUP` and the stone's X/Y/Z suffix.
+
 ## Correctness: cross-validated against the source calculator, plus direct unit coverage
 
 Two layers of tests, for two different jobs:

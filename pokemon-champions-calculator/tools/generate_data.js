@@ -53,21 +53,56 @@ for (const f of ['pokedex.js', 'stat_data.js', 'type_data.js', 'nature_data.js',
   load(f);
 }
 
-const { POKEDEX_CHAMPIONS, MOVES_CHAMPIONS, ITEMS_CHAMPIONS, ABILITIES_CHAMPIONS, TYPE_CHART_SV } = sandbox;
+const { POKEDEX_CHAMPIONS, MOVES_CHAMPIONS, ITEMS_CHAMPIONS, ABILITIES_CHAMPIONS, TYPE_CHART_SV, MEGA_STONE_USER_LOOKUP } = sandbox;
 
-// --- species: name, types, base stats, weight, default ability. Ability legality (the full
+// --- mega stones: the source only maps a stone to the base species using it (Charizardite X ->
+// Charizard); which mega form it triggers is decided by its suffix, the same way the calculator's
+// UI picks the default forme (X/Z/Y stones -> the form with that suffix, no suffix -> the plain mega). ---
+const MEGA_SUFFIX = / ([XYZ])$/;
+function megaStoneOf(megaFormName, baseSpeciesName) {
+  const formSuffix = (megaFormName.match(MEGA_SUFFIX) || [])[1];
+  const stones = ITEMS_CHAMPIONS.filter((item) => {
+    const users = MEGA_STONE_USER_LOOKUP[item];
+    if (!users || ![].concat(users).includes(baseSpeciesName)) return false;
+    return (item.match(MEGA_SUFFIX) || [])[1] === formSuffix;
+  });
+  if (stones.length !== 1) {
+    throw new Error(`expected exactly one Champions mega stone for "${megaFormName}" (base "${baseSpeciesName}"), got [${stones}]`);
+  }
+  return stones[0];
+}
+
+// --- species: name, types, base stats, weight, default ability, forms. Ability legality (the full
 // list of abilities a species can have) is deliberately not modeled -- the calculator itself
 // never restricts which ability a species can be given. "ab" is only the single ability the
-// calculator pre-selects for a species, which is what defaultAbility carries. ---
+// calculator pre-selects for a species, which is what defaultAbility carries.
+// "formes" lists the forms a species switches between in battle (megas, Aegislash's stances);
+// "isAlternateForme" marks the entries that only exist as another species' form. Regional forms,
+// Rotom appliances etc. are separate species, not forms, the same way the calculator lists them. ---
+const baseSpeciesOfForm = {};
+for (const [name, mon] of Object.entries(POKEDEX_CHAMPIONS)) {
+  for (const form of mon.formes || []) {
+    if (!(form in POKEDEX_CHAMPIONS)) throw new Error(`form "${form}" of "${name}" isn't in the Champions dex`);
+    // several species can share a form (Meowstic and Meowstic-F -> Mega Meowstic), keep the first one
+    if (form !== name && !(form in baseSpeciesOfForm)) baseSpeciesOfForm[form] = name;
+  }
+}
 const species = {};
 for (const [name, mon] of Object.entries(POKEDEX_CHAMPIONS)) {
   if (mon.ab === undefined) throw new Error(`species "${name}" has no default ability ("ab")`);
-  species[name] = {
+  const entry = {
     types: [mon.t1, mon.t2].filter(Boolean),
     baseStats: { hp: mon.bs.hp, atk: mon.bs.at, def: mon.bs.df, spa: mon.bs.sa, spd: mon.bs.sd, spe: mon.bs.sp },
     weightKg: mon.w,
     defaultAbility: mon.ab,
   };
+  if (mon.formes) entry.forms = mon.formes;
+  if (mon.isAlternateForme) entry.isAlternateForm = true;
+  if (name.startsWith('Mega ')) {
+    if (!(name in baseSpeciesOfForm)) throw new Error(`mega "${name}" isn't a form of any species`);
+    entry.megaStone = megaStoneOf(name, baseSpeciesOfForm[name]);
+  }
+  species[name] = entry;
 }
 
 // --- moves: only the fields the damage engine actually reads (accuracy, PP, secondary
