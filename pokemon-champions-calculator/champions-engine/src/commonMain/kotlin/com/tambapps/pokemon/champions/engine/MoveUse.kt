@@ -22,8 +22,8 @@ data class MoveUse(
   val isSecondParentalBondHit: Boolean = false,
 ) {
   init {
-    require(hitNumber >= 1) { "hitNumber is 1-based, got $hitNumber" }
-    require(priorPowerBoosts >= 0) { "priorPowerBoosts can't be negative, got $priorPowerBoosts" }
-    require(faintedAllyCount in 0..5) { "faintedAllyCount must be within 0..5, got $faintedAllyCount" }
+    requireValid(hitNumber >= 1) { "hitNumber is 1-based, got $hitNumber" }
+    requireValid(priorPowerBoosts >= 0) { "priorPowerBoosts can't be negative, got $priorPowerBoosts" }
+    requireValid(faintedAllyCount in 0..5) { "faintedAllyCount must be within 0..5, got $faintedAllyCount" }
   }
 }

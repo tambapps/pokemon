@@ -7,8 +7,12 @@ import com.tambapps.pokemon.champions.data.Move
 /** Ported from calcDefense, scoped to Champions. Resolves the (Special) Defense value a hit rolls damage off of, before [DefenseStatMods]. */
 internal object DefenseStatResolver {
 
+  /** Which of the defender's stats a hit's defense is read from. */
+  fun defenseStatOf(hitsPhysical: Boolean): BoostableStat =
+    if (hitsPhysical) BoostableStat.DEFENSE else BoostableStat.SPECIAL_DEFENSE
+
   fun resolve(move: Move, attacker: BattlePokemon, defender: BattlePokemon, hitsPhysical: Boolean, isCritical: Boolean, field: Battlefield): Int {
-    val defenseStat = if (hitsPhysical) BoostableStat.DEFENSE else BoostableStat.SPECIAL_DEFENSE
+    val defenseStat = defenseStatOf(hitsPhysical)
     val boost = defender.boosts[defenseStat]
 
     var defense = when {

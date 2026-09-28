@@ -1,6 +1,7 @@
 package com.tambapps.pokemon.champions.engine
 
 import com.tambapps.pokemon.Nature
+import com.tambapps.pokemon.champions.data.ChampionsCalcException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -33,7 +34,7 @@ class DamageCalculatorTest {
   @Test
   fun calculateParentalBondHitsRequiresTheAbility() {
     val noBond = testPokemon("Garchomp", ability = "Rough Skin", hp = 20, attack = 20, defense = 8, specialDefense = 8, speed = 10)
-    assertFailsWith<IllegalArgumentException> {
+    assertFailsWith<ChampionsCalcException> {
       DamageCalculator.calculateParentalBondHits(noBond, testPokemon("Toxapex"), MoveUse(testMove("Dragon Claw")), Battlefield())
     }
   }

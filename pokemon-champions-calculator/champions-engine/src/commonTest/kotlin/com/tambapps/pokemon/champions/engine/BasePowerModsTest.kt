@@ -216,6 +216,20 @@ class BasePowerModsTest {
   }
 
   @Test
+  fun fairyAuraBoostsFairyMovesOnly() {
+    val auraField = Battlefield(isFairyAura = true)
+    assertEquals(0x1548, combinedMod("Moonblast", testPokemon("Sylveon"), field = auraField))
+    assertEquals(0x1000, combinedMod("Moonblast", testPokemon("Sylveon")))
+    assertEquals(0x1000, combinedMod("Hyper Voice", testPokemon("Sylveon"), field = auraField))
+  }
+
+  @Test
+  fun fairyAuraAppliesToMovesRetypedToFairy() {
+    val pixilate = testPokemon("Sylveon", ability = "Pixilate")
+    assertEquals(chainMods(listOf(0x1333, 0x1548)), combinedMod("Hyper Voice", pixilate, field = Battlefield(isFairyAura = true)))
+  }
+
+  @Test
   fun knockOffBoostsWhenTheTargetHoldsAnItem() {
     assertEquals(0x1800, combinedMod("Knock Off", testPokemon("Garchomp"), testPokemon("Toxapex", item = "Leftovers")))
     assertEquals(0x1000, combinedMod("Knock Off", testPokemon("Garchomp"), testPokemon("Toxapex")))

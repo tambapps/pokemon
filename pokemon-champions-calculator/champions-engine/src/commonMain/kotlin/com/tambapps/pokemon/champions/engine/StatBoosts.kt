@@ -10,7 +10,7 @@ data class StatBoosts(
 ) {
   init {
     for (stage in listOf(attack, defense, specialAttack, specialDefense, speed)) {
-      require(stage in -6..6) { "Stat boost stages must be within -6..6, got $stage" }
+      requireValid(stage in -6..6) { "Stat boost stages must be within -6..6, got $stage" }
     }
   }
 

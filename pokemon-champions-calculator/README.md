@@ -87,6 +87,14 @@ val chance = KoChanceCalculator.minimumHitsToKo(result.rolls, targetHp = toxapex
 // KoChanceResult(hits = 2, chance = 1.0) -> "guaranteed 2HKO"
 ```
 
+A `DamageResult` also reports which stats the hit rolled off of (`attackStat`, `defenseStat`),
+e.g. to describe a calc: Body Press reports the attacker's Defense, Foul Play the defender's
+Attack, Psyshock the defender's Defense.
+
+For user input, `ChampionsDex.speciesOrNull`/`moveOrNull` return null instead of throwing on a
+name Champions doesn't know, and `PokemonSpecies.defaultAbility` is the ability the source
+calculator pre-selects for a species (not an exhaustive list of its legal abilities).
+
 ## Correctness: cross-validated against the source calculator, plus direct unit coverage
 
 Two layers of tests, for two different jobs:

@@ -47,12 +47,18 @@ object DamageCalculator {
       rollDamage(preRollDamage, percent, stabMod, typeEffectiveness, burnHalves, finalMod, isQuarteredByProtect)
     }.sorted()
 
-    return DamageResult(rolls, typeEffectiveness, isCritical)
+    return DamageResult(
+      rolls = rolls,
+      typeEffectiveness = typeEffectiveness,
+      isCritical = isCritical,
+      attackStat = AttackStatResolver.attackStatSourceOf(move, attacker, defender),
+      defenseStat = DefenseStatResolver.defenseStatOf(hitsPhysical),
+    )
   }
 
   /** Parental Bond always hits twice: a full-power hit, then a second hit at a quarter of that base damage. */
   fun calculateParentalBondHits(attacker: BattlePokemon, defender: BattlePokemon, moveUse: MoveUse, field: Battlefield): ParentalBondHits {
-    require(attacker.resolvedAbility == Ability.PARENTAL_BOND) { "calculateParentalBondHits requires the attacker to have Parental Bond" }
+    requireValid(attacker.resolvedAbility == Ability.PARENTAL_BOND) { "calculateParentalBondHits requires the attacker to have Parental Bond" }
     val firstHit = calculateSingleHit(attacker, defender, moveUse.copy(isSecondParentalBondHit = false), field)
     val secondHit = calculateSingleHit(attacker, defender, moveUse.copy(isSecondParentalBondHit = true), field)
     return ParentalBondHits(firstHit, secondHit)

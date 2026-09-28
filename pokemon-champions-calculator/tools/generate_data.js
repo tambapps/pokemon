@@ -55,15 +55,18 @@ for (const f of ['pokedex.js', 'stat_data.js', 'type_data.js', 'nature_data.js',
 
 const { POKEDEX_CHAMPIONS, MOVES_CHAMPIONS, ITEMS_CHAMPIONS, ABILITIES_CHAMPIONS, TYPE_CHART_SV } = sandbox;
 
-// --- species: name, types, base stats, weight. Ability legality is deliberately not
-// modeled -- "ab" in the source dex is overwritten layer by layer and isn't reliable,
-// and the calculator itself never restricts which ability a species can be given. ---
+// --- species: name, types, base stats, weight, default ability. Ability legality (the full
+// list of abilities a species can have) is deliberately not modeled -- the calculator itself
+// never restricts which ability a species can be given. "ab" is only the single ability the
+// calculator pre-selects for a species, which is what defaultAbility carries. ---
 const species = {};
 for (const [name, mon] of Object.entries(POKEDEX_CHAMPIONS)) {
+  if (mon.ab === undefined) throw new Error(`species "${name}" has no default ability ("ab")`);
   species[name] = {
     types: [mon.t1, mon.t2].filter(Boolean),
     baseStats: { hp: mon.bs.hp, atk: mon.bs.at, def: mon.bs.df, spa: mon.bs.sa, spd: mon.bs.sd, spe: mon.bs.sp },
     weightKg: mon.w,
+    defaultAbility: mon.ab,
   };
 }
 

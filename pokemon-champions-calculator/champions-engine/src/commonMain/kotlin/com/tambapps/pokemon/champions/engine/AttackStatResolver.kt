@@ -7,13 +7,20 @@ import com.tambapps.pokemon.champions.data.MoveCategory
 /** Ported from calcAttack, scoped to Champions. Resolves the (Special) Attack value a hit rolls damage off of, before [AttackStatMods]. */
 internal object AttackStatResolver {
 
-  fun resolve(move: Move, attacker: BattlePokemon, defender: BattlePokemon, isCritical: Boolean): Int {
-    val attackSource = if (move.name.value == "Foul Play") defender else attacker
-    val attackStat = when {
+  /** Which stat a hit's attack is read from, and whose: Foul Play reads the defender's Attack, Body Press the attacker's Defense. */
+  fun attackStatSourceOf(move: Move, attacker: BattlePokemon, defender: BattlePokemon) = AttackStatSource(
+    stat = when {
       move.name.value == "Body Press" -> BoostableStat.DEFENSE
       effectiveCategoryOf(move, attacker, defender) == MoveCategory.PHYSICAL -> BoostableStat.ATTACK
       else -> BoostableStat.SPECIAL_ATTACK
-    }
+    },
+    isDefenderStat = move.name.value == "Foul Play",
+  )
+
+  fun resolve(move: Move, attacker: BattlePokemon, defender: BattlePokemon, isCritical: Boolean): Int {
+    val statSource = attackStatSourceOf(move, attacker, defender)
+    val attackSource = if (statSource.isDefenderStat) defender else attacker
+    val attackStat = statSource.stat
 
     var attack = when {
       defender.resolvedAbility == Ability.UNAWARE && attackSource.boosts[attackStat] != 0 ->

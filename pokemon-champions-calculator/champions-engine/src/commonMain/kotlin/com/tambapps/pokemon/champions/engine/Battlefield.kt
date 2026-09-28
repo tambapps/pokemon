@@ -22,7 +22,7 @@ data class SideConditions(
   val hasStealthRock: Boolean = false,
 ) {
   init {
-    require(spikesLayers in 0..3) { "Spikes has at most 3 layers, got $spikesLayers" }
+    requireValid(spikesLayers in 0..3) { "Spikes has at most 3 layers, got $spikesLayers" }
   }
 
   companion object {
@@ -41,6 +41,8 @@ data class Battlefield(
   val isGravity: Boolean = false,
   /** Electromorphosis/Wind Power's field-wide trigger (e.g. after Thunder Wave / a Charge user). */
   val isCharge: Boolean = false,
+  /** A Fairy Aura Pokemon is on the field: every Fairy-type move's power is boosted, whoever uses it. */
+  val isFairyAura: Boolean = false,
   val attackerSide: SideConditions = SideConditions.NONE,
   val defenderSide: SideConditions = SideConditions.NONE,
 )

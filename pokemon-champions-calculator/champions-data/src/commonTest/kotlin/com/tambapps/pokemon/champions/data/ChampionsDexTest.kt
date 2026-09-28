@@ -8,6 +8,7 @@ import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.PokemonName
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -82,6 +83,28 @@ class ChampionsDexTest {
     assertEquals(Ability.ROUGH_SKIN, Ability.from(AbilityName("Rough Skin")))
     // Every Pokemon has some ability, so an unrecognized name resolves to a sentinel, not null.
     assertEquals(Ability.NO_ABILITY, Ability.from(AbilityName("not-a-real-ability")))
+  }
+
+  @Test
+  fun parsesTheDefaultAbilityOfEverySpecies() {
+    assertEquals(AbilityName("Intimidate"), ChampionsDex.species(PokemonName("Incineroar")).defaultAbility)
+    assertEquals(AbilityName("Stance Change"), ChampionsDex.species(PokemonName("Aegislash-Shield")).defaultAbility)
+    // every default ability is one the engine recognizes
+    assertTrue(ChampionsDex.allSpecies.all { Ability.from(it.defaultAbility) != Ability.NO_ABILITY })
+  }
+
+  @Test
+  fun nullableLookupsReturnNullForUnknownNames() {
+    assertNull(ChampionsDex.speciesOrNull(PokemonName("not-a-real-pokemon")))
+    assertNull(ChampionsDex.moveOrNull(MoveName("not-a-real-move")))
+    assertEquals(ChampionsDex.species(PokemonName("Incineroar")), ChampionsDex.speciesOrNull(PokemonName("incineroar")))
+    assertEquals(ChampionsDex.move(MoveName("Moonblast")), ChampionsDex.moveOrNull(MoveName("moonblast")))
+  }
+
+  @Test
+  fun lookupsThrowCalcExceptionForUnknownNames() {
+    assertFailsWith<ChampionsCalcException> { ChampionsDex.species(PokemonName("not-a-real-pokemon")) }
+    assertFailsWith<ChampionsCalcException> { ChampionsDex.move(MoveName("not-a-real-move")) }
   }
 
   @Test

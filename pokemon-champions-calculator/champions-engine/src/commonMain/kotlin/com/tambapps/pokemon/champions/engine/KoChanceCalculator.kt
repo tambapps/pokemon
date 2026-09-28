@@ -14,8 +14,8 @@ object KoChanceCalculator {
    * uniformly among [perHitRolls] -- add up to at least [targetHp] damage.
    */
   fun koChance(perHitRolls: List<Int>, hits: Int, targetHp: Int): Double {
-    require(perHitRolls.isNotEmpty()) { "perHitRolls must not be empty" }
-    require(hits >= 1) { "hits must be at least 1, got $hits" }
+    requireValid(perHitRolls.isNotEmpty()) { "perHitRolls must not be empty" }
+    requireValid(hits >= 1) { "hits must be at least 1, got $hits" }
 
     var totalDamageDistribution = mapOf(0 to 1.0)
     repeat(hits) {

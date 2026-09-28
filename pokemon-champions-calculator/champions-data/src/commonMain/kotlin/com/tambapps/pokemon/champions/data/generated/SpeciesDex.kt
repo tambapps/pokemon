@@ -1,5 +1,6 @@
 package com.tambapps.pokemon.champions.data.generated
 
+import com.tambapps.pokemon.AbilityName
 import com.tambapps.pokemon.PokeStats
 import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.PokemonName
@@ -14,7 +15,7 @@ private data class BaseStatsDto(val hp: Int, val atk: Int, val def: Int, val spa
 }
 
 @Serializable
-private data class SpeciesDto(val types: List<String>, val baseStats: BaseStatsDto, val weightKg: Double)
+private data class SpeciesDto(val types: List<String>, val baseStats: BaseStatsDto, val weightKg: Double, val defaultAbility: String)
 
 /** Every Pokemon species/form legal in the Champions format, keyed by normalized name, parsed once on first access. */
 internal val ALL_SPECIES: Map<String, PokemonSpecies> by lazy {
@@ -25,6 +26,7 @@ internal val ALL_SPECIES: Map<String, PokemonSpecies> by lazy {
       secondaryType = dto.types.getOrNull(1)?.let { PokeType.valueOf(it.uppercase()) },
       baseStats = dto.baseStats.toDomain(),
       weightKg = dto.weightKg,
+      defaultAbility = AbilityName(dto.defaultAbility),
     )
   }
 }

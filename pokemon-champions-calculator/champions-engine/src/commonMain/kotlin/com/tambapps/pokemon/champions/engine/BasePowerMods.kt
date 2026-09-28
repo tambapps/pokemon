@@ -23,6 +23,8 @@ internal object BasePowerMods {
     if (field.attackerSide.hasPowerSpot) mods.add(0x14CD)
     if (field.attackerSide.hasAllySteelySpirit && effectiveType == PokeType.STEEL) mods.add(0x1800)
     offensiveAbilityMod(move, effectiveType, attacker, defender, field)?.let(mods::add)
+    // Champions only offers Fairy Aura, not Dark Aura / Aura Break (hidden for this gen in the source calculator)
+    if (field.isFairyAura && effectiveType == PokeType.FAIRY) mods.add(0x1548)
 
     // Technician checks the power after every modifier above it, but before anything below.
     val powerSoFar = pokeRound(basePower * chainMods(mods), 0x1000)

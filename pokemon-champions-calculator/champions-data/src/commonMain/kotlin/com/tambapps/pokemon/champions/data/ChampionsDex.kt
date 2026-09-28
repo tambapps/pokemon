@@ -19,8 +19,14 @@ object ChampionsDex {
   val allMoves: Collection<Move> get() = ALL_MOVES.values
 
   fun species(name: PokemonName): PokemonSpecies =
-    ALL_SPECIES[PokemonNormalizer.normalize(name.value)] ?: throw NoSuchElementException("Unknown Champions species: ${name.value}")
+    speciesOrNull(name) ?: throw ChampionsCalcException("Unknown Champions species: ${name.value}")
+
+  /** Like [species], but null instead of throwing when [name] isn't legal in Champions (e.g. free user input). */
+  fun speciesOrNull(name: PokemonName): PokemonSpecies? = ALL_SPECIES[PokemonNormalizer.normalize(name.value)]
 
   fun move(name: MoveName): Move =
-    ALL_MOVES[PokemonNormalizer.normalize(name.value)] ?: throw NoSuchElementException("Unknown Champions move: ${name.value}")
+    moveOrNull(name) ?: throw ChampionsCalcException("Unknown Champions move: ${name.value}")
+
+  /** Like [move], but null instead of throwing when [name] isn't a Champions move (e.g. free user input). */
+  fun moveOrNull(name: MoveName): Move? = ALL_MOVES[PokemonNormalizer.normalize(name.value)]
 }

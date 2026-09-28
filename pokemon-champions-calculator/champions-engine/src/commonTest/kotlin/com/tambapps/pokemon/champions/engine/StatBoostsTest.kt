@@ -1,5 +1,6 @@
 package com.tambapps.pokemon.champions.engine
 
+import com.tambapps.pokemon.champions.data.ChampionsCalcException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -35,8 +36,8 @@ class StatBoostsTest {
 
   @Test
   fun boostsAreClampedToTheGamesMinusSixToSixRange() {
-    assertFailsWith<IllegalArgumentException> { StatBoosts(attack = 7) }
-    assertFailsWith<IllegalArgumentException> { StatBoosts(speed = -7) }
+    assertFailsWith<ChampionsCalcException> { StatBoosts(attack = 7) }
+    assertFailsWith<ChampionsCalcException> { StatBoosts(speed = -7) }
   }
 
   @Test
