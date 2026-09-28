@@ -49,6 +49,8 @@ data class Move(
   val hasEscalatingPower: Boolean = false,
   /** Payback-style moves whose power doubles under a move-specific condition the caller resolves and reports via the move use. */
   val canBePowerDoubled: Boolean = false,
+  /** Last Respects/Rage Fist: power grows with how many times the effect already stacked, which the caller reports via the move use. */
+  val hasStackingPower: Boolean = false,
   /** Queenly Majesty and Armor Tail block any move with positive priority outright. */
   val hasPriority: Boolean = false,
   /** Reckless boosts moves that hurt their own user on use (recoil) or on a miss (crash, e.g. Jump Kick). */

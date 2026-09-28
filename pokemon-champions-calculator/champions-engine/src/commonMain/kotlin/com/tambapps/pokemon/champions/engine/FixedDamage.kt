@@ -2,6 +2,7 @@ package com.tambapps.pokemon.champions.engine
 
 import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.champions.data.Ability
+import com.tambapps.pokemon.champions.data.Move
 import com.tambapps.pokemon.champions.data.MoveCategory
 import com.tambapps.pokemon.champions.engine.description.CalcFactsBuilder
 import com.tambapps.pokemon.champions.engine.description.CounterMultiplier
@@ -12,9 +13,15 @@ import com.tambapps.pokemon.champions.engine.description.StatDisplay
  * Ported from setDamage: the moves whose damage doesn't come from the damage formula, scoped to Champions.
  * Like the source, Parental Bond doubles some of them in a single hit instead of hitting twice.
  */
+/**
+ * Counter, Mirror Coat, Metal Burst, Comeuppance: moves returning the damage of one of the defender's moves, which the
+ * caller reports via [MoveUse.counteredMove]
+ */
+val Move.returnsDefenderMove: Boolean get() = name.value in FixedDamage.COUNTER_MOVES
+
 internal object FixedDamage {
 
-  private val COUNTER_MOVES = mapOf(
+  internal val COUNTER_MOVES = mapOf(
     "Counter" to CounterMultiplier.DOUBLE,
     "Mirror Coat" to CounterMultiplier.DOUBLE,
     "Metal Burst" to CounterMultiplier.ONE_AND_A_HALF,

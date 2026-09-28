@@ -82,6 +82,7 @@ private fun MoveDto.toDomain(name: String) = Move(
   alwaysCrits = alwaysCrit,
   hasEscalatingPower = isTripleHit,
   canBePowerDoubled = canDouble,
+  hasStackingPower = linearAddBP,
   hasPriority = isPriority,
   hasRecoil = recoilHP != null || hasCrash,
   statChange = statChange?.toStatChange(),

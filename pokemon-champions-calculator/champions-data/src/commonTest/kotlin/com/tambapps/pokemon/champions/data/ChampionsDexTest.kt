@@ -142,6 +142,14 @@ class ChampionsDexTest {
   }
 
   @Test
+  fun lastRespectsAndRageFistHaveStackingPower() {
+    assertTrue(ChampionsDex.move(MoveName("Last Respects")).hasStackingPower)
+    assertTrue(ChampionsDex.move(MoveName("Rage Fist")).hasStackingPower)
+    assertTrue(!ChampionsDex.move(MoveName("Payback")).hasStackingPower)
+    assertTrue(ChampionsDex.allMoves.filter { it.hasStackingPower }.map { it.name.value }.toSet() == setOf("Last Respects", "Rage Fist"))
+  }
+
+  @Test
   fun lookupsThrowCalcExceptionForUnknownNames() {
     assertFailsWith<ChampionsCalcException> { ChampionsDex.species(PokemonName("not-a-real-pokemon")) }
     assertFailsWith<ChampionsCalcException> { ChampionsDex.move(MoveName("not-a-real-move")) }
