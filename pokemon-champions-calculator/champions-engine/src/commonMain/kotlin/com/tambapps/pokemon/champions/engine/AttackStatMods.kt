@@ -9,16 +9,41 @@ import com.tambapps.pokemon.champions.data.MoveCategory
 /** Ported from calcAtMods, scoped to Champions. */
 internal object AttackStatMods {
 
-  fun resolve(move: Move, effectiveType: PokeType, attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield): List<Int> {
+  fun resolve(
+    move: Move,
+    effectiveType: PokeType,
+    attacker: BattlePokemon,
+    defender: BattlePokemon,
+    field: Battlefield,
+    description: DescriptionBuilder = DescriptionBuilder(),
+  ): List<Int> {
     val category = effectiveCategoryOf(move, attacker, defender)
     val mods = mutableListOf<Int>()
 
-    offensiveOneAndHalfMod(move, effectiveType, attacker, category)?.let(mods::add)
-      ?: solarPowerMod(attacker, category, field)?.let(mods::add)
+    val oneAndHalfMod = offensiveOneAndHalfMod(move, effectiveType, attacker, category)
+    if (oneAndHalfMod != null) {
+      mods.add(oneAndHalfMod)
+      description.attackerAbility(attacker.resolvedAbility)
+    } else {
+      solarPowerMod(attacker, category, field)?.let {
+        mods.add(it)
+        description.attackerAbility(attacker.resolvedAbility)
+        description.weather(field.weather)
+      }
+    }
 
-    defensiveHalfMod(effectiveType, defender)?.let(mods::add)
-    offensiveDoubleMod(effectiveType, attacker, category)?.let(mods::add)
-    itemDoubleMod(attacker)?.let(mods::add)
+    defensiveHalfMod(effectiveType, defender)?.let {
+      mods.add(it)
+      description.defenderAbility(defender.resolvedAbility)
+    }
+    offensiveDoubleMod(effectiveType, attacker, category)?.let {
+      mods.add(it)
+      description.attackerAbility(attacker.resolvedAbility)
+    }
+    itemDoubleMod(attacker)?.let {
+      mods.add(it)
+      description.attackerItem(attacker.effectiveItem)
+    }
 
     return mods
   }

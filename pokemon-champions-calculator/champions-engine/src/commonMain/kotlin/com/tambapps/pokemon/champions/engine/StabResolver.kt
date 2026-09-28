@@ -15,3 +15,10 @@ fun stabMultiplier(move: Move, effectiveType: PokeType, attacker: BattlePokemon)
   (attacker.resolvedAbility == Ability.PROTEAN || attacker.resolvedAbility == Ability.LIBERO) && attacker.abilityIsActive -> 0x1800
   else -> 0x1000
 }
+
+/** Records the ability behind [stabMultiplier], when it comes from one (Adaptability, an active Protean/Libero). */
+internal fun describeStab(move: Move, effectiveType: PokeType, attacker: BattlePokemon, description: DescriptionBuilder) {
+  val stab = stabMultiplier(move, effectiveType, attacker)
+  val fromAbility = stab == 0x2000 || (stab == 0x1800 && !attacker.hasType(effectiveType))
+  if (fromAbility) description.attackerAbility(attacker.resolvedAbility)
+}

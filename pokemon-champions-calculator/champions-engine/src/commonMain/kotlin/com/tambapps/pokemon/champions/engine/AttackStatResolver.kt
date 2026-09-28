@@ -17,21 +17,30 @@ internal object AttackStatResolver {
     isDefenderStat = move.name.value == "Foul Play",
   )
 
-  fun resolve(move: Move, attacker: BattlePokemon, defender: BattlePokemon, isCritical: Boolean): Int {
+  fun resolve(move: Move, attacker: BattlePokemon, defender: BattlePokemon, isCritical: Boolean, description: DescriptionBuilder = DescriptionBuilder()): Int {
     val statSource = attackStatSourceOf(move, attacker, defender)
     val attackSource = if (statSource.isDefenderStat) defender else attacker
     val attackStat = statSource.stat
+    description.attackStat = StatInvestment.of(attackSource, attackStat.toStat())
+    description.usesOppAtkStat = statSource.isDefenderStat
 
     var attack = when {
-      defender.resolvedAbility == Ability.UNAWARE && attackSource.boosts[attackStat] != 0 ->
+      defender.resolvedAbility == Ability.UNAWARE && attackSource.boosts[attackStat] != 0 -> {
+        description.defenderAbility(defender.resolvedAbility)
+        description.attackBoost = attackSource.boosts[attackStat]
         attackSource.stats[attackStat.toStat()]
+      }
       attackSource.boosts[attackStat] == 0 || (isCritical && attackSource.boosts[attackStat] < 0) ->
         attackSource.stats[attackStat.toStat()]
-      else -> attackSource.boostedStat(attackStat)
+      else -> {
+        description.attackBoost = attackSource.boosts[attackStat]
+        attackSource.boostedStat(attackStat)
+      }
     }
 
     if (attacker.resolvedAbility == Ability.HUSTLE && effectiveCategoryOf(move, attacker, defender) == MoveCategory.PHYSICAL) {
       attack = pokeRound(attack * 3.0 / 2)
+      description.attackerAbility(attacker.resolvedAbility)
     }
     return attack
   }

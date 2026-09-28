@@ -26,12 +26,15 @@ fun effectiveTypeOf(move: Move, attacker: BattlePokemon, field: Battlefield): Po
   val fieldResolvedType = fieldResolvedTypeOf(move, attacker, field)
   if (move.name.value in EXEMPT_FROM_ATE_ABILITIES) return fieldResolvedType
 
-  if (attacker.resolvedAbility == Ability.LIQUID_VOICE && move.isSound) return PokeType.WATER
+  if (isRetypedByLiquidVoice(move, attacker)) return PokeType.WATER
   if (fieldResolvedType == PokeType.NORMAL) {
     ATE_TYPE_BY_ABILITY[attacker.resolvedAbility]?.let { return it }
   }
   return fieldResolvedType
 }
+
+internal fun isRetypedByLiquidVoice(move: Move, attacker: BattlePokemon): Boolean =
+  move.name.value !in EXEMPT_FROM_ATE_ABILITIES && attacker.resolvedAbility == Ability.LIQUID_VOICE && move.isSound
 
 /** True when a "-ate" ability retyped this move, which also grants it a 1.2x power boost. */
 fun hasAteAbilityBoost(move: Move, attacker: BattlePokemon): Boolean =

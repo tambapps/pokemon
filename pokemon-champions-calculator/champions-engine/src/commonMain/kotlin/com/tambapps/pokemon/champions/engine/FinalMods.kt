@@ -9,31 +9,70 @@ import com.tambapps.pokemon.champions.data.MoveCategory
 /** Ported from calcFinalMods, scoped to Champions. */
 internal object FinalMods {
 
-  fun resolve(move: Move, effectiveType: PokeType, attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield, isCritical: Boolean, typeEffectiveness: Double): List<Int> {
+  fun resolve(
+    move: Move,
+    effectiveType: PokeType,
+    attacker: BattlePokemon,
+    defender: BattlePokemon,
+    field: Battlefield,
+    isCritical: Boolean,
+    typeEffectiveness: Double,
+    description: DescriptionBuilder = DescriptionBuilder(),
+  ): List<Int> {
     val effectiveCategory = effectiveCategoryOf(move, attacker, defender)
     val mods = mutableListOf<Int>()
 
-    screenMod(move, effectiveCategory, field, isCritical)?.let(mods::add)
-    if (attacker.resolvedAbility == Ability.SNIPER && isCritical) mods.add(0x1800)
-    if (defender.resolvedAbility == Ability.MULTISCALE && defender.hp == defender.maxHp) mods.add(0x800)
-    if ((defender.resolvedAbility == Ability.FLUFFY || defender.resolvedAbility == Ability.AURA_GUARD) && move.makesContact) mods.add(0x800)
-    if (defender.resolvedAbility == Ability.PUNK_ROCK && move.isSound) mods.add(0x800)
-    if (field.defenderSide.hasFriendGuard) mods.add(0xC00)
-    if ((defender.resolvedAbility == Ability.SOLID_ROCK || defender.resolvedAbility == Ability.FILTER) && typeEffectiveness > 1) mods.add(0xC00)
-    if (defender.resolvedAbility == Ability.FLUFFY && effectiveType == PokeType.FIRE) mods.add(0x2000)
+    screenMod(move, effectiveCategory, field, isCritical, description)?.let(mods::add)
+    if (attacker.resolvedAbility == Ability.SNIPER && isCritical) {
+      mods.add(0x1800)
+      description.attackerAbility(attacker.resolvedAbility)
+    }
+    if (defender.resolvedAbility == Ability.MULTISCALE && defender.hp == defender.maxHp) {
+      mods.add(0x800)
+      description.defenderAbility(defender.resolvedAbility)
+    }
+    if ((defender.resolvedAbility == Ability.FLUFFY || defender.resolvedAbility == Ability.AURA_GUARD) && move.makesContact) {
+      mods.add(0x800)
+      description.defenderAbility(defender.resolvedAbility)
+    }
+    if (defender.resolvedAbility == Ability.PUNK_ROCK && move.isSound) {
+      mods.add(0x800)
+      description.defenderAbility(defender.resolvedAbility)
+    }
+    if (field.defenderSide.hasFriendGuard) {
+      mods.add(0xC00)
+      description.isFriendGuard = true
+    }
+    if ((defender.resolvedAbility == Ability.SOLID_ROCK || defender.resolvedAbility == Ability.FILTER) && typeEffectiveness > 1) {
+      mods.add(0xC00)
+      description.defenderAbility(defender.resolvedAbility)
+    }
+    if (defender.resolvedAbility == Ability.FLUFFY && effectiveType == PokeType.FIRE) {
+      mods.add(0x2000)
+      description.defenderAbility(defender.resolvedAbility)
+    }
 
-    itemMod(attacker, typeEffectiveness)?.let(mods::add)
-    resistBerryMod(effectiveType, attacker, defender, typeEffectiveness)?.let(mods::add)
+    itemMod(attacker, typeEffectiveness)?.let {
+      mods.add(it)
+      description.attackerItem(attacker.effectiveItem)
+    }
+    resistBerryMod(effectiveType, attacker, defender, typeEffectiveness)?.let {
+      mods.add(it)
+      if (defender.resolvedAbility == Ability.RIPEN) description.defenderAbility(defender.resolvedAbility)
+      description.defenderItem(defender.effectiveItem)
+    }
 
     return mods
   }
 
-  private fun screenMod(move: Move, effectiveCategory: MoveCategory, field: Battlefield, isCritical: Boolean): Int? {
+  private fun screenMod(move: Move, effectiveCategory: MoveCategory, field: Battlefield, isCritical: Boolean, description: DescriptionBuilder): Int? {
     if (isCritical || move.ignoresScreens) return null
-    val blocks = field.defenderSide.hasAuroraVeil ||
-      (field.defenderSide.hasReflect && effectiveCategory == MoveCategory.PHYSICAL) ||
-      (field.defenderSide.hasLightScreen && effectiveCategory == MoveCategory.SPECIAL)
-    if (!blocks) return null
+    when {
+      field.defenderSide.hasAuroraVeil -> description.isAuroraVeil = true
+      field.defenderSide.hasReflect && effectiveCategory == MoveCategory.PHYSICAL -> description.isReflect = true
+      field.defenderSide.hasLightScreen && effectiveCategory == MoveCategory.SPECIAL -> description.isLightScreen = true
+      else -> return null
+    }
     return if (field.format != BattleFormat.SINGLES) 0xAAC else 0x800
   }
 

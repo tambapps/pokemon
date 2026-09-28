@@ -11,21 +11,41 @@ internal object DefenseStatResolver {
   fun defenseStatOf(hitsPhysical: Boolean): BoostableStat =
     if (hitsPhysical) BoostableStat.DEFENSE else BoostableStat.SPECIAL_DEFENSE
 
-  fun resolve(move: Move, attacker: BattlePokemon, defender: BattlePokemon, hitsPhysical: Boolean, isCritical: Boolean, field: Battlefield): Int {
+  fun resolve(
+    move: Move,
+    attacker: BattlePokemon,
+    defender: BattlePokemon,
+    hitsPhysical: Boolean,
+    isCritical: Boolean,
+    field: Battlefield,
+    description: DescriptionBuilder = DescriptionBuilder(),
+  ): Int {
     val defenseStat = defenseStatOf(hitsPhysical)
     val boost = defender.boosts[defenseStat]
+    description.defenseStat = StatInvestment.of(defender, defenseStat.toStat())
 
     var defense = when {
-      attacker.resolvedAbility == Ability.UNAWARE && boost != 0 -> defender.stats[defenseStat.toStat()]
-      move.ignoresDefenseBoosts && boost != 0 -> defender.stats[defenseStat.toStat()]
+      attacker.resolvedAbility == Ability.UNAWARE && boost != 0 -> {
+        description.attackerAbility(attacker.resolvedAbility)
+        description.defenseBoost = boost
+        defender.stats[defenseStat.toStat()]
+      }
+      move.ignoresDefenseBoosts && boost != 0 -> {
+        description.defenseBoost = boost
+        defender.stats[defenseStat.toStat()]
+      }
       boost == 0 || (isCritical && boost > 0) -> defender.stats[defenseStat.toStat()]
-      else -> defender.boostedStat(defenseStat)
+      else -> {
+        description.defenseBoost = boost
+        defender.boostedStat(defenseStat)
+      }
     }
 
     val roughTerrainBoost = (field.weather == Weather.SAND && defender.hasType(PokeType.ROCK) && !hitsPhysical) ||
       (field.weather == Weather.SNOW && defender.hasType(PokeType.ICE) && hitsPhysical)
     if (roughTerrainBoost && attacker.resolvedAbility != Ability.MEGA_SOL) {
       defense = pokeRound(defense * 3.0 / 2)
+      description.weather(field.weather)
     }
     return defense
   }

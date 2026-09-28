@@ -51,7 +51,8 @@ const sandbox = {
   $: fakeJQuery(),
   localStorage: { getItem: () => null },
   gen: 10,
-  resultDisplayMode: 'raw',
+  // how descriptions write stat investments: 'SPs' (the calculator UI's default), 'EVs' or 'raw'; set per scenario by calc()
+  resultDisplayMode: 'SPs',
   mechanicsTests: {},
   isCustomMods: false,
 };
@@ -170,11 +171,12 @@ function buildField(overrides) {
   }, overrides || {});
 }
 
-function calc(attackerSpec, defenderSpec, moveName, moveOverrides, fieldOverrides) {
+function calc(attackerSpec, defenderSpec, moveName, moveOverrides, fieldOverrides, displayMode) {
   const attacker = buildPokemon(attackerSpec);
   const defender = buildPokemon(defenderSpec);
   const move = buildMove(moveName, moveOverrides);
   const field = buildField(fieldOverrides);
+  sandbox.resultDisplayMode = displayMode || 'SPs';
   const result = sandbox.GET_DAMAGE_SV(attacker, defender, move, field);
   return result;
 }
@@ -184,7 +186,7 @@ module.exports = { calc, sandbox };
 if (require.main === module) {
   const scenarios = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
   const results = scenarios.map((s) => {
-    const r = calc(s.attacker, s.defender, s.move, s.moveOverrides, s.field);
+    const r = calc(s.attacker, s.defender, s.move, s.moveOverrides, s.field, s.displayMode);
     return { id: s.id, damage: r.damage, description: r.description };
   });
   console.log(JSON.stringify(results, null, 2));
