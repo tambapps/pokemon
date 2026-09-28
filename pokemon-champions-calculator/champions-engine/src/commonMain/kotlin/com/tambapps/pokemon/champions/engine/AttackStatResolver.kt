@@ -3,6 +3,8 @@ package com.tambapps.pokemon.champions.engine
 import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Move
 import com.tambapps.pokemon.champions.data.MoveCategory
+import com.tambapps.pokemon.champions.engine.description.CalcFactsBuilder
+import com.tambapps.pokemon.champions.engine.description.StatInvestment
 
 /** Ported from calcAttack, scoped to Champions. Resolves the (Special) Attack value a hit rolls damage off of, before [AttackStatMods]. */
 internal object AttackStatResolver {
@@ -17,30 +19,30 @@ internal object AttackStatResolver {
     isDefenderStat = move.name.value == "Foul Play",
   )
 
-  fun resolve(move: Move, attacker: BattlePokemon, defender: BattlePokemon, isCritical: Boolean, description: DescriptionBuilder = DescriptionBuilder()): Int {
+  fun resolve(move: Move, attacker: BattlePokemon, defender: BattlePokemon, isCritical: Boolean, facts: CalcFactsBuilder = CalcFactsBuilder()): Int {
     val statSource = attackStatSourceOf(move, attacker, defender)
     val attackSource = if (statSource.isDefenderStat) defender else attacker
     val attackStat = statSource.stat
-    description.attackStat = StatInvestment.of(attackSource, attackStat.toStat())
-    description.usesOppAtkStat = statSource.isDefenderStat
+    facts.attackStat = StatInvestment.of(attackSource, attackStat.toStat())
+    facts.usesOppAtkStat = statSource.isDefenderStat
 
     var attack = when {
       defender.resolvedAbility == Ability.UNAWARE && attackSource.boosts[attackStat] != 0 -> {
-        description.defenderAbility(defender.resolvedAbility)
-        description.attackBoost = attackSource.boosts[attackStat]
+        facts.defenderAbility(defender.resolvedAbility)
+        facts.attackBoost = attackSource.boosts[attackStat]
         attackSource.stats[attackStat.toStat()]
       }
       attackSource.boosts[attackStat] == 0 || (isCritical && attackSource.boosts[attackStat] < 0) ->
         attackSource.stats[attackStat.toStat()]
       else -> {
-        description.attackBoost = attackSource.boosts[attackStat]
+        facts.attackBoost = attackSource.boosts[attackStat]
         attackSource.boostedStat(attackStat)
       }
     }
 
     if (attacker.resolvedAbility == Ability.HUSTLE && effectiveCategoryOf(move, attacker, defender) == MoveCategory.PHYSICAL) {
       attack = pokeRound(attack * 3.0 / 2)
-      description.attackerAbility(attacker.resolvedAbility)
+      facts.attackerAbility(attacker.resolvedAbility)
     }
     return attack
   }

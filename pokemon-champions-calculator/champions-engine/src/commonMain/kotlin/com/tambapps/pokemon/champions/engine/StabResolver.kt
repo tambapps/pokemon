@@ -3,6 +3,7 @@ package com.tambapps.pokemon.champions.engine
 import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Move
+import com.tambapps.pokemon.champions.engine.description.CalcFactsBuilder
 
 /**
  * Same-Type Attack Bonus, as a fixed-point 0x1000-scaled multiplier. Ported from the
@@ -17,8 +18,8 @@ fun stabMultiplier(move: Move, effectiveType: PokeType, attacker: BattlePokemon)
 }
 
 /** Records the ability behind [stabMultiplier], when it comes from one (Adaptability, an active Protean/Libero). */
-internal fun describeStab(move: Move, effectiveType: PokeType, attacker: BattlePokemon, description: DescriptionBuilder) {
+internal fun describeStab(move: Move, effectiveType: PokeType, attacker: BattlePokemon, facts: CalcFactsBuilder) {
   val stab = stabMultiplier(move, effectiveType, attacker)
   val fromAbility = stab == 0x2000 || (stab == 0x1800 && !attacker.hasType(effectiveType))
-  if (fromAbility) description.attackerAbility(attacker.resolvedAbility)
+  if (fromAbility) facts.attackerAbility(attacker.resolvedAbility)
 }

@@ -3,6 +3,8 @@ package com.tambapps.pokemon.champions.engine
 import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Move
+import com.tambapps.pokemon.champions.engine.description.CalcFactsBuilder
+import com.tambapps.pokemon.champions.engine.description.StatInvestment
 
 /** Ported from calcDefense, scoped to Champions. Resolves the (Special) Defense value a hit rolls damage off of, before [DefenseStatMods]. */
 internal object DefenseStatResolver {
@@ -18,25 +20,25 @@ internal object DefenseStatResolver {
     hitsPhysical: Boolean,
     isCritical: Boolean,
     field: Battlefield,
-    description: DescriptionBuilder = DescriptionBuilder(),
+    facts: CalcFactsBuilder = CalcFactsBuilder(),
   ): Int {
     val defenseStat = defenseStatOf(hitsPhysical)
     val boost = defender.boosts[defenseStat]
-    description.defenseStat = StatInvestment.of(defender, defenseStat.toStat())
+    facts.defenseStat = StatInvestment.of(defender, defenseStat.toStat())
 
     var defense = when {
       attacker.resolvedAbility == Ability.UNAWARE && boost != 0 -> {
-        description.attackerAbility(attacker.resolvedAbility)
-        description.defenseBoost = boost
+        facts.attackerAbility(attacker.resolvedAbility)
+        facts.defenseBoost = boost
         defender.stats[defenseStat.toStat()]
       }
       move.ignoresDefenseBoosts && boost != 0 -> {
-        description.defenseBoost = boost
+        facts.defenseBoost = boost
         defender.stats[defenseStat.toStat()]
       }
       boost == 0 || (isCritical && boost > 0) -> defender.stats[defenseStat.toStat()]
       else -> {
-        description.defenseBoost = boost
+        facts.defenseBoost = boost
         defender.boostedStat(defenseStat)
       }
     }
@@ -45,7 +47,7 @@ internal object DefenseStatResolver {
       (field.weather == Weather.SNOW && defender.hasType(PokeType.ICE) && hitsPhysical)
     if (roughTerrainBoost && attacker.resolvedAbility != Ability.MEGA_SOL) {
       defense = pokeRound(defense * 3.0 / 2)
-      description.weather(field.weather)
+      facts.weather(field.weather)
     }
     return defense
   }

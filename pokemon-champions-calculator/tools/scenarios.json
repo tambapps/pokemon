@@ -1095,6 +1095,12 @@
     "move": "Kowtow Cleave"
   },
   {
+    "id": "supreme-overlord-one-ally",
+    "attacker": { "name": "Kingambit", "ability": "Supreme Overlord", "nature": "Hardy", "supremeOverlord": 1, "statPoints": { "hp": 0, "at": 20, "df": 0, "sa": 0, "sd": 0, "sp": 0 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Kowtow Cleave"
+  },
+  {
     "id": "rivalry-opposite-gender",
     "attacker": { "name": "Garchomp", "ability": "Rivalry", "nature": "Adamant", "rivalryGender": "Opposite", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
     "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },

@@ -2,6 +2,7 @@ package com.tambapps.pokemon.champions.engine
 
 import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Move
+import com.tambapps.pokemon.champions.engine.description.CalcFactsBuilder
 import kotlin.math.min
 
 /** Ported from basePowerFunc, scoped to the moves that exist in Champions and have a formula-driven power. */
@@ -13,32 +14,32 @@ internal object BasePowerResolver {
     attacker: BattlePokemon,
     defender: BattlePokemon,
     field: Battlefield,
-    description: DescriptionBuilder = DescriptionBuilder(),
+    facts: CalcFactsBuilder = CalcFactsBuilder(),
   ): Int {
     val custom = customBasePower(move, moveUse, attacker, defender, field)
     val base = custom ?: move.basePower
-    describeBasePower(move, base, moveUse, attacker, field, description)
+    describeBasePower(move, base, moveUse, attacker, field, facts)
     return if (move.hasEscalatingPower) base * moveUse.hitNumber else base
   }
 
-  // the source's basePowerFunc description, for the custom powers ported above
-  private fun describeBasePower(move: Move, power: Int, moveUse: MoveUse, attacker: BattlePokemon, field: Battlefield, description: DescriptionBuilder) {
+  // the source's basePowerFunc facts, for the custom powers ported above
+  private fun describeBasePower(move: Move, power: Int, moveUse: MoveUse, attacker: BattlePokemon, field: Battlefield, facts: CalcFactsBuilder) {
     val isChanged = power != move.basePower
     when (move.name.value) {
       "Gyro Ball", "Electro Ball", "Low Kick", "Grass Knot", "Heavy Slam", "Heat Crash", "Eruption", "Water Spout",
-      "Flail", "Reversal", "Hard Press", "Stored Power", "Power Trip" -> description.moveBP = power.toDouble()
-      "Acrobatics", "Hex", "Infernal Parade", "Rising Voltage" -> if (isChanged) description.moveBP = power.toDouble()
+      "Flail", "Reversal", "Hard Press", "Stored Power", "Power Trip" -> facts.moveBP = power.toDouble()
+      "Acrobatics", "Hex", "Infernal Parade", "Rising Voltage" -> if (isChanged) facts.moveBP = power.toDouble()
       "Weather Ball" -> if (isChanged) {
-        description.moveBP = power.toDouble()
-        if (field.weather != Weather.NONE) description.weather(field.weather) else description.attackerAbility(attacker.resolvedAbility)
-        description.moveType(effectiveTypeOf(move, attacker, field))
+        facts.moveBP = power.toDouble()
+        if (field.weather != Weather.NONE) facts.weather(field.weather) else facts.attackerAbility(attacker.resolvedAbility)
+        facts.moveType(effectiveTypeOf(move, attacker, field))
       }
       "Terrain Pulse" -> if (isChanged) {
-        description.moveBP = power.toDouble()
-        description.terrain(field.terrain)
-        description.moveType(effectiveTypeOf(move, attacker, field))
+        facts.moveBP = power.toDouble()
+        facts.terrain(field.terrain)
+        facts.moveType(effectiveTypeOf(move, attacker, field))
       }
-      "Last Respects", "Rage Fist" -> if (moveUse.priorPowerBoosts > 0) description.moveBP = power.toDouble()
+      "Last Respects", "Rage Fist" -> if (moveUse.priorPowerBoosts > 0) facts.moveBP = power.toDouble()
     }
   }
 

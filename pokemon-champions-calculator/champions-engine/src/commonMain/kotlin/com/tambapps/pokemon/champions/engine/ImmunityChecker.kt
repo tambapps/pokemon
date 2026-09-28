@@ -4,6 +4,7 @@ import com.tambapps.pokemon.PokeType
 import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Item
 import com.tambapps.pokemon.champions.data.Move
+import com.tambapps.pokemon.champions.engine.description.CalcFactsBuilder
 
 /** Ported from immunityChecks, scoped to abilities/items/moves reachable in Champions. */
 object ImmunityChecker {
@@ -12,44 +13,44 @@ object ImmunityChecker {
 
   /** True if [defender] takes no damage at all from [move] under [field], regardless of the raw damage roll. */
   fun isImmune(move: Move, effectiveType: PokeType, attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield): Boolean =
-    isImmune(move, effectiveType, attacker, defender, field, DescriptionBuilder())
+    isImmune(move, effectiveType, attacker, defender, field, CalcFactsBuilder())
 
-  /** Also records what the immunity comes from in [description], like the source's immunityChecks. */
+  /** Also records what the immunity comes from in [facts], like the source's immunityChecks. */
   internal fun isImmune(
     move: Move,
     effectiveType: PokeType,
     attacker: BattlePokemon,
     defender: BattlePokemon,
     field: Battlefield,
-    description: DescriptionBuilder,
+    facts: CalcFactsBuilder,
   ): Boolean {
-    if (TypeEffectivenessCalculator.effectivenessOf(move, effectiveType, attacker, defender, field, description) == 0.0) return true
+    if (TypeEffectivenessCalculator.effectivenessOf(move, effectiveType, attacker, defender, field, facts) == 0.0) return true
     val blockingAbility = typeImmunityAbilityBlocks(effectiveType, defender) ||
       (effectiveType == PokeType.GROUND && !field.isGravity && (defender.resolvedAbility == Ability.LEVITATE || defender.resolvedAbility == Ability.EELEVATE)) ||
       (move.isBullet && defender.resolvedAbility == Ability.BULLETPROOF) ||
       (move.isSound && defender.resolvedAbility == Ability.SOUNDPROOF)
     if (blockingAbility) {
-      description.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defender.resolvedAbility)
       return true
     }
     if (airBalloonBlocks(effectiveType, defender, field)) {
-      description.defenderItem(defender.effectiveItem)
+      facts.defenderItem(defender.effectiveItem)
       return true
     }
     if (move.name.value in EXPLOSIVE_MOVES && (defender.resolvedAbility == Ability.DAMP || attacker.resolvedAbility == Ability.DAMP)) {
-      if (defender.resolvedAbility == Ability.DAMP) description.defenderAbility(defender.resolvedAbility)
-      if (attacker.resolvedAbility == Ability.DAMP) description.attackerAbility(attacker.resolvedAbility)
+      if (defender.resolvedAbility == Ability.DAMP) facts.defenderAbility(defender.resolvedAbility)
+      if (attacker.resolvedAbility == Ability.DAMP) facts.attackerAbility(attacker.resolvedAbility)
       return true
     }
     if (move.isOHKO && defender.resolvedAbility == Ability.STURDY) {
-      description.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defender.resolvedAbility)
       return true
     }
     if (blockedByPriorityImmunity(move, attacker, defender, field)) {
       if (defender.resolvedAbility == Ability.QUEENLY_MAJESTY || defender.resolvedAbility == Ability.ARMOR_TAIL) {
-        description.defenderAbility(defender.resolvedAbility)
+        facts.defenderAbility(defender.resolvedAbility)
       } else {
-        description.terrain(field.terrain)
+        facts.terrain(field.terrain)
       }
       return true
     }
