@@ -9,7 +9,8 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const CALCULATOR_ROOT = process.argv[3] || path.join(__dirname, '..', '..', '..', 'NCP-VGC-Damage-Calculator');
+// NCP_CALCULATOR_ROOT also works when this file is require()d by another script, whose arguments aren't ours
+const CALCULATOR_ROOT = process.env.NCP_CALCULATOR_ROOT || process.argv[3] || path.join(__dirname, '..', '..', '..', 'NCP-VGC-Damage-Calculator');
 const SRC = path.join(CALCULATOR_ROOT, 'script_res');
 
 function deepExtend(t, ...s) {
@@ -55,6 +56,9 @@ const sandbox = {
   resultDisplayMode: 'SPs',
   mechanicsTests: {},
   isCustomMods: false,
+  // UI globals the setup pass of CALCULATE_ALL_MOVES_SV reads or writes
+  lastHighestStat: [-1, -1],
+  manualProtoQuark: false,
 };
 vm.createContext(sandbox);
 function load(file) {
@@ -171,14 +175,42 @@ function buildField(overrides) {
   }, overrides || {});
 }
 
-function calc(attackerSpec, defenderSpec, moveName, moveOverrides, fieldOverrides, displayMode) {
+/**
+ * The calculator UI's Field: the source of both sides, with the weather/terrain its setup pass can clear.
+ * [attackerSide] is what the attacker's moves see (its field overrides, the defender's screens...), like getSide(1).
+ * `attackerTailwind`/`defenderTailwind` are each side's own Tailwind, for the speeds.
+ */
+function buildUiField(attackerSide) {
+  let weather = attackerSide.weather, terrain = attackerSide.terrain;
+  const tailwind = [!!attackerSide.attackerTailwind, !!attackerSide.defenderTailwind];
+  const otherSide = buildField({ format: attackerSide.format, isGravity: attackerSide.isGravity });
+  return {
+    getNeutralGas: () => false,
+    getTailwind: (i) => tailwind[i],
+    getWeather: () => weather,
+    getTerrain: () => terrain,
+    getSwamp: () => false,
+    clearWeather: () => { weather = ''; },
+    clearTerrain: () => { terrain = ''; },
+    getSide: (i) => Object.assign({}, i === 1 ? attackerSide : otherSide, { weather, terrain, isTailwind: tailwind[i] }),
+  };
+}
+
+const FILLER_MOVE = 'Protect';
+
+/**
+ * Runs the calculator's CALCULATE_ALL_MOVES_SV, like its UI does: its setup pass first (Trace, Cloud Nine, Klutz,
+ * terrain seeds, Intimidate, speeds, Infiltrator, weights...), then GET_DAMAGE_SV. The attacker is the left Pokemon
+ * using [moveName] as its first move; [counteredMove] is the defender's first move, the one Counter-like moves return.
+ */
+function calc(attackerSpec, defenderSpec, moveName, moveOverrides, fieldOverrides, displayMode, counteredMove) {
   const attacker = buildPokemon(attackerSpec);
   const defender = buildPokemon(defenderSpec);
-  const move = buildMove(moveName, moveOverrides);
-  const field = buildField(fieldOverrides);
+  attacker.moves = [buildMove(moveName, moveOverrides), buildMove(FILLER_MOVE), buildMove(FILLER_MOVE), buildMove(FILLER_MOVE)];
+  defender.moves = [buildMove(counteredMove || FILLER_MOVE), buildMove(FILLER_MOVE), buildMove(FILLER_MOVE), buildMove(FILLER_MOVE)];
+  const field = buildUiField(buildField(fieldOverrides));
   sandbox.resultDisplayMode = displayMode || 'SPs';
-  const result = sandbox.GET_DAMAGE_SV(attacker, defender, move, field);
-  return result;
+  return sandbox.CALCULATE_ALL_MOVES_SV(attacker, defender, field)[0][0];
 }
 
 module.exports = { calc, sandbox };
@@ -186,7 +218,7 @@ module.exports = { calc, sandbox };
 if (require.main === module) {
   const scenarios = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
   const results = scenarios.map((s) => {
-    const r = calc(s.attacker, s.defender, s.move, s.moveOverrides, s.field, s.displayMode);
+    const r = calc(s.attacker, s.defender, s.move, s.moveOverrides, s.field, s.displayMode, s.counteredMove);
     return { id: s.id, damage: r.damage, description: r.description };
   });
   console.log(JSON.stringify(results, null, 2));

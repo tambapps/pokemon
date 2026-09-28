@@ -37,7 +37,7 @@ object SpeedCalculator {
     pokemon.resolvedAbility == Ability.SAND_RUSH && field.weather == Weather.SAND -> 2.0
     pokemon.resolvedAbility == Ability.SLUSH_RUSH && (field.weather == Weather.HAIL || field.weather == Weather.SNOW) -> 2.0
     pokemon.resolvedAbility == Ability.SURGE_SURFER && field.terrain == Terrain.ELECTRIC -> 2.0
-    pokemon.resolvedAbility == Ability.UNBURDEN && pokemon.item == null -> 2.0
+    pokemon.resolvedAbility == Ability.UNBURDEN && !pokemon.holdsItem -> 2.0
     else -> 1.0
   }
 }

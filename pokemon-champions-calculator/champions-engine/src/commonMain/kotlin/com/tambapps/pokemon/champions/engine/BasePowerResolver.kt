@@ -15,19 +15,41 @@ internal object BasePowerResolver {
     defender: BattlePokemon,
     field: Battlefield,
     facts: CalcFactsBuilder = CalcFactsBuilder(),
+    defenderAbility: Ability = defender.resolvedAbility,
   ): Int {
     val custom = customBasePower(move, moveUse, attacker, defender, field)
     val base = custom ?: move.basePower
-    describeBasePower(move, base, moveUse, attacker, field, facts)
+    describeBasePower(move, base, moveUse, attacker, field, facts, defenderAbility)
     return if (move.hasEscalatingPower) base * moveUse.hitNumber else base
   }
 
   // the source's basePowerFunc facts, for the custom powers ported above
-  private fun describeBasePower(move: Move, power: Int, moveUse: MoveUse, attacker: BattlePokemon, field: Battlefield, facts: CalcFactsBuilder) {
+  private fun describeBasePower(
+    move: Move,
+    power: Int,
+    moveUse: MoveUse,
+    attacker: BattlePokemon,
+    field: Battlefield,
+    facts: CalcFactsBuilder,
+    defenderAbility: Ability,
+  ) {
     val isChanged = power != move.basePower
     when (move.name.value) {
-      "Gyro Ball", "Electro Ball", "Low Kick", "Grass Knot", "Heavy Slam", "Heat Crash", "Eruption", "Water Spout",
+      "Gyro Ball", "Electro Ball", "Eruption", "Water Spout",
       "Flail", "Reversal", "Hard Press", "Stored Power", "Power Trip" -> facts.moveBP = power.toDouble()
+      "Low Kick", "Grass Knot" -> {
+        facts.moveBP = power.toDouble()
+        if (defenderAbility in WEIGHT_ABILITIES) facts.defenderAbility(defenderAbility)
+      }
+      "Heavy Slam", "Heat Crash" -> {
+        facts.moveBP = power.toDouble()
+        if (defenderAbility in WEIGHT_ABILITIES) facts.defenderAbility(defenderAbility)
+        if (attacker.resolvedAbility in WEIGHT_ABILITIES) facts.attackerAbility(attacker.resolvedAbility)
+      }
+      FLING -> {
+        facts.moveBP = power.toDouble()
+        facts.attackerItem(attacker.effectiveItem)
+      }
       "Acrobatics", "Hex", "Infernal Parade", "Rising Voltage" -> if (isChanged) facts.moveBP = power.toDouble()
       "Weather Ball" -> if (isChanged) {
         facts.moveBP = power.toDouble()
@@ -40,37 +62,45 @@ internal object BasePowerResolver {
         facts.moveType(effectiveTypeOf(move, attacker, field))
       }
       "Last Respects", "Rage Fist" -> if (moveUse.priorPowerBoosts > 0) facts.moveBP = power.toDouble()
+      else -> if (isDoubledByUse(move, moveUse)) facts.moveBP = power.toDouble()
     }
   }
 
+  private val WEIGHT_ABILITIES = setOf(Ability.HEAVY_METAL, Ability.LIGHT_METAL)
+
+  // Payback-style moves doubled by the move use, except Lash Out, doubled among BasePowerMods instead
+  private fun isDoubledByUse(move: Move, moveUse: MoveUse) = moveUse.isPowerDoubled && move.name.value != LASH_OUT
+
   private fun customBasePower(move: Move, moveUse: MoveUse, attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield): Int? =
     when (move.name.value) {
-      "Gyro Ball" -> gyroBallPower(attacker, defender)
-      "Electro Ball" -> electroBallPower(attacker, defender)
+      "Gyro Ball" -> gyroBallPower(attacker, defender, field)
+      "Electro Ball" -> electroBallPower(attacker, defender, field)
+      FLING -> Fling.power(attacker)
       "Low Kick", "Grass Knot" -> weightTierPower(defender.species.weightKg)
       "Heavy Slam", "Heat Crash" -> weightRatioPower(attacker.species.weightKg / defender.species.weightKg)
       "Eruption", "Water Spout" -> maxOf(1, 150 * attacker.hp / attacker.maxHp)
       "Flail", "Reversal" -> hpFractionPower(attacker.hp, attacker.maxHp)
       "Hard Press" -> hardPressPower(defender.hp, defender.maxHp)
       "Stored Power", "Power Trip" -> 20 + 20 * countPositiveBoosts(attacker.boosts)
-      "Acrobatics" -> if (attacker.effectiveItem == null) 110 else 55
+      "Acrobatics" -> if (attacker.holdsItem) 55 else 110
       "Hex", "Infernal Parade" -> move.basePower * (if (defender.status.isNonHealthy) 2 else 1)
       "Weather Ball" -> move.basePower * (if (field.weather != Weather.NONE || attacker.resolvedAbility == Ability.MEGA_SOL) 2 else 1)
       "Terrain Pulse" -> move.basePower * (if (field.terrain != Terrain.NONE && attacker.isGrounded(field)) 2 else 1)
       "Rising Voltage" -> move.basePower * (if (field.terrain == Terrain.ELECTRIC && defender.isGrounded(field)) 2 else 1)
       "Last Respects", "Rage Fist" -> move.basePower * (moveUse.priorPowerBoosts + 1)
-      else -> null
+      else -> if (isDoubledByUse(move, moveUse)) move.basePower * 2 else null
     }
 
-  private fun gyroBallPower(attacker: BattlePokemon, defender: BattlePokemon): Int {
-    val attackerSpeed = attacker.boostedStat(BoostableStat.SPEED)
-    val defenderSpeed = defender.boostedStat(BoostableStat.SPEED)
+  // both use the final speeds: Choice Scarf, Tailwind, paralysis...
+  private fun gyroBallPower(attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield): Int {
+    val attackerSpeed = SpeedCalculator.effectiveSpeed(attacker, field, isAttackerSide = true)
+    val defenderSpeed = SpeedCalculator.effectiveSpeed(defender, field, isAttackerSide = false)
     return min(150, 25 * defenderSpeed / attackerSpeed + 1)
   }
 
-  private fun electroBallPower(attacker: BattlePokemon, defender: BattlePokemon): Int {
-    val attackerSpeed = attacker.boostedStat(BoostableStat.SPEED)
-    val defenderSpeed = defender.boostedStat(BoostableStat.SPEED)
+  private fun electroBallPower(attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield): Int {
+    val attackerSpeed = SpeedCalculator.effectiveSpeed(attacker, field, isAttackerSide = true)
+    val defenderSpeed = SpeedCalculator.effectiveSpeed(defender, field, isAttackerSide = false)
     val ratio = if (defenderSpeed == 0) 0 else attackerSpeed / defenderSpeed
     return when {
       ratio >= 4 -> 150

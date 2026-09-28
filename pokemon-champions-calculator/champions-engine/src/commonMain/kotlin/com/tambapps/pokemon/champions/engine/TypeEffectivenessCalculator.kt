@@ -30,7 +30,12 @@ object TypeEffectivenessCalculator {
       ?.takeIf { it != defender.species.primaryType }
       ?.let { singleTypeEffectiveness(move, effectiveType, it, attacker, defender, field, facts) }
       ?: 1.0
-    return primary * secondary
+    // overrideTypeEffectiveness: an Iron Ball grounds its Flying-type holder, which then takes neutral Ground damage
+    // whatever its other type (e.g. 1x on Charizard, not the 2x of its Fire type), unlike being grounded by Gravity.
+    // Since Generation V: https://bulbapedia.bulbagarden.net/wiki/Iron_Ball
+    val ironBallOverride = defender.hasType(PokeType.FLYING) && effectiveType == PokeType.GROUND &&
+      defender.effectiveItem == Item.IRON_BALL && !field.isGravity
+    return if (ironBallOverride) 1.0 else primary * secondary
   }
 
   private fun singleTypeEffectiveness(

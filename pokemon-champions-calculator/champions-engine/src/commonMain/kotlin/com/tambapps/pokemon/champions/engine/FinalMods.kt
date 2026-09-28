@@ -20,6 +20,7 @@ internal object FinalMods {
     isCritical: Boolean,
     typeEffectiveness: Double,
     facts: CalcFactsBuilder = CalcFactsBuilder(),
+    defenderAbility: Ability = defender.resolvedAbility,
   ): List<Int> {
     val effectiveCategory = effectiveCategoryOf(move, attacker, defender)
     val mods = mutableListOf<Int>()
@@ -29,49 +30,52 @@ internal object FinalMods {
       mods.add(0x1800)
       facts.attackerAbility(attacker.resolvedAbility)
     }
-    if (defender.resolvedAbility == Ability.MULTISCALE && defender.hp == defender.maxHp) {
+    if (defenderAbility == Ability.MULTISCALE && defender.hp == defender.maxHp) {
       mods.add(0x800)
-      facts.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defenderAbility)
     }
-    if ((defender.resolvedAbility == Ability.FLUFFY || defender.resolvedAbility == Ability.AURA_GUARD) && move.makesContact) {
+    if ((defenderAbility == Ability.FLUFFY || defenderAbility == Ability.AURA_GUARD) && makesContact(move, attacker, effectiveCategory)) {
       mods.add(0x800)
-      facts.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defenderAbility)
     }
-    if (defender.resolvedAbility == Ability.PUNK_ROCK && move.isSound) {
+    if (defenderAbility == Ability.PUNK_ROCK && move.isSound) {
       mods.add(0x800)
-      facts.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defenderAbility)
     }
-    if (field.defenderSide.hasFriendGuard) {
+    // Mold Breaker ignores the ally's Friend Guard too
+    if (field.defenderSide.hasFriendGuard && attacker.resolvedAbility != Ability.MOLD_BREAKER) {
       mods.add(0xC00)
       facts.isFriendGuard = true
     }
-    if ((defender.resolvedAbility == Ability.SOLID_ROCK || defender.resolvedAbility == Ability.FILTER) && typeEffectiveness > 1) {
+    if ((defenderAbility == Ability.SOLID_ROCK || defenderAbility == Ability.FILTER) && typeEffectiveness > 1) {
       mods.add(0xC00)
-      facts.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defenderAbility)
     }
-    if (defender.resolvedAbility == Ability.FLUFFY && effectiveType == PokeType.FIRE) {
+    if (defenderAbility == Ability.FLUFFY && effectiveType == PokeType.FIRE) {
       mods.add(0x2000)
-      facts.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defenderAbility)
     }
 
     itemMod(attacker, typeEffectiveness)?.let {
       mods.add(it)
       facts.attackerItem(attacker.effectiveItem)
     }
-    resistBerryMod(effectiveType, attacker, defender, typeEffectiveness)?.let {
+    resistBerryMod(effectiveType, attacker, defender, typeEffectiveness, defenderAbility)?.let {
       mods.add(it)
-      if (defender.resolvedAbility == Ability.RIPEN) facts.defenderAbility(defender.resolvedAbility)
+      if (defenderAbility == Ability.RIPEN) facts.defenderAbility(defenderAbility)
       facts.defenderItem(defender.effectiveItem)
+      facts.consumedResistBerry = true
     }
 
     return mods
   }
 
+  // unlike Reflect and Aurora Veil, the source doesn't check the screen-breaking moves for Light Screen (all of them are physical)
   private fun screenMod(move: Move, effectiveCategory: MoveCategory, field: Battlefield, isCritical: Boolean, facts: CalcFactsBuilder): Int? {
-    if (isCritical || move.ignoresScreens) return null
+    if (isCritical) return null
     when {
-      field.defenderSide.hasAuroraVeil -> facts.screen = Screen.AURORA_VEIL
-      field.defenderSide.hasReflect && effectiveCategory == MoveCategory.PHYSICAL -> facts.screen = Screen.REFLECT
+      field.defenderSide.hasAuroraVeil && !move.ignoresScreens -> facts.screen = Screen.AURORA_VEIL
+      field.defenderSide.hasReflect && effectiveCategory == MoveCategory.PHYSICAL && !move.ignoresScreens -> facts.screen = Screen.REFLECT
       field.defenderSide.hasLightScreen && effectiveCategory == MoveCategory.SPECIAL -> facts.screen = Screen.LIGHT_SCREEN
       else -> return null
     }
@@ -87,10 +91,10 @@ internal object FinalMods {
     }
   }
 
-  private fun resistBerryMod(effectiveType: PokeType, attacker: BattlePokemon, defender: BattlePokemon, typeEffectiveness: Double): Int? {
+  private fun resistBerryMod(effectiveType: PokeType, attacker: BattlePokemon, defender: BattlePokemon, typeEffectiveness: Double, defenderAbility: Ability): Int? {
     val item = defender.effectiveItem
     val resists = resistsType(item, effectiveType) && (typeEffectiveness > 1 || effectiveType == PokeType.NORMAL)
     if (!resists || attacker.resolvedAbility == Ability.UNNERVE) return null
-    return if (defender.resolvedAbility == Ability.RIPEN) 0x400 else 0x800
+    return if (defenderAbility == Ability.RIPEN) 0x400 else 0x800
   }
 }

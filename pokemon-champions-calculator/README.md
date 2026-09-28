@@ -90,7 +90,21 @@ val chance = KoChanceCalculator.minimumHitsToKo(result.rolls, targetHp = toxapex
 For a whole move rather than a single hit, `DamageCalculator.calculateMove` returns every hit of one
 use (a multi-hit move's hits, each Triple Axel hit with its own power, Parental Bond's two hits),
 defaulting to the source calculator's hit count (`defaultHitCount`: 3 for 2-5 hit moves, 5 with Skill
-Link...), and `KoChanceCalculator.minimumUsesToKo` gives the KO chance in uses of that move.
+Link...), and `KoChanceCalculator.minimumUsesToKo` gives the KO chance in uses of that move. Like the
+source, the hits after the first account for what the previous ones changed: a resist berry
+consumed or Multiscale broken by the first hit, Weak Armor, Stamina, Gooey (and Defiant/Competitive),
+Spicy Spray (and a Rawst/Lum Berry), Parental Bond's second hit after its move's stat change.
+
+Every calc first applies what the source's setup pass does before any move: Trace copying the
+target's ability, Cloud Nine suppressing the weather, Forecast and Mimicry changing types, terrain
+seeds (consumed for their +1), Intimidate (with Contrary, Guard Dog, Clear Body, Mirror Armor,
+Simple, Defiant, Competitive, Rattled...), Supersweet Syrup, Infiltrator going through screens, and
+Heavy/Light Metal. The abilities the source toggles apply when `BattlePokemon.abilityIsActive` is
+true: Intimidate, Trace and Supersweet Syrup, on top of Flash Fire, Plus/Minus, Stakeout,
+Electromorphosis and Protean/Libero. Moves the source doesn't run through the damage formula are
+handled like it: Seismic Toss, Night Shade, Super Fang, Endeavor, Final Gambit, OHKO moves, Pain
+Split, and Counter, Mirror Coat, Metal Burst and Comeuppance, which return `MoveUse.counteredMove`
+(the defender's move, calculated against the attacker).
 
 A `DamageResult` also reports which stats the hit rolled off of (`attackStat`, `defenseStat`):
 Body Press reports the attacker's Defense, Foul Play the defender's Attack, Psyshock the
@@ -134,9 +148,11 @@ Two layers of tests, for two different jobs:
   `damage_MASTER.js`/`damage_SV.js` (via [`tools/oracle.js`](tools/oracle.js),
   bypassing its jQuery/DOM UI) to get ground-truth expected rolls and
   descriptions, which are hand-copied into
-  [`DamageCalculatorCrossValidationTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/DamageCalculatorCrossValidationTest.kt)
+  [`DamageCalculatorCrossValidationTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/DamageCalculatorCrossValidationTest.kt),
+  [`SourceParityCrossValidationTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/SourceParityCrossValidationTest.kt)
   and [`DamageCalculatorTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/DamageCalculatorTest.kt).
-  Every scenario asserts the exact description text, never a hand-written one.
+  Every scenario asserts the exact description text, never a hand-written one,
+  and every hit of a multi-hit move.
   Covers STAB, type effectiveness, critical hits, weather (sun, rain, sand,
   snow, Mega Sol), terrains, type-boosting items, screens (Reflect, Light
   Screen, Aurora Veil), Life Orb, burn and Guts, boosts on both sides,
@@ -152,6 +168,17 @@ Two layers of tests, for two different jobs:
   Parental Bond, Piercing Drill vs. Protect, Glaive Rush, the three stat
   display modes, and that `AbilityName` resolution is case/spacing-insensitive
   with an unrecognized ability degrading to "no ability" rather than erroring.
+  Plus everything the source handles beyond the plain formula: its setup pass
+  (terrain seeds, Intimidate and the abilities reacting to it, Trace, Cloud
+  Nine, Forecast, Mimicry, Supersweet Syrup, Infiltrator, Heavy/Light Metal),
+  Mold Breaker, Battle/Shell Armor, Long Reach and physical Shell Side Arm
+  contact, Gale Wings priority, Expanding Force, Weather Ball with Mega Sol,
+  Aura Wheel, doubled Payback/Lash Out, Normal Gem, Grav Apple, Misty
+  Explosion, Fling (and when it fails), Meteor Beam (and Contrary), Gyro/Electro
+  Ball with final speeds, Knock Off vs. mega stones and Klutz, Acrobatics with
+  Klutz, Iron Ball, the hits of multi-hit moves (resist berry, Multiscale, Weak
+  Armor, Stamina, Gooey, Spicy Spray, Parental Bond), the fixed-damage moves
+  and Counter-like moves, and Pain Split.
 - **Direct unit tests for every internal resolver** (`ImmunityChecker`,
   `TypeEffectivenessCalculator`, `Grounded`, `SpeedCalculator`,
   `StabResolver`, `BasePowerResolver`/`BasePowerMods`, `AttackStatResolver`/
@@ -206,19 +233,26 @@ Defaults to `../../../NCP-VGC-Damage-Calculator` (a sibling of the
 
 ### `oracle.js` + `scenarios.json` — the correctness check, not part of the build
 
-`oracle.js` also sandboxes the real JS, but calls `GET_DAMAGE_SV(attacker,
-defender, move, field)` directly — the actual damage function, bypassing
-the jQuery UI — for each matchup listed in `scenarios.json`, and prints each
-scenario's damage rolls and description. Its output is what's hand-copied
-into `DamageCalculatorCrossValidationTest` as expected values: the ground
+`oracle.js` also sandboxes the real JS, but calls `CALCULATE_ALL_MOVES_SV`
+directly — the function the UI calls, setup pass then `GET_DAMAGE_SV`,
+bypassing the jQuery UI — for each matchup listed in `scenarios.json`, and
+prints each scenario's damage rolls and description (an array of rolls per
+distinct hit for a multi-hit move whose hits differ). Its output is what's
+hand-copied into the cross-validation tests as expected values: the ground
 truth this port is checked against. Descriptions use the calculator UI's
 default stat display (stat points); a scenario's `displayMode` (`"EVs"` or
-`"raw"`) picks another one. It isn't wired into the Gradle build; run it by
-hand when adding scenarios or re-verifying after an upstream mechanic changes.
+`"raw"`) picks another one. A scenario's field can also set
+`attackerTailwind`/`defenderTailwind`, and `counteredMove` is the defender's
+move a Counter-like move returns. It isn't wired into the Gradle build; run it
+by hand when adding scenarios or re-verifying after an upstream mechanic
+changes.
 
 ```bash
 node tools/oracle.js tools/scenarios.json [path-to-NCP-VGC-Damage-Calculator]
 ```
+
+When requiring it from another script, give the calculator's path with the
+`NCP_CALCULATOR_ROOT` environment variable instead.
 
 ### Regenerating for a new Regulation
 
@@ -248,41 +282,32 @@ node tools/oracle.js tools/scenarios.json [path-to-NCP-VGC-Damage-Calculator]
 
 This targets the Champions format specifically (no Terastallization, no
 Dynamax, no Z-moves exist there, which removes a lot of complexity the
-source calculator carries for other generations). Within that scope, a few
-mechanics are deliberately not implemented, the same way the source
-calculator itself documents features it hasn't built:
+source calculator carries for other generations). Within that scope, the
+engine handles every damage case the source does; what's left:
 
-- **Battle-state pre-processing isn't modeled.** `BattlePokemon.ability`,
-  `.boosts`, and `.status` are taken as already-resolved facts about the
-  moment being calculated for. Things like Intimidate lowering an
-  opponent's Attack on switch-in, or Trace copying an ability, aren't
-  simulated automatically — if you want to calculate around them, set the
-  resulting boost/ability yourself.
-- **Multi-hit moves assume constant state across hits.** Bullet Seed,
-  Icicle Spear, etc. are supported (call `calculateSingleHit` once per
-  hit), but abilities/items that change state *between* hits of the same
-  multi-hit move (Weak Armor, Stamina, Gooey, Kee/Maranga Berry, a resist
-  berry or Multiscale being consumed/broken after the first hit) aren't
-  modeled — every hit uses the attacker/defender's starting state.
-  Descriptions follow the same rule: they only mention what the engine
-  applied, so they leave out the between-hits abilities/items the source
-  mentions for a multi-hit move (e.g. Stamina, Weak Armor, Kee Berry).
-- **Counter-move mechanics aren't implemented**: Counter, Mirror Coat,
-  Metal Burst, Comeuppance need the defender's incoming move as extra
-  context this API doesn't thread through.
-- **Beat Up isn't accurate.** It's exposed as a multi-hit move, but real
-  Beat Up rolls each hit off a *different* uninflicted ally's Attack stat;
-  this port has no team-roster concept, so it uses the attacker's own stat
-  for every hit instead.
+- **The source's UI conveniences are the caller's.** The source's UI turns
+  some ability toggles on by default (Intimidate, Protean, Libero,
+  Supersweet Syrup) and sets the weather/terrain from abilities like Drought
+  or Electric Surge. The engine takes `abilityIsActive` and the
+  `Battlefield` as given: an app mirroring the source should apply the same
+  defaults.
+- **A few edge cases differ, all in combinations no real calc relies on:**
+  a Klutz Pokémon failing to Fling is described without the source's
+  "Klutz" item text; the hits after a Weak Armor/Gooey speed change use the
+  final speeds (the source recomputes them without Choice Scarf, Tailwind...),
+  which only matters for Analytic; a Counter-like move returning a
+  multi-hit move uses its default hit count, where the source uses the one
+  selected in its UI.
+- **Beat Up isn't accurate, like in the source.** It's exposed as a
+  multi-hit move, but real Beat Up rolls each hit off a *different*
+  uninflicted ally's Attack stat; this port has no team-roster concept, so
+  it uses the attacker's own stat for every hit instead, as the source does.
 - **KO-chance math is damage-only.** `KoChanceCalculator` convolves the
   16-roll distribution across repeated hits, but doesn't account for
   between-turn effects the source calculator's `ko_chance.js` does:
   residual damage (weather, burn/poison, Leftovers, Leech Seed), hazards
   beyond an initial HP offset you supply yourself, or HP restored by a
   berry mid-KO-check.
-- **Fling's and Natural Gift's power tables aren't ported** (Natural Gift
-  isn't in Champions' movepool at all; Fling's move-power lookup by held
-  item is a large table this port skips).
 - Accuracy, PP, and non-damage secondary effects (status chance, stat-drop
   chance, flinch...) are out of scope entirely — this is a damage
   calculator, not a battle simulator.

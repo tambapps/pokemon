@@ -22,10 +22,24 @@ data class StatBoosts(
     BoostableStat.SPEED -> speed
   }
 
+  /** These boosts with [stat] set to [stage], clamped to [-6, 6]. */
+  fun with(stat: BoostableStat, stage: Int): StatBoosts {
+    val clamped = stage.coerceIn(-6, 6)
+    return when (stat) {
+      BoostableStat.ATTACK -> copy(attack = clamped)
+      BoostableStat.DEFENSE -> copy(defense = clamped)
+      BoostableStat.SPECIAL_ATTACK -> copy(specialAttack = clamped)
+      BoostableStat.SPECIAL_DEFENSE -> copy(specialDefense = clamped)
+      BoostableStat.SPEED -> copy(speed = clamped)
+    }
+  }
+
   companion object {
     val NONE = StatBoosts()
   }
 }
+
+internal fun BattlePokemon.withBoost(stat: BoostableStat, stage: Int) = copy(boosts = boosts.with(stat, stage))
 
 /**
  * Applies a stat stage to a raw stat value, using the games' integer-truncated ratio table

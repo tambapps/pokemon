@@ -1175,5 +1175,445 @@
     "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
     "move": "Dragon Darts",
     "moveOverrides": { "hits": 1 }
+  },
+  {
+    "id": "mold-breaker-ignores-multiscale",
+    "attacker": { "name": "Garchomp", "ability": "Mold Breaker", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Dragonite", "ability": "Multiscale", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "mold-breaker-ignores-levitate-and-friend-guard",
+    "attacker": { "name": "Garchomp", "ability": "Mold Breaker", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Rotom-Wash", "ability": "Levitate", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "field": { "isFriendGuard": true }
+  },
+  {
+    "id": "battle-armor-blocks-crit",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Battle Armor", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "moveOverrides": { "isCrit": true }
+  },
+  {
+    "id": "mold-breaker-crits-through-shell-armor",
+    "attacker": { "name": "Garchomp", "ability": "Mold Breaker", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Shell Armor", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "moveOverrides": { "isCrit": true }
+  },
+  {
+    "id": "long-reach-avoids-fluffy",
+    "attacker": { "name": "Garchomp", "ability": "Long Reach", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Fluffy", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "physical-shell-side-arm-makes-contact",
+    "attacker": { "name": "Garchomp", "ability": "Tough Claws", "nature": "Adamant", "statPoints": { "hp": 20, "at": 32, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Gengar", "ability": "Cursed Body", "nature": "Timid", "statPoints": { "hp": 0, "at": 0, "df": 0, "sa": 20, "sd": 32, "sp": 14 } },
+    "move": "Shell Side Arm"
+  },
+  {
+    "id": "gale-wings-priority-blocked-by-psychic-terrain",
+    "attacker": { "name": "Talonflame", "ability": "Gale Wings", "nature": "Jolly", "statPoints": { "hp": 20, "at": 20, "df": 6, "sa": 0, "sd": 6, "sp": 14 } },
+    "defender": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Brave Bird",
+    "field": { "terrain": "Psychic" }
+  },
+  {
+    "id": "expanding-force-in-psychic-terrain",
+    "attacker": { "name": "Gardevoir", "ability": "Trace", "nature": "Modest", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Expanding Force",
+    "field": { "terrain": "Psychic" }
+  },
+  {
+    "id": "weather-ball-with-mega-sol",
+    "attacker": { "name": "Mega Meganium", "ability": "Mega Sol", "nature": "Modest", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Weather Ball"
+  },
+  {
+    "id": "aura-wheel-hangry",
+    "attacker": { "name": "Morpeko-Hangry", "ability": "Hunger Switch", "nature": "Jolly", "statPoints": { "hp": 20, "at": 20, "df": 6, "sa": 0, "sd": 6, "sp": 14 } },
+    "defender": { "name": "Gengar", "ability": "Cursed Body", "nature": "Timid", "statPoints": { "hp": 0, "at": 0, "df": 0, "sa": 20, "sd": 32, "sp": 14 } },
+    "move": "Aura Wheel"
+  },
+  {
+    "id": "payback-doubled",
+    "attacker": { "name": "Kingambit", "ability": "Defiant", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Payback",
+    "moveOverrides": { "isDouble": 1 }
+  },
+  {
+    "id": "lash-out-doubled",
+    "attacker": { "name": "Kingambit", "ability": "Defiant", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Lash Out",
+    "moveOverrides": { "isDouble": 1 }
+  },
+  {
+    "id": "normal-gem",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "item": "Normal Gem", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Body Slam"
+  },
+  {
+    "id": "grav-apple-under-gravity",
+    "attacker": { "name": "Venusaur", "ability": "Overgrow", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Grav Apple",
+    "field": { "isGravity": true }
+  },
+  {
+    "id": "misty-explosion-in-misty-terrain",
+    "attacker": { "name": "Gardevoir", "ability": "Trace", "nature": "Modest", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "defender": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Misty Explosion",
+    "field": { "terrain": "Misty" }
+  },
+  {
+    "id": "fling-iron-ball",
+    "attacker": { "name": "Kingambit", "ability": "Defiant", "nature": "Adamant", "item": "Iron Ball", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Fling"
+  },
+  {
+    "id": "fling-without-item-fails",
+    "attacker": { "name": "Kingambit", "ability": "Defiant", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Fling"
+  },
+  {
+    "id": "fling-own-mega-stone-fails",
+    "attacker": { "name": "Charizard", "ability": "Blaze", "nature": "Adamant", "item": "Charizardite X", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Fling"
+  },
+  {
+    "id": "fling-berry-against-unnerve-fails",
+    "attacker": { "name": "Kingambit", "ability": "Defiant", "nature": "Adamant", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Garchomp", "ability": "Unnerve", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Fling"
+  },
+  {
+    "id": "meteor-beam-raises-sp-atk",
+    "attacker": { "name": "Gardevoir", "ability": "Trace", "nature": "Modest", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Meteor Beam"
+  },
+  {
+    "id": "meteor-beam-with-contrary",
+    "attacker": { "name": "Gardevoir", "ability": "Contrary", "nature": "Modest", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 }, "boosts": { "sa": 2 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Meteor Beam"
+  },
+  {
+    "id": "gyro-ball-against-a-choice-scarf",
+    "attacker": { "name": "Metagross", "ability": "Clear Body", "nature": "Brave", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 0 } },
+    "defender": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Jolly", "item": "Choice Scarf", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 32 } },
+    "move": "Gyro Ball"
+  },
+  {
+    "id": "electro-ball-under-tailwind",
+    "attacker": { "name": "Raichu", "ability": "Lightning Rod", "nature": "Timid", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 32 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Electro Ball",
+    "field": { "attackerTailwind": true }
+  },
+  {
+    "id": "knock-off-mega-keeps-its-stone",
+    "attacker": { "name": "Kingambit", "ability": "Defiant", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Mega Charizard X", "ability": "Tough Claws", "nature": "Adamant", "item": "Charizardite X", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Knock Off"
+  },
+  {
+    "id": "knock-off-klutz-holder",
+    "attacker": { "name": "Kingambit", "ability": "Defiant", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Klutz", "nature": "Bold", "item": "Leftovers", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Knock Off"
+  },
+  {
+    "id": "acrobatics-with-klutz",
+    "attacker": { "name": "Talonflame", "ability": "Klutz", "nature": "Jolly", "item": "Life Orb", "statPoints": { "hp": 20, "at": 20, "df": 6, "sa": 0, "sd": 6, "sp": 14 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Acrobatics"
+  },
+  {
+    "id": "acrobatics-klutz-without-item",
+    "attacker": { "name": "Talonflame", "ability": "Klutz", "nature": "Jolly", "statPoints": { "hp": 20, "at": 20, "df": 6, "sa": 0, "sd": 6, "sp": 14 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Acrobatics"
+  },
+  {
+    "id": "knock-off-klutz-without-item",
+    "attacker": { "name": "Kingambit", "ability": "Defiant", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Klutz", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Knock Off"
+  },
+  {
+    "id": "levitate-with-iron-ball",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Rotom-Wash", "ability": "Levitate", "nature": "Bold", "item": "Iron Ball", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake"
+  },
+  {
+    "id": "iron-ball-flying-type-neutral",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Charizard", "ability": "Blaze", "nature": "Timid", "item": "Iron Ball", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "move": "Earthquake"
+  },
+  {
+    "id": "heavy-slam-with-heavy-metal",
+    "attacker": { "name": "Metagross", "ability": "Heavy Metal", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Heavy Slam"
+  },
+  {
+    "id": "low-kick-against-light-metal",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Metagross", "ability": "Light Metal", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Low Kick"
+  },
+  {
+    "id": "psychic-seed-in-psychic-terrain",
+    "attacker": { "name": "Charizard", "ability": "Blaze", "nature": "Modest", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Psychic Seed", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Flamethrower",
+    "field": { "terrain": "Psychic" }
+  },
+  {
+    "id": "electric-seed-in-electric-terrain",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Electric Seed", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "field": { "terrain": "Electric" }
+  },
+  {
+    "id": "intimidate-lowers-attack",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Incineroar", "ability": "Intimidate", "abilityOn": true, "nature": "Careful", "statPoints": { "hp": 32, "at": 2, "df": 0, "sa": 0, "sd": 32, "sp": 0 } },
+    "move": "Earthquake"
+  },
+  {
+    "id": "intimidate-triggers-defiant",
+    "attacker": { "name": "Kingambit", "ability": "Defiant", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Incineroar", "ability": "Intimidate", "abilityOn": true, "nature": "Careful", "statPoints": { "hp": 32, "at": 2, "df": 0, "sa": 0, "sd": 32, "sp": 0 } },
+    "move": "Kowtow Cleave"
+  },
+  {
+    "id": "intimidate-blocked-by-clear-body",
+    "attacker": { "name": "Metagross", "ability": "Clear Body", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Incineroar", "ability": "Intimidate", "abilityOn": true, "nature": "Careful", "statPoints": { "hp": 32, "at": 2, "df": 0, "sa": 0, "sd": 32, "sp": 0 } },
+    "move": "Iron Head"
+  },
+  {
+    "id": "intimidate-reflected-by-mirror-armor",
+    "attacker": { "name": "Corviknight", "ability": "Mirror Armor", "nature": "Impish", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "defender": { "name": "Incineroar", "ability": "Intimidate", "abilityOn": true, "nature": "Adamant", "statPoints": { "hp": 32, "at": 20, "df": 0, "sa": 0, "sd": 14, "sp": 0 } },
+    "move": "Foul Play"
+  },
+  {
+    "id": "attackers-intimidate-lowers-foul-play",
+    "attacker": { "name": "Incineroar", "ability": "Intimidate", "abilityOn": true, "nature": "Careful", "statPoints": { "hp": 32, "at": 2, "df": 0, "sa": 0, "sd": 32, "sp": 0 } },
+    "defender": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Foul Play"
+  },
+  {
+    "id": "intimidate-with-contrary",
+    "attacker": { "name": "Garchomp", "ability": "Contrary", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Incineroar", "ability": "Intimidate", "abilityOn": true, "nature": "Careful", "statPoints": { "hp": 32, "at": 2, "df": 0, "sa": 0, "sd": 32, "sp": 0 } },
+    "move": "Earthquake"
+  },
+  {
+    "id": "intimidate-with-simple",
+    "attacker": { "name": "Garchomp", "ability": "Simple", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Incineroar", "ability": "Intimidate", "abilityOn": true, "nature": "Careful", "statPoints": { "hp": 32, "at": 2, "df": 0, "sa": 0, "sd": 32, "sp": 0 } },
+    "move": "Earthquake"
+  },
+  {
+    "id": "trace-copies-pixilate",
+    "attacker": { "name": "Gardevoir", "ability": "Trace", "abilityOn": true, "nature": "Modest", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "defender": { "name": "Sylveon", "ability": "Pixilate", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Hyper Voice"
+  },
+  {
+    "id": "cloud-nine-suppresses-sun",
+    "attacker": { "name": "Charizard", "ability": "Blaze", "nature": "Modest", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "defender": { "name": "Venusaur", "ability": "Cloud Nine", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 6, "sd": 10, "sp": 10 } },
+    "move": "Flamethrower",
+    "field": { "weather": "Sun" }
+  },
+  {
+    "id": "forecast-castform-in-rain",
+    "attacker": { "name": "Raichu", "ability": "Lightning Rod", "nature": "Timid", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "defender": { "name": "Castform", "ability": "Forecast", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Thunderbolt",
+    "field": { "weather": "Rain" }
+  },
+  {
+    "id": "mimicry-in-electric-terrain",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Skarmory", "ability": "Mimicry", "nature": "Impish", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "field": { "terrain": "Electric" }
+  },
+  {
+    "id": "supersweet-syrup-and-competitive",
+    "attacker": { "name": "Toxapex", "ability": "Supersweet Syrup", "abilityOn": true, "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "defender": { "name": "Garchomp", "ability": "Competitive", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 }, "boosts": { "sa": 1 } },
+    "move": "Foul Play"
+  },
+  {
+    "id": "infiltrator-ignores-reflect",
+    "attacker": { "name": "Dragapult", "ability": "Infiltrator", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isReflect": true }
+  },
+  {
+    "id": "multi-hit-resist-berry-consumed",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Rhyperior", "ability": "Solid Rock", "nature": "Impish", "item": "Rindo Berry", "statPoints": { "hp": 20, "at": 10, "df": 20, "sa": 0, "sd": 6, "sp": 10 } },
+    "move": "Bullet Seed",
+    "moveOverrides": { "hits": 3 }
+  },
+  {
+    "id": "multi-hit-breaks-multiscale",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Dragonite", "ability": "Multiscale", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Scale Shot",
+    "moveOverrides": { "hits": 3 }
+  },
+  {
+    "id": "multi-hit-weak-armor",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Skarmory", "ability": "Weak Armor", "nature": "Impish", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Rock Blast",
+    "moveOverrides": { "hits": 4 }
+  },
+  {
+    "id": "multi-hit-stamina",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Stamina", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Scale Shot",
+    "moveOverrides": { "hits": 5 }
+  },
+  {
+    "id": "multi-hit-gooey-and-defiant",
+    "attacker": { "name": "Kingambit", "ability": "Defiant", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Gooey", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Double Hit"
+  },
+  {
+    "id": "multi-hit-spicy-spray-burns",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Spicy Spray", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Scale Shot",
+    "moveOverrides": { "hits": 3 }
+  },
+  {
+    "id": "multi-hit-spicy-spray-rawst-berry",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "item": "Rawst Berry", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Spicy Spray", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Scale Shot",
+    "moveOverrides": { "hits": 4 }
+  },
+  {
+    "id": "parental-bond-superpower",
+    "attacker": { "name": "Garchomp", "ability": "Parental Bond", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Superpower"
+  },
+  {
+    "id": "parental-bond-assurance",
+    "attacker": { "name": "Garchomp", "ability": "Parental Bond", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Assurance"
+  },
+  {
+    "id": "parental-bond-resist-berry",
+    "attacker": { "name": "Garchomp", "ability": "Parental Bond", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Shuca Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "field": { "format": "Singles" }
+  },
+  {
+    "id": "seismic-toss",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Seismic Toss"
+  },
+  {
+    "id": "night-shade-parental-bond",
+    "attacker": { "name": "Gengar", "ability": "Parental Bond", "nature": "Timid", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Night Shade"
+  },
+  {
+    "id": "super-fang-parental-bond",
+    "attacker": { "name": "Garchomp", "ability": "Parental Bond", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Super Fang"
+  },
+  {
+    "id": "endeavor",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "curHpFraction": 0.2, "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Endeavor"
+  },
+  {
+    "id": "final-gambit",
+    "attacker": { "name": "Gengar", "ability": "Cursed Body", "nature": "Timid", "curHpFraction": 0.6, "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Final Gambit"
+  },
+  {
+    "id": "fissure",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "curHpFraction": 0.5, "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Fissure"
+  },
+  {
+    "id": "sheer-cold-against-ice-type",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Glalie", "ability": "Inner Focus", "nature": "Impish", "statPoints": { "hp": 20, "at": 10, "df": 20, "sa": 0, "sd": 6, "sp": 10 } },
+    "move": "Sheer Cold"
+  },
+  {
+    "id": "counter-physical-move",
+    "attacker": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "defender": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Counter",
+    "counteredMove": "Dragon Claw"
+  },
+  {
+    "id": "mirror-coat-physical-move-fails",
+    "attacker": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "defender": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Mirror Coat",
+    "counteredMove": "Dragon Claw"
+  },
+  {
+    "id": "metal-burst-special-move",
+    "attacker": { "name": "Metagross", "ability": "Clear Body", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Charizard", "ability": "Blaze", "nature": "Modest", "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "move": "Metal Burst",
+    "counteredMove": "Flamethrower"
+  },
+  {
+    "id": "counter-without-a-damaging-move",
+    "attacker": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "defender": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "move": "Counter"
+  },
+  {
+    "id": "pain-split",
+    "attacker": { "name": "Gengar", "ability": "Cursed Body", "nature": "Timid", "curHpFraction": 0.3, "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Pain Split"
   }
 ]

@@ -17,6 +17,7 @@ internal object AttackStatMods {
     defender: BattlePokemon,
     field: Battlefield,
     facts: CalcFactsBuilder = CalcFactsBuilder(),
+    defenderAbility: Ability = defender.resolvedAbility,
   ): List<Int> {
     val category = effectiveCategoryOf(move, attacker, defender)
     val mods = mutableListOf<Int>()
@@ -33,9 +34,9 @@ internal object AttackStatMods {
       }
     }
 
-    defensiveHalfMod(effectiveType, defender)?.let {
+    defensiveHalfMod(effectiveType, defenderAbility)?.let {
       mods.add(it)
-      facts.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defenderAbility)
     }
     offensiveDoubleMod(effectiveType, attacker, category)?.let {
       mods.add(it)
@@ -68,11 +69,11 @@ internal object AttackStatMods {
     return if (qualifies) 0x1800 else null
   }
 
-  private fun defensiveHalfMod(effectiveType: PokeType, defender: BattlePokemon): Int? {
-    val qualifies = (defender.resolvedAbility == Ability.THICK_FAT && (effectiveType == PokeType.FIRE || effectiveType == PokeType.ICE)) ||
-      (defender.resolvedAbility == Ability.WATER_BUBBLE && effectiveType == PokeType.FIRE) ||
-      (defender.resolvedAbility == Ability.PURIFYING_SALT && effectiveType == PokeType.GHOST) ||
-      (defender.resolvedAbility == Ability.HEATPROOF && effectiveType == PokeType.FIRE)
+  private fun defensiveHalfMod(effectiveType: PokeType, defenderAbility: Ability): Int? {
+    val qualifies = (defenderAbility == Ability.THICK_FAT && (effectiveType == PokeType.FIRE || effectiveType == PokeType.ICE)) ||
+      (defenderAbility == Ability.WATER_BUBBLE && effectiveType == PokeType.FIRE) ||
+      (defenderAbility == Ability.PURIFYING_SALT && effectiveType == PokeType.GHOST) ||
+      (defenderAbility == Ability.HEATPROOF && effectiveType == PokeType.FIRE)
     return if (qualifies) 0x800 else null
   }
 

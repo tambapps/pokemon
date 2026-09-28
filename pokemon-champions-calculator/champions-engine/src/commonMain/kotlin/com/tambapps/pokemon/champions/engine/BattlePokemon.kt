@@ -55,6 +55,12 @@ data class BattlePokemon(
   /** [resolvedItem], unless Klutz is suppressing it -- Klutz disables essentially every held item effect. */
   val effectiveItem: Item? get() = if (resolvedAbility == Ability.KLUTZ) null else resolvedItem
 
+  /**
+   * Whether it holds an item as far as the source calculator is concerned: its checkKlutz replaces a Klutz Pokemon's
+   * item with "Klutz", even when it holds nothing. Matters for Acrobatics, Knock Off, Unburden and Fling.
+   */
+  internal val holdsItem: Boolean get() = item != null || resolvedAbility == Ability.KLUTZ
+
   fun hasType(type: PokeType): Boolean = species.hasType(type)
 
   /** The stat as boosted by [boosts]; HP has no boost stages, so it is not offered here. */

@@ -42,14 +42,17 @@ fun hasAteAbilityBoost(move: Move, attacker: BattlePokemon): Boolean =
     move.type == PokeType.NORMAL &&
     ATE_TYPE_BY_ABILITY.containsKey(attacker.resolvedAbility)
 
-private fun fieldResolvedTypeOf(move: Move, attacker: BattlePokemon, field: Battlefield): PokeType = when (move.name.value) {
-  "Weather Ball" -> when (field.weather) {
+/** The move's type after checkMoveTypeChange: before any "-ate" ability or Liquid Voice. */
+internal fun fieldResolvedTypeOf(move: Move, attacker: BattlePokemon, field: Battlefield): PokeType = when (move.name.value) {
+  // Mega Sol makes it a Fire-type move whatever the weather
+  "Weather Ball" -> if (attacker.resolvedAbility == Ability.MEGA_SOL) PokeType.FIRE else when (field.weather) {
     Weather.SUN -> PokeType.FIRE
     Weather.RAIN -> PokeType.WATER
     Weather.SAND -> PokeType.ROCK
     Weather.HAIL, Weather.SNOW -> PokeType.ICE
     Weather.NONE -> PokeType.NORMAL
   }
+  "Aura Wheel" -> if (attacker.species.name.value == "Morpeko-Hangry") PokeType.DARK else move.type
   "Terrain Pulse" -> if (field.terrain == Terrain.NONE || !attacker.isGrounded(field)) {
     PokeType.NORMAL
   } else when (field.terrain) {

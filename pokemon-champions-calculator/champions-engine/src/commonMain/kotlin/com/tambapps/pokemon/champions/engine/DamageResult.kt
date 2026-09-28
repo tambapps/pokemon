@@ -1,7 +1,6 @@
 package com.tambapps.pokemon.champions.engine
 
 import com.tambapps.pokemon.champions.engine.description.CalcFacts
-import com.tambapps.pokemon.champions.engine.description.StatDisplay
 
 /**
  * Which stat a hit's attack is read from, and whose. Usually the attacker's Attack or Special
@@ -33,14 +32,4 @@ data class DamageResult(
 ) {
   val minDamage: Int get() = rolls.first()
   val maxDamage: Int get() = rolls.last()
-
-  internal companion object {
-    fun noDamage(facts: CalcFacts, statDisplay: StatDisplay, typeEffectiveness: Double = 1.0) = DamageResult(
-      rolls = listOf(0),
-      typeEffectiveness = typeEffectiveness,
-      isCritical = false,
-      description = facts.format(statDisplay),
-      facts = facts,
-    )
-  }
 }

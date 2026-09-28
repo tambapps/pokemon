@@ -31,6 +31,17 @@ enum class Screen(val displayName: String) {
   AURORA_VEIL("Aurora Veil"),
 }
 
+/** How much of the countered move's damage Counter-like moves return. */
+enum class CounterMultiplier(val text: String) {
+  /** Counter, Mirror Coat */
+  DOUBLE("2x"),
+  /** Metal Burst, Comeuppance */
+  ONE_AND_A_HALF("1.5x"),
+}
+
+/** The move a Counter-like move returned: its own calc facts, and how much of its damage was returned. */
+data class CounteredMove(val facts: CalcFacts, val multiplier: CounterMultiplier)
+
 /** How Rivalry changed a hit's power. */
 enum class RivalryEffect(val multiplier: String) {
   SAME_GENDER("1.25x"),
@@ -82,6 +93,8 @@ data class StatInvestment(val stat: Stat, val statPoints: Int, val value: Int, v
  * @property moveBasePower the move's power when it changed, e.g. 97.5 for Knock Off against an item holder
  * @property moveType the move's type when it changed, e.g. Fire for Weather Ball in the sun
  * @property hits the number of hits of a multi-hit move (or Parental Bond's 2), only in a whole-move description
+ * @property countered for Counter, Mirror Coat, Metal Burst and Comeuppance: the returned move's calc and how much
+ * of its damage is returned. Such a calc is written "2x Counter (<the countered calc>) vs. 20 HP  Garchomp"
  */
 data class CalcFacts(
   val attackerName: PokemonName,
@@ -116,10 +129,18 @@ data class CalcFacts(
   val isGlaiveRushVulnerable: Boolean = false,
   val isFriendGuard: Boolean = false,
   val isQuarteredByProtect: Boolean = false,
+  val countered: CounteredMove? = null,
 ) {
 
   /** The text of the calc as the source calculator writes it, before its damage numbers. */
-  fun format(display: StatDisplay = StatDisplay.STAT_POINTS): String = buildString {
+  fun format(display: StatDisplay = StatDisplay.STAT_POINTS): String {
+    countered?.let {
+      return "${it.multiplier.text} ${moveName.value} (${it.facts.format(display)}) vs. ${hp?.text(display).orEmpty()} ${defenderName.value}"
+    }
+    return formatCalc(display)
+  }
+
+  private fun formatCalc(display: StatDisplay): String = buildString {
     appendBoost(attackBoost)
     if (!usesDefenderAttackStat) appendIfSet(attackStat?.text(display))
     appendIfSet(attackerItem?.displayName)
