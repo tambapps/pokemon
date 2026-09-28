@@ -92,9 +92,21 @@ use (a multi-hit move's hits, each Triple Axel hit with its own power, Parental 
 defaulting to the source calculator's hit count (`defaultHitCount`: 3 for 2-5 hit moves, 5 with Skill
 Link...), and `KoChanceCalculator.minimumUsesToKo` gives the KO chance in uses of that move.
 
-A `DamageResult` also reports which stats the hit rolled off of (`attackStat`, `defenseStat`),
-e.g. to describe a calc: Body Press reports the attacker's Defense, Foul Play the defender's
-Attack, Psyshock the defender's Defense.
+A `DamageResult` also reports which stats the hit rolled off of (`attackStat`, `defenseStat`):
+Body Press reports the attacker's Defense, Foul Play the defender's Attack, Psyshock the
+defender's Defense.
+
+Both results carry the source calculator's exact calc description, the text before its damage
+numbers, e.g. `+1 32+ Atk Life Orb Tough Claws Mega Charizard X Flare Blitz vs. 32 HP  / 0 Def
+Incineroar in Sun through Reflect` (the double space after HP is the source's own). It is a port
+of the source's `buildDescription`: each modifier records what it should mention (an ability,
+an item, the weather, a screen, a changed base power...) only when it actually applies, exactly
+where the source does. `MoveDamageResult.description` is the one to show for a whole move: it
+adds the number of hits (`(3 hits)`) and Parental Bond to the first hit's `DamageResult.description`.
+The stat investments are written the way the source's "Display results with" setting does,
+picked with the `statDisplay` parameter of the `DamageCalculator` functions: Champions' stat
+points by default like the source (`20+ Atk`), or `StatDisplay.EVS` (`156+ Atk`) or
+`StatDisplay.STATS` (the stat values, `187 Atk`).
 
 For user input, `ChampionsDex.speciesOrNull`/`moveOrNull` return null instead of throwing on a
 name Champions doesn't know, and `PokemonSpecies.defaultAbility` is the ability the source
@@ -113,24 +125,32 @@ Two layers of tests, for two different jobs:
 - **Full-pipeline, cross-validated against the real JS.** Every scenario in
   [`tools/scenarios.json`](tools/scenarios.json) is run through the actual
   `damage_MASTER.js`/`damage_SV.js` (via [`tools/oracle.js`](tools/oracle.js),
-  bypassing its jQuery/DOM UI) to get ground-truth expected rolls, which are
-  hand-copied into
+  bypassing its jQuery/DOM UI) to get ground-truth expected rolls and
+  descriptions, which are hand-copied into
   [`DamageCalculatorCrossValidationTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/DamageCalculatorCrossValidationTest.kt)
   and [`DamageCalculatorTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/DamageCalculatorTest.kt).
-  Covers STAB, type effectiveness, critical hits, weather, type-boosting
-  items, screens, Life Orb, burn, Body Press/Foul Play's stat swaps, Gyro
-  Ball, Expert Belt, Friend Guard, Rivalry, resist berries, Multiscale, the
-  spread-move penalty, Acrobatics, Facade, multi-hit base power, Sturdy vs.
-  OHKO moves, ability-granted type immunity, Struggle, Parental Bond,
-  Piercing Drill vs. Protect, Glaive Rush, and that `AbilityName` resolution
-  is case/spacing-insensitive with an unrecognized ability degrading to "no
-  ability" rather than erroring.
+  Every scenario asserts the exact description text, never a hand-written one.
+  Covers STAB, type effectiveness, critical hits, weather (sun, rain, sand,
+  snow, Mega Sol), terrains, type-boosting items, screens (Reflect, Light
+  Screen, Aurora Veil), Life Orb, burn and Guts, boosts on both sides,
+  Unaware on both sides, Body Press/Foul Play's stat swaps, base power
+  changes (Gyro Ball, Knock Off, Hex, Solar Beam, Stored Power, Last
+  Respects, Water Spout, Weather Ball, Terrain Pulse, Acrobatics, Facade),
+  Expert Belt, Friend Guard, Helping Hand/Power Spot/Battery/ally Steely
+  Spirit/Charge, Rivalry, Supreme Overlord, Sand Force, Hustle, Scrappy,
+  Liquid Voice, Pixilate, Libero, defensive abilities (Thick Fat, Dry Skin,
+  Fluffy, Solid Rock, Multiscale), resist berries, Gravity, the spread-move
+  penalty, multi-hit moves (Bullet Seed, Triple Axel, Dragon Darts), Sturdy
+  vs. OHKO moves, ability/item/terrain immunities, status moves, Struggle,
+  Parental Bond, Piercing Drill vs. Protect, Glaive Rush, the three stat
+  display modes, and that `AbilityName` resolution is case/spacing-insensitive
+  with an unrecognized ability degrading to "no ability" rather than erroring.
 - **Direct unit tests for every internal resolver** (`ImmunityChecker`,
   `TypeEffectivenessCalculator`, `Grounded`, `SpeedCalculator`,
   `StabResolver`, `BasePowerResolver`/`BasePowerMods`, `AttackStatResolver`/
   `AttackStatMods`, `DefenseStatResolver`/`DefenseStatMods`, `FinalMods`,
   `EffectiveMoveType`/`EffectiveMoveCategory`), with hand-verified expected
-  values — these exercise ability/item/terrain/weather branches the 28
+  values — these exercise ability/item/terrain/weather branches the
   full-pipeline scenarios don't happen to combine, and they're what caught
   the one real bug this port had: Scrappy's Ghost-immunity bypass was keyed
   off the *defender's* ability instead of the *attacker's* (Scrappy is an
@@ -181,11 +201,13 @@ Defaults to `../../../NCP-VGC-Damage-Calculator` (a sibling of the
 
 `oracle.js` also sandboxes the real JS, but calls `GET_DAMAGE_SV(attacker,
 defender, move, field)` directly — the actual damage function, bypassing
-the jQuery UI — for each matchup listed in `scenarios.json`. Its output is
-what's hand-copied into `DamageCalculatorCrossValidationTest` as expected
-values: the ground truth this port is checked against. It isn't wired into
-the Gradle build; run it by hand when adding scenarios or re-verifying
-after an upstream mechanic changes.
+the jQuery UI — for each matchup listed in `scenarios.json`, and prints each
+scenario's damage rolls and description. Its output is what's hand-copied
+into `DamageCalculatorCrossValidationTest` as expected values: the ground
+truth this port is checked against. Descriptions use the calculator UI's
+default stat display (stat points); a scenario's `displayMode` (`"EVs"` or
+`"raw"`) picks another one. It isn't wired into the Gradle build; run it by
+hand when adding scenarios or re-verifying after an upstream mechanic changes.
 
 ```bash
 node tools/oracle.js tools/scenarios.json [path-to-NCP-VGC-Damage-Calculator]
@@ -235,6 +257,9 @@ calculator itself documents features it hasn't built:
   multi-hit move (Weak Armor, Stamina, Gooey, Kee/Maranga Berry, a resist
   berry or Multiscale being consumed/broken after the first hit) aren't
   modeled — every hit uses the attacker/defender's starting state.
+  Descriptions follow the same rule: they only mention what the engine
+  applied, so they leave out the between-hits abilities/items the source
+  mentions for a multi-hit move (e.g. Stamina, Weak Armor, Kee Berry).
 - **Counter-move mechanics aren't implemented**: Counter, Mirror Coat,
   Metal Burst, Comeuppance need the defender's incoming move as extra
   context this API doesn't thread through.

@@ -75,6 +75,17 @@ class MultiHitTest {
   }
 
   @Test
+  fun theHitCountIsOnlyInTheWholeMoveDescription() {
+    val bond = testPokemon("Garchomp", ability = "Parental Bond", nature = Nature.ADAMANT, hp = 20, attack = 20, defense = 8, specialDefense = 8, speed = 10)
+    val bondResult = DamageCalculator.calculateMove(bond, toxapex, MoveUse(testMove("Dragon Claw")), Battlefield())
+    assertEquals("20+ Atk Garchomp Dragon Claw vs. 20 HP  / 20+ Def Toxapex", bondResult.hits.first().description)
+
+    val seedResult = DamageCalculator.calculateMove(garchomp, toxapex, MoveUse(testMove("Bullet Seed")), Battlefield(), hits = 4)
+    assertEquals("20+ Atk Garchomp Bullet Seed vs. 20 HP  / 20+ Def Toxapex", seedResult.hits.first().description)
+    assertEquals("20+ Atk Garchomp Bullet Seed (4 hits) vs. 20 HP  / 20+ Def Toxapex", seedResult.description)
+  }
+
+  @Test
   fun hitCountMustBeInTheMoveRange() {
     assertFailsWith<ChampionsCalcException> {
       DamageCalculator.calculateMove(garchomp, toxapex, MoveUse(testMove("Bullet Seed")), Battlefield(), hits = 6)

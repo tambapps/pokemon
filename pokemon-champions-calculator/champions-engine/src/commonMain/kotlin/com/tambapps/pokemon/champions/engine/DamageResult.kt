@@ -19,12 +19,18 @@ data class DamageResult(
   val attackStat: AttackStatSource? = null,
   /** The defender's stat the hit's defense was read from. Null when no damage was calculated. */
   val defenseStat: BoostableStat? = null,
+  /**
+   * The source calculator's description of this hit, e.g. "+1 32+ Atk Life Orb Tough Claws Mega Charizard X Flare Blitz
+   * vs. 32 HP  / 0 Def Incineroar in Sun through Reflect" (the double space after HP is the source's), without the
+   * whole-move facts (the number of hits, Parental Bond) [MoveDamageResult.description] adds.
+   */
+  val description: String = "",
 ) {
   val minDamage: Int get() = rolls.first()
   val maxDamage: Int get() = rolls.last()
 
   companion object {
-    fun noDamage(typeEffectiveness: Double = 1.0, isCritical: Boolean = false) =
-      DamageResult(rolls = listOf(0), typeEffectiveness = typeEffectiveness, isCritical = isCritical)
+    fun noDamage(typeEffectiveness: Double = 1.0, isCritical: Boolean = false, description: String = "") =
+      DamageResult(rolls = listOf(0), typeEffectiveness = typeEffectiveness, isCritical = isCritical, description = description)
   }
 }

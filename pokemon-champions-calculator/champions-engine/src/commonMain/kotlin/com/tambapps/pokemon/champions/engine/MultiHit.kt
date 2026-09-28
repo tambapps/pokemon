@@ -26,8 +26,13 @@ fun defaultHitCount(move: Move, attacker: BattlePokemon): Int {
   }
 }
 
-/** The damage of every hit of one use of a move: one hit for a single-hit move, two for a Parental Bond one. */
-data class MoveDamageResult(val hits: List<DamageResult>) {
+/**
+ * The damage of every hit of one use of a move: one hit for a single-hit move, two for a Parental Bond one.
+ *
+ * @param description the source calculator's description of the calc, e.g. "20+ Atk Garchomp Bullet Seed (3 hits)
+ * vs. 20 HP  / 20+ Def Toxapex": the first hit's [DamageResult.description] plus the number of hits and Parental Bond
+ */
+data class MoveDamageResult(val hits: List<DamageResult>, val description: String = "") {
   val minDamage: Int get() = hits.sumOf { it.minDamage }
   val maxDamage: Int get() = hits.sumOf { it.maxDamage }
 }
