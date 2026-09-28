@@ -9,10 +9,10 @@ import com.tambapps.pokemon.champions.engine.Terrain
 import com.tambapps.pokemon.champions.engine.Weather
 
 /**
- * Collects the facts of a [CalcDescription] while the modifier chain runs: each resolver records what it applied,
+ * Collects the [CalcFacts] of a calc while the modifier chain runs: each resolver records what it applied,
  * later records overwriting earlier ones like in the source calculator.
  */
-internal class DescriptionBuilder(
+internal class CalcFactsBuilder(
   private val attackerName: PokemonName = PokemonName(""),
   private val moveName: MoveName = MoveName(""),
   private val defenderName: PokemonName = PokemonName(""),
@@ -75,7 +75,7 @@ internal class DescriptionBuilder(
     moveType = type
   }
 
-  fun build() = CalcDescription(
+  fun build() = CalcFacts(
     attackerName = attackerName,
     moveName = moveName,
     defenderName = defenderName,

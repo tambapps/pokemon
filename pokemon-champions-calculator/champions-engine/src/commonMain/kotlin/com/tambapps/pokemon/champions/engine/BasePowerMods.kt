@@ -6,7 +6,7 @@ import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Item
 import com.tambapps.pokemon.champions.data.Move
 import com.tambapps.pokemon.champions.data.MoveCategory
-import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
+import com.tambapps.pokemon.champions.engine.description.CalcFactsBuilder
 import com.tambapps.pokemon.champions.engine.description.RivalryEffect
 
 /** Ported from calcBPMods, scoped to Champions. Order matters: chainMods rounds after every step. */
@@ -23,44 +23,44 @@ internal object BasePowerMods {
     attacker: BattlePokemon,
     defender: BattlePokemon,
     field: Battlefield,
-    description: DescriptionBuilder = DescriptionBuilder(),
+    facts: CalcFactsBuilder = CalcFactsBuilder(),
   ): List<Int> {
     val mods = mutableListOf<Int>()
     val effectiveCategory = effectiveCategoryOf(move, attacker, defender)
 
     rivalryMod(attacker, defender)?.let {
       mods.add(it)
-      description.attackerAbility(attacker.resolvedAbility)
-      description.rivalryEffect = if (it == 0x1400) RivalryEffect.SAME_GENDER else RivalryEffect.OPPOSITE_GENDER
+      facts.attackerAbility(attacker.resolvedAbility)
+      facts.rivalryEffect = if (it == 0x1400) RivalryEffect.SAME_GENDER else RivalryEffect.OPPOSITE_GENDER
     }
     offensiveBoostMod(move, attacker)?.let {
       mods.add(it)
-      description.attackerAbility(attacker.resolvedAbility)
+      facts.attackerAbility(attacker.resolvedAbility)
     }
     if (field.attackerSide.hasBattery && effectiveCategory == MoveCategory.SPECIAL) {
       mods.add(0x14CD)
-      description.isBattery = true
+      facts.isBattery = true
     }
     if (field.attackerSide.hasPowerSpot) {
       mods.add(0x14CD)
-      description.isPowerSpot = true
+      facts.isPowerSpot = true
     }
     if (field.attackerSide.hasAllySteelySpirit && effectiveType == PokeType.STEEL) {
       mods.add(0x1800)
-      description.isSteelySpirit = true
+      facts.isSteelySpirit = true
     }
     offensiveAbilityMod(move, effectiveType, attacker, defender, field)?.let {
       mods.add(it)
-      description.attackerAbility(attacker.resolvedAbility)
-      if (attacker.resolvedAbility == Ability.SAND_FORCE) description.weather(field.weather)
+      facts.attackerAbility(attacker.resolvedAbility)
+      if (attacker.resolvedAbility == Ability.SAND_FORCE) facts.weather(field.weather)
     }
     // Champions only offers Fairy Aura, not Dark Aura / Aura Break (hidden for this gen in the source calculator)
     if (field.isFairyAura && effectiveType == PokeType.FAIRY) {
       mods.add(0x1548)
       if (attacker.resolvedAbility == Ability.FAIRY_AURA) {
-        description.attackerAbility(attacker.resolvedAbility)
+        facts.attackerAbility(attacker.resolvedAbility)
       } else if (defender.resolvedAbility == Ability.FAIRY_AURA) {
-        description.defenderAbility(defender.resolvedAbility)
+        facts.defenderAbility(defender.resolvedAbility)
       }
     }
 
@@ -68,50 +68,50 @@ internal object BasePowerMods {
     val powerSoFar = pokeRound(basePower * chainMods(mods), 0x1000)
     strongOffenseMod(move, effectiveType, attacker, powerSoFar)?.let {
       mods.add(it)
-      description.attackerAbility(attacker.resolvedAbility)
+      facts.attackerAbility(attacker.resolvedAbility)
     }
 
     if (defender.resolvedAbility == Ability.DRY_SKIN && effectiveType == PokeType.FIRE) {
       mods.add(0x1400)
-      description.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defender.resolvedAbility)
     }
     itemPowerMod(effectiveType, attacker, effectiveCategory)?.let {
       mods.add(it)
-      description.attackerItem(attacker.effectiveItem)
+      facts.attackerItem(attacker.effectiveItem)
     }
     if (weakensInWeather(move, attacker, field)) {
       mods.add(0x800)
-      description.moveBP = move.basePower / 2.0
-      description.weather(field.weather)
+      facts.moveBP = move.basePower / 2.0
+      facts.weather(field.weather)
     }
     if (field.attackerSide.hasHelpingHand) {
       mods.add(0x1800)
-      description.isHelpingHand = true
+      facts.isHelpingHand = true
     }
     if (chargeMod(effectiveType, attacker, field)) {
       mods.add(0x2000)
-      description.charged = true
+      facts.charged = true
     }
     if (isDoubledByCondition(move, attacker, defender)) {
       mods.add(0x2000)
-      description.moveBP = move.basePower * 2.0
+      facts.moveBP = move.basePower * 2.0
     }
     terrainOffenseMod(effectiveType, attacker, field)?.let {
       mods.add(it)
-      description.terrain(field.terrain)
+      facts.terrain(field.terrain)
     }
     terrainDefenseMod(move, effectiveType, defender, field)?.let {
       mods.add(it)
-      description.terrain(field.terrain)
+      facts.terrain(field.terrain)
     }
     supremeOverlordMod(attacker, moveUse)?.let {
       mods.add(it)
-      description.attackerAbility(attacker.resolvedAbility)
-      description.faintedAllies = moveUse.faintedAllyCount
+      facts.attackerAbility(attacker.resolvedAbility)
+      facts.faintedAllies = moveUse.faintedAllyCount
     }
     if (move.name.value == "Knock Off" && defender.effectiveItem != null) {
       mods.add(0x1800)
-      description.moveBP = move.basePower * 1.5
+      facts.moveBP = move.basePower * 1.5
     }
 
     return mods

@@ -5,7 +5,7 @@ import com.tambapps.pokemon.champions.data.Ability
 import com.tambapps.pokemon.champions.data.Item
 import com.tambapps.pokemon.champions.data.Move
 import com.tambapps.pokemon.champions.data.MoveCategory
-import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
+import com.tambapps.pokemon.champions.engine.description.CalcFactsBuilder
 import com.tambapps.pokemon.champions.engine.description.Screen
 
 /** Ported from calcFinalMods, scoped to Champions. */
@@ -19,60 +19,60 @@ internal object FinalMods {
     field: Battlefield,
     isCritical: Boolean,
     typeEffectiveness: Double,
-    description: DescriptionBuilder = DescriptionBuilder(),
+    facts: CalcFactsBuilder = CalcFactsBuilder(),
   ): List<Int> {
     val effectiveCategory = effectiveCategoryOf(move, attacker, defender)
     val mods = mutableListOf<Int>()
 
-    screenMod(move, effectiveCategory, field, isCritical, description)?.let(mods::add)
+    screenMod(move, effectiveCategory, field, isCritical, facts)?.let(mods::add)
     if (attacker.resolvedAbility == Ability.SNIPER && isCritical) {
       mods.add(0x1800)
-      description.attackerAbility(attacker.resolvedAbility)
+      facts.attackerAbility(attacker.resolvedAbility)
     }
     if (defender.resolvedAbility == Ability.MULTISCALE && defender.hp == defender.maxHp) {
       mods.add(0x800)
-      description.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defender.resolvedAbility)
     }
     if ((defender.resolvedAbility == Ability.FLUFFY || defender.resolvedAbility == Ability.AURA_GUARD) && move.makesContact) {
       mods.add(0x800)
-      description.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defender.resolvedAbility)
     }
     if (defender.resolvedAbility == Ability.PUNK_ROCK && move.isSound) {
       mods.add(0x800)
-      description.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defender.resolvedAbility)
     }
     if (field.defenderSide.hasFriendGuard) {
       mods.add(0xC00)
-      description.isFriendGuard = true
+      facts.isFriendGuard = true
     }
     if ((defender.resolvedAbility == Ability.SOLID_ROCK || defender.resolvedAbility == Ability.FILTER) && typeEffectiveness > 1) {
       mods.add(0xC00)
-      description.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defender.resolvedAbility)
     }
     if (defender.resolvedAbility == Ability.FLUFFY && effectiveType == PokeType.FIRE) {
       mods.add(0x2000)
-      description.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defender.resolvedAbility)
     }
 
     itemMod(attacker, typeEffectiveness)?.let {
       mods.add(it)
-      description.attackerItem(attacker.effectiveItem)
+      facts.attackerItem(attacker.effectiveItem)
     }
     resistBerryMod(effectiveType, attacker, defender, typeEffectiveness)?.let {
       mods.add(it)
-      if (defender.resolvedAbility == Ability.RIPEN) description.defenderAbility(defender.resolvedAbility)
-      description.defenderItem(defender.effectiveItem)
+      if (defender.resolvedAbility == Ability.RIPEN) facts.defenderAbility(defender.resolvedAbility)
+      facts.defenderItem(defender.effectiveItem)
     }
 
     return mods
   }
 
-  private fun screenMod(move: Move, effectiveCategory: MoveCategory, field: Battlefield, isCritical: Boolean, description: DescriptionBuilder): Int? {
+  private fun screenMod(move: Move, effectiveCategory: MoveCategory, field: Battlefield, isCritical: Boolean, facts: CalcFactsBuilder): Int? {
     if (isCritical || move.ignoresScreens) return null
     when {
-      field.defenderSide.hasAuroraVeil -> description.screen = Screen.AURORA_VEIL
-      field.defenderSide.hasReflect && effectiveCategory == MoveCategory.PHYSICAL -> description.screen = Screen.REFLECT
-      field.defenderSide.hasLightScreen && effectiveCategory == MoveCategory.SPECIAL -> description.screen = Screen.LIGHT_SCREEN
+      field.defenderSide.hasAuroraVeil -> facts.screen = Screen.AURORA_VEIL
+      field.defenderSide.hasReflect && effectiveCategory == MoveCategory.PHYSICAL -> facts.screen = Screen.REFLECT
+      field.defenderSide.hasLightScreen && effectiveCategory == MoveCategory.SPECIAL -> facts.screen = Screen.LIGHT_SCREEN
       else -> return null
     }
     return if (field.format != BattleFormat.SINGLES) 0xAAC else 0x800

@@ -19,7 +19,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 /** The typed facts behind the descriptions, whose exact text DamageCalculatorCrossValidationTest checks against the source calculator. */
-class CalcDescriptionTest {
+class CalcFactsTest {
 
   private val garchomp = testPokemon("Garchomp", ability = "Rough Skin", nature = Nature.ADAMANT, hp = 20, attack = 20, defense = 8, specialDefense = 8, speed = 10)
   private val toxapex = testPokemon("Toxapex", ability = "Merciless", nature = Nature.BOLD, hp = 20, defense = 20, specialDefense = 16, speed = 6)
@@ -29,13 +29,13 @@ class CalcDescriptionTest {
     defender: com.tambapps.pokemon.champions.engine.BattlePokemon,
     move: String,
     field: Battlefield = Battlefield(),
-  ) = DamageCalculator.calculateSingleHit(attacker, defender, MoveUse(testMove(move)), field).calcDescription!!
+  ) = DamageCalculator.calculateSingleHit(attacker, defender, MoveUse(testMove(move)), field).facts
 
   @Test
   fun descriptionIsTheFormattedFacts() {
     val result = DamageCalculator.calculateMove(garchomp, toxapex, MoveUse(testMove("Bullet Seed")), Battlefield(), hits = 3, statDisplay = StatDisplay.EVS)
-    assertEquals(result.description, result.calcDescription!!.format(StatDisplay.EVS))
-    assertEquals(result.hits.first().description, result.hits.first().calcDescription!!.format(StatDisplay.EVS))
+    assertEquals(result.description, result.facts.format(StatDisplay.EVS))
+    assertEquals(result.hits.first().description, result.hits.first().facts.format(StatDisplay.EVS))
   }
 
   @Test
@@ -81,7 +81,7 @@ class CalcDescriptionTest {
     val overlord = DamageCalculator.calculateSingleHit(
       testPokemon("Kingambit", ability = "Supreme Overlord", attack = 20), toxapex,
       MoveUse(testMove("Kowtow Cleave"), faintedAllyCount = 1), Battlefield(),
-    ).calcDescription!!
+    ).facts
     assertEquals(1, overlord.faintedAllies)
     // oracle.js output of the supreme-overlord-one-ally scenario
     assertEquals("20 Atk Supreme Overlord (1 ally down) Kingambit Kowtow Cleave vs. 20 HP  / 20+ Def Toxapex", overlord.format())
@@ -91,10 +91,10 @@ class CalcDescriptionTest {
   fun boostsAndWholeMoveFacts() {
     val boosted = garchomp.copy(boosts = StatBoosts(attack = 1))
     val result = DamageCalculator.calculateMove(boosted, toxapex, MoveUse(testMove("Bullet Seed")), Battlefield(), hits = 4)
-    assertEquals(1, result.calcDescription!!.attackBoost)
-    assertEquals(4, result.calcDescription!!.hits)
+    assertEquals(1, result.facts.attackBoost)
+    assertEquals(4, result.facts.hits)
     // a hit's facts don't have the whole move's hit count
-    assertNull(result.hits.first().calcDescription!!.hits)
+    assertNull(result.hits.first().facts.hits)
   }
 
   @Test

@@ -108,12 +108,12 @@ picked with the `statDisplay` parameter of the `DamageCalculator` functions: Cha
 points by default like the source (`20+ Atk`), or `StatDisplay.EVS` (`156+ Atk`) or
 `StatDisplay.STATS` (the stat values, `187 Atk`).
 
-The facts behind that text are also exposed, typed, as `calcDescription` on both results
+The facts behind that text are also exposed, typed, as `facts` (a `CalcFacts`) on both results
 (package `com.tambapps.pokemon.champions.engine.description`): the attacker's/defender's
 ability and item that applied (`Ability?`/`Item?`), the weather and terrain that applied, the
 `Screen` hit through, the changed base power and type, the boosts, the stat investments, the
-number of hits... e.g. to show them in a richer UI than a sentence. `CalcDescription.format`
-is the reference formatter: `description` is exactly `calcDescription.format(statDisplay)`.
+number of hits... e.g. to show them in a richer UI than a sentence. `CalcFacts.format` is the
+reference formatter: `description` is exactly `facts.format(statDisplay)`.
 
 For user input, `ChampionsDex.speciesOrNull`/`moveOrNull` return null instead of throwing on a
 name Champions doesn't know, and `PokemonSpecies.defaultAbility` is the ability the source

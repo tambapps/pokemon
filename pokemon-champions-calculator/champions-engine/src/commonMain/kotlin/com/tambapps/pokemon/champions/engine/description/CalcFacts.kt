@@ -83,7 +83,7 @@ data class StatInvestment(val stat: Stat, val statPoints: Int, val value: Int, v
  * @property moveType the move's type when it changed, e.g. Fire for Weather Ball in the sun
  * @property hits the number of hits of a multi-hit move (or Parental Bond's 2), only in a whole-move description
  */
-data class CalcDescription(
+data class CalcFacts(
   val attackerName: PokemonName,
   val moveName: MoveName,
   val defenderName: PokemonName,

@@ -1,24 +1,24 @@
 package com.tambapps.pokemon.champions.engine
 
 import com.tambapps.pokemon.champions.data.Ability
-import com.tambapps.pokemon.champions.engine.description.DescriptionBuilder
+import com.tambapps.pokemon.champions.engine.description.CalcFactsBuilder
 
 /** Ported from calcDefMods, scoped to Champions -- most defensive items/abilities the games have (Eviolite, Assault Vest, Soul Dew...) aren't legal here. */
 internal object DefenseStatMods {
 
-  fun resolve(defender: BattlePokemon, field: Battlefield, hitsPhysical: Boolean, description: DescriptionBuilder = DescriptionBuilder()): List<Int> {
+  fun resolve(defender: BattlePokemon, field: Battlefield, hitsPhysical: Boolean, facts: CalcFactsBuilder = CalcFactsBuilder()): List<Int> {
     val mods = mutableListOf<Int>()
 
     val oneAndHalf = (defender.resolvedAbility == Ability.MARVEL_SCALE && defender.status.isNonHealthy && hitsPhysical) ||
       (defender.resolvedAbility == Ability.GRASS_PELT && field.terrain == Terrain.GRASSY && hitsPhysical)
     if (oneAndHalf) {
       mods.add(0x1800)
-      description.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defender.resolvedAbility)
     }
 
     if (defender.resolvedAbility == Ability.FUR_COAT && hitsPhysical) {
       mods.add(0x2000)
-      description.defenderAbility(defender.resolvedAbility)
+      facts.defenderAbility(defender.resolvedAbility)
     }
 
     return mods
