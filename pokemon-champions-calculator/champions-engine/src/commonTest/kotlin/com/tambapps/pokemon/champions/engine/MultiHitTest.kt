@@ -94,25 +94,4 @@ class MultiHitTest {
       DamageCalculator.calculateMove(garchomp, toxapex, MoveUse(testMove("Dragon Claw")), Battlefield(), hits = 2)
     }
   }
-
-  @Test
-  fun usesToKoMatchesHitsToKoForASingleHitMove() {
-    val move = MoveUse(testMove("Dragon Claw"))
-    val result = DamageCalculator.calculateMove(garchomp, toxapex, move, Battlefield())
-    assertEquals(
-      KoChanceCalculator.minimumHitsToKo(result.hits.single().rolls, toxapex.hp),
-      KoChanceCalculator.minimumUsesToKo(result, toxapex.hp),
-    )
-  }
-
-  @Test
-  fun usesToKoCountsEveryHitOfAMultiHitMove() {
-    val result = DamageCalculator.calculateMove(garchomp, toxapex, MoveUse(testMove("Bullet Seed")), Battlefield(), hits = 3)
-    // one use can never KO, two uses can
-    val targetHp = result.maxDamage + 1
-    val koChance = KoChanceCalculator.minimumUsesToKo(result, targetHp)!!
-    assertEquals(2, koChance.hits)
-    // identical hits: 2 uses of a 3 hit move are 6 hits
-    assertEquals(KoChanceCalculator.koChance(result.hits.first().rolls, hits = 6, targetHp = targetHp), koChance.chance, 1e-9)
-  }
 }

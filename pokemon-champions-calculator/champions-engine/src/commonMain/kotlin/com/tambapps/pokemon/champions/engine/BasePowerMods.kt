@@ -125,8 +125,8 @@ internal object BasePowerMods {
     when (move.name.value) {
       "Knock Off" -> canRemoveItem(defender)
       "Grav Apple" -> field.isGravity
-      "Misty Explosion" -> field.terrain == Terrain.MISTY && attacker.isGrounded(field)
-      "Expanding Force" -> field.terrain == Terrain.PSYCHIC && attacker.isGrounded(field)
+      "Misty Explosion" -> field.terrain == Terrain.MISTY && attacker.isAttackerGrounded(field)
+      "Expanding Force" -> field.terrain == Terrain.PSYCHIC && attacker.isAttackerGrounded(field)
       else -> false
     }
 
@@ -204,7 +204,7 @@ internal object BasePowerMods {
   }
 
   private fun terrainOffenseMod(effectiveType: PokeType, attacker: BattlePokemon, field: Battlefield): Int? {
-    if (!attacker.isGrounded(field)) return null
+    if (!attacker.isAttackerGrounded(field)) return null
     val boosted = (field.terrain == Terrain.ELECTRIC && effectiveType == PokeType.ELECTRIC) ||
       (field.terrain == Terrain.GRASSY && effectiveType == PokeType.GRASS) ||
       (field.terrain == Terrain.PSYCHIC && effectiveType == PokeType.PSYCHIC)
@@ -212,7 +212,7 @@ internal object BasePowerMods {
   }
 
   private fun terrainDefenseMod(move: Move, effectiveType: PokeType, defender: BattlePokemon, field: Battlefield): Int? {
-    if (!defender.isGrounded(field)) return null
+    if (!defender.isDefenderGrounded(field)) return null
     val weakened = (field.terrain == Terrain.MISTY && effectiveType == PokeType.DRAGON) ||
       (field.terrain == Terrain.GRASSY && move.name.value in setOf("Earthquake", "Bulldoze"))
     return if (weakened) 0x800 else null

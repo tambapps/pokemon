@@ -40,7 +40,16 @@ data class BattlePokemon(
   val abilityIsActive: Boolean = false,
   /** True if this Pokemon used Glaive Rush on its last turn, making it take double damage until its next move. */
   val isVulnerableFromGlaiveRush: Boolean = false,
+  /**
+   * When [status] is [Status.BADLY_POISONED], the toxic damage of the next end of turn in 16ths of the max HP (1 to 15,
+   * 1 by default like the source calculator), increasing by 1 every turn. Ignored for any other status.
+   */
+  val toxicCounter: Int = 1,
 ) {
+  init {
+    requireValid(toxicCounter in 1..15) { "the toxic counter goes from 1 to 15, got $toxicCounter" }
+  }
+
   /** [ability] resolved to Champions' closed ability set; [Ability.NO_ABILITY] if [ability] isn't legal here, which the engine treats as no special ability. */
   val resolvedAbility: Ability by lazy { Ability.from(ability) }
 

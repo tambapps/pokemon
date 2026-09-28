@@ -73,6 +73,7 @@ load('item_data.js');
 load('move_data.js');
 load('damage_MASTER.js');
 load('damage_SV.js');
+load('ko_chance.js');
 
 const { POKEDEX_CHAMPIONS, MOVES_CHAMPIONS, NATURES, STATS_GSC, TYPE_CHART_SV } = sandbox;
 sandbox.STATS = STATS_GSC;
@@ -99,7 +100,7 @@ function calcRawStat(base, statKey, statPoints, nature) {
 }
 
 /**
- * spec: { name, ability, item, nature, statPoints:{hp,at,df,sa,sd,sp}, boosts:{at,df,sa,sd,sp}, status, curHpFraction }
+ * spec: { name, ability, item, nature, statPoints:{hp,at,df,sa,sd,sp}, boosts:{at,df,sa,sd,sp}, status, toxicCounter, curHpFraction }
  */
 function buildPokemon(spec) {
   const mon = POKEDEX_CHAMPIONS[spec.name];
@@ -138,16 +139,15 @@ function buildPokemon(spec) {
     highestStat: -1,
     item: spec.item || '',
     status: spec.status || 'Healthy',
-    toxicCounter: 0,
+    // like ap_calc.js's Pokemon: the toxic counter select (1/16 by default) only counts when badly poisoned
+    toxicCounter: spec.status === 'Badly Poisoned' ? (spec.toxicCounter || 1) : 0,
     moves: [null, null, null, null],
     glaiveRushMod: !!spec.glaiveRushMod,
     weight: mon.w,
     canEvolve: !!mon.canEvolve,
     isTransformed: false,
-    hasType: function (t1, t2) {
-      if (t2 !== undefined) return this.type1 === t1 || this.type1 === t2 || this.type2 === t1 || this.type2 === t2;
-      return this.type1 === t1 || this.type2 === t1;
-    },
+    // ap_calc.js's Pokemon uses this one, which takes any number of types (ko_chance.js checks three for sandstorm)
+    hasType: sandbox.setHasTypeFunc,
   };
   for (const s of [AT, DF, SA, SD, SP]) p.stats[s] = sandbox.getModifiedStat(p.rawStats[s], p.boosts[s]);
   return p;
@@ -172,6 +172,8 @@ function buildField(overrides) {
     isFriendGuard: false, isBattery: false, isPowerSpot: false, isSteelySpirit: false,
     isHelpingHand: false, isReflect: false, isLightScreen: false, isAuroraVeil: false,
     isSR: false, isSteelsurge: false, spikes: 0, isIngrain: false,
+    // the defender side's end-of-turn toggles the Champions UI shows, read by ko_chance.js
+    isLeechSeed: false, isSaltCure: false, isCurse: false, isBinding: false, isAquaRing: false,
   }, overrides || {});
 }
 
@@ -210,7 +212,21 @@ function calc(attackerSpec, defenderSpec, moveName, moveOverrides, fieldOverride
   defender.moves = [buildMove(counteredMove || FILLER_MOVE), buildMove(FILLER_MOVE), buildMove(FILLER_MOVE), buildMove(FILLER_MOVE)];
   const field = buildUiField(buildField(fieldOverrides));
   sandbox.resultDisplayMode = displayMode || 'SPs';
-  return sandbox.CALCULATE_ALL_MOVES_SV(attacker, defender, field)[0][0];
+  const result = sandbox.CALCULATE_ALL_MOVES_SV(attacker, defender, field)[0][0];
+  // after the calc, like ap_calc.js's calculate(): on the Pokemon and move as the calc left them (e.g. Klutz's item,
+  // Parental Bond's move.hits of 2), with the attacked side of the field (weather cleared by Cloud Nine...)
+  const move = attacker.moves[0];
+  result.koChanceText = koChanceText(result, attacker, defender, move, field.getSide(1));
+  result.hits = move.hits;
+  return result;
+}
+
+// The KO chance text ap_calc.js's calculate() shows under a move: getKOChanceText, except for the OHKO
+// moves it replaces with a link reading 'is it a one-hit KO?!' (the Z-move/Dynamax exceptions don't exist
+// in Champions, and no Champions damaging move has 0 BP, which it would replace with 'how').
+function koChanceText(result, attacker, defender, move, field) {
+  if (move.isOHKO) return 'is it a one-hit KO?!';
+  return sandbox.getKOChanceText(result.damage, move, defender, field, attacker.ability === 'Bad Dreams', attacker.item === '');
 }
 
 module.exports = { calc, sandbox };
@@ -219,7 +235,7 @@ if (require.main === module) {
   const scenarios = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
   const results = scenarios.map((s) => {
     const r = calc(s.attacker, s.defender, s.move, s.moveOverrides, s.field, s.displayMode, s.counteredMove);
-    return { id: s.id, damage: r.damage, description: r.description };
+    return { id: s.id, damage: r.damage, description: r.description, hits: r.hits, koChanceText: r.koChanceText };
   });
   console.log(JSON.stringify(results, null, 2));
 }

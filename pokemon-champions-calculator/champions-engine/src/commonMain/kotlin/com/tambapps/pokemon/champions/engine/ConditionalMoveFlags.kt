@@ -14,7 +14,7 @@ internal fun makesContact(move: Move, attacker: BattlePokemon, effectiveCategory
 
 /** Whether the move hits every opponent, ported from checkConditionalSpread: Expanding Force does in Psychic Terrain. */
 internal fun isSpreadHit(move: Move, attacker: BattlePokemon, field: Battlefield): Boolean =
-  move.isSpread || (move.name.value == "Expanding Force" && field.terrain == Terrain.PSYCHIC && attacker.isGrounded(field))
+  move.isSpread || (move.name.value == "Expanding Force" && field.terrain == Terrain.PSYCHIC && attacker.isAttackerGrounded(field))
 
 /**
  * Whether the move has priority this time, ported from checkConditionalPriority: Grassy Glide in Grassy Terrain, and
@@ -22,5 +22,5 @@ internal fun isSpreadHit(move: Move, attacker: BattlePokemon, field: Battlefield
  */
 internal fun hasEffectivePriority(move: Move, attacker: BattlePokemon, field: Battlefield): Boolean =
   move.hasPriority ||
-    (move.name.value == "Grassy Glide" && field.terrain == Terrain.GRASSY && attacker.isGrounded(field)) ||
+    (move.name.value == "Grassy Glide" && field.terrain == Terrain.GRASSY && attacker.isAttackerGrounded(field)) ||
     (attacker.resolvedAbility == Ability.GALE_WINGS && fieldResolvedTypeOf(move, attacker, field) == PokeType.FLYING && attacker.hp == attacker.maxHp)

@@ -60,7 +60,7 @@ object ImmunityChecker {
         facts.defenderAbility(defenderAbility)
         return true
       }
-      if (field.terrain == Terrain.PSYCHIC && defender.isGrounded(field)) {
+      if (field.terrain == Terrain.PSYCHIC && defender.isDefenderGrounded(field)) {
         facts.terrain(field.terrain)
         return true
       }

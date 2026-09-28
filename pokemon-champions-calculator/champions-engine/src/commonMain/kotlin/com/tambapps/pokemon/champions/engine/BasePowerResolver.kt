@@ -85,8 +85,8 @@ internal object BasePowerResolver {
       "Acrobatics" -> if (attacker.holdsItem) 55 else 110
       "Hex", "Infernal Parade" -> move.basePower * (if (defender.status.isNonHealthy) 2 else 1)
       "Weather Ball" -> move.basePower * (if (field.weather != Weather.NONE || attacker.resolvedAbility == Ability.MEGA_SOL) 2 else 1)
-      "Terrain Pulse" -> move.basePower * (if (field.terrain != Terrain.NONE && attacker.isGrounded(field)) 2 else 1)
-      "Rising Voltage" -> move.basePower * (if (field.terrain == Terrain.ELECTRIC && defender.isGrounded(field)) 2 else 1)
+      "Terrain Pulse" -> move.basePower * (if (field.terrain != Terrain.NONE && attacker.isAttackerGrounded(field)) 2 else 1)
+      "Rising Voltage" -> move.basePower * (if (field.terrain == Terrain.ELECTRIC && defender.isDefenderGrounded(field)) 2 else 1)
       "Last Respects", "Rage Fist" -> move.basePower * (moveUse.priorPowerBoosts + 1)
       else -> if (isDoubledByUse(move, moveUse)) move.basePower * 2 else null
     }

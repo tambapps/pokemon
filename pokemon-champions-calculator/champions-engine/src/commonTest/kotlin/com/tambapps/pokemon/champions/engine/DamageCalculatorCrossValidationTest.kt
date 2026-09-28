@@ -17,7 +17,7 @@ import kotlin.test.assertEquals
  * engine (damage_MASTER.js + damage_SV.js, unmodified) directly, bypassing its jQuery/DOM UI,
  * against the same inputs -- see tools/oracle.js and the scenario of the same name in tools/scenarios.json.
  * This is what gives this port confidence: it isn't just internally consistent, it matches the source
- * calculator hit-for-hit, down to the description text.
+ * calculator hit-for-hit, down to the description text and the KO chance text (the oracle's koChanceText).
  */
 class DamageCalculatorCrossValidationTest {
 
@@ -67,6 +67,7 @@ class DamageCalculatorCrossValidationTest {
   private fun assertCalc(
     expectedRolls: List<Int>,
     expectedDescription: String,
+    expectedKoChance: String,
     attacker: BattlePokemon,
     defender: BattlePokemon,
     move: MoveUse,
@@ -76,8 +77,22 @@ class DamageCalculatorCrossValidationTest {
     val result = calc(attacker, defender, move, field, statDisplay)
     assertEquals(expectedRolls, result.rolls)
     assertEquals(expectedDescription, result.description)
+    val moveResult = DamageCalculator.calculateMove(attacker, defender, move, field, statDisplay = statDisplay)
     // a single-hit move's whole-move description is its hit's
-    assertEquals(expectedDescription, DamageCalculator.calculateMove(attacker, defender, move, field, statDisplay = statDisplay).description)
+    assertEquals(expectedDescription, moveResult.description)
+    assertEquals(expectedKoChance, moveResult.koChance.text)
+  }
+
+  /** The KO chance text of the whole move, [hits] times for a multi-hit move (the scenario's hit count in the oracle). */
+  private fun assertKoChance(
+    expectedKoChance: String,
+    attacker: BattlePokemon,
+    defender: BattlePokemon,
+    move: MoveUse,
+    field: Battlefield = Battlefield(),
+    hits: Int = defaultHitCount(move.move, attacker),
+  ) {
+    assertEquals(expectedKoChance, DamageCalculator.calculateMove(attacker, defender, move, field, hits = hits).koChance.text)
   }
 
   @Test
@@ -86,6 +101,7 @@ class DamageCalculatorCrossValidationTest {
     val toxapex = pokemon("Toxapex", "Merciless", Nature.BOLD, 20, 0, 20, 0, 16, 6)
     assertEquals(listOf(74, 74, 78, 78, 78, 80, 80, 80, 80, 84, 84, 84, 86, 86, 86, 90), rolls(garchomp, toxapex, moveUse("Earthquake")))
     assertEquals("20+ Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex", description(garchomp, toxapex, moveUse("Earthquake")))
+    assertKoChance("guaranteed 2HKO", garchomp, toxapex, moveUse("Earthquake"))
   }
 
   @Test
@@ -101,6 +117,7 @@ class DamageCalculatorCrossValidationTest {
       "20+ SpA Solar Power Charizard Weather Ball (100 BP Fire) vs. 20 HP  / 10 SpD Venusaur in Sun",
       description(charizard, venusaur, moveUse("Weather Ball"), field),
     )
+    assertKoChance("guaranteed OHKO", charizard, venusaur, moveUse("Weather Ball"), field)
   }
 
   @Test
@@ -115,6 +132,7 @@ class DamageCalculatorCrossValidationTest {
       "20 Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex on a critical hit",
       description(garchomp, toxapex, moveUse("Earthquake", isCritical = true)),
     )
+    assertKoChance("guaranteed 2HKO", garchomp, toxapex, moveUse("Earthquake", isCritical = true))
   }
 
   @Test
@@ -126,6 +144,7 @@ class DamageCalculatorCrossValidationTest {
       rolls(charizard, venusaur, moveUse("Fire Blast")),
     )
     assertEquals("20 SpA Charcoal Charizard Fire Blast vs. 20 HP  / 10 SpD Venusaur", description(charizard, venusaur, moveUse("Fire Blast")))
+    assertKoChance("87.5% chance to OHKO", charizard, venusaur, moveUse("Fire Blast"))
   }
 
   @Test
@@ -134,6 +153,7 @@ class DamageCalculatorCrossValidationTest {
     val toxapex = pokemon("Toxapex", "Merciless", Nature.BOLD, 20, 0, 20, 0, 16, 6)
     assertEquals(listOf(15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 18, 18, 18, 18, 18), rolls(scizor, toxapex, moveUse("Bullet Punch")))
     assertEquals("20+ Atk Technician Scizor Bullet Punch vs. 20 HP  / 20+ Def Toxapex", description(scizor, toxapex, moveUse("Bullet Punch")))
+    assertKoChance("possible 9HKO", scizor, toxapex, moveUse("Bullet Punch"))
   }
 
   @Test
@@ -142,6 +162,7 @@ class DamageCalculatorCrossValidationTest {
     val toxapex = pokemon("Toxapex", "Merciless", Nature.BOLD, 20, 0, 20, 0, 16, 6)
     assertEquals(listOf(100, 100, 104, 104, 104, 108, 108, 108, 108, 112, 112, 112, 116, 116, 116, 120), rolls(garchomp, toxapex, moveUse("Earthquake")))
     assertEquals("20+ Atk Adaptability Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex", description(garchomp, toxapex, moveUse("Earthquake")))
+    assertKoChance("guaranteed 2HKO", garchomp, toxapex, moveUse("Earthquake"))
   }
 
   @Test
@@ -151,6 +172,7 @@ class DamageCalculatorCrossValidationTest {
     val field = Battlefield(defenderSide = SideConditions(hasReflect = true))
     assertEquals(listOf(49, 49, 52, 52, 52, 53, 53, 53, 53, 56, 56, 56, 57, 57, 57, 60), rolls(garchomp, toxapex, moveUse("Earthquake"), field))
     assertEquals("20+ Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex through Reflect", description(garchomp, toxapex, moveUse("Earthquake"), field))
+    assertKoChance("guaranteed 3HKO", garchomp, toxapex, moveUse("Earthquake"), field)
   }
 
   @Test
@@ -159,6 +181,7 @@ class DamageCalculatorCrossValidationTest {
     val toxapex = pokemon("Toxapex", "Merciless", Nature.BOLD, 20, 0, 20, 0, 16, 6)
     assertEquals(listOf(96, 96, 101, 101, 101, 104, 104, 104, 104, 109, 109, 109, 112, 112, 112, 117), rolls(garchomp, toxapex, moveUse("Earthquake")))
     assertEquals("20+ Atk Life Orb Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex", description(garchomp, toxapex, moveUse("Earthquake")))
+    assertKoChance("guaranteed 2HKO", garchomp, toxapex, moveUse("Earthquake"))
   }
 
   @Test
@@ -167,6 +190,7 @@ class DamageCalculatorCrossValidationTest {
     val toxapex = pokemon("Toxapex", "Merciless", Nature.BOLD, 20, 0, 20, 0, 16, 6)
     assertEquals(listOf(37, 37, 39, 39, 39, 40, 40, 40, 40, 42, 42, 42, 43, 43, 43, 45), rolls(garchomp, toxapex, moveUse("Earthquake")))
     assertEquals("20+ Atk burned Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex", description(garchomp, toxapex, moveUse("Earthquake")))
+    assertKoChance("guaranteed 4HKO", garchomp, toxapex, moveUse("Earthquake"))
   }
 
   @Test
@@ -175,6 +199,7 @@ class DamageCalculatorCrossValidationTest {
     val garchomp = pokemon("Garchomp", "Rough Skin", Nature.ADAMANT, 20, 20, 8, 0, 8, 10)
     assertEquals(listOf(52, 53, 53, 54, 55, 55, 56, 57, 57, 58, 58, 59, 60, 60, 61, 62), rolls(toxapex, garchomp, moveUse("Body Press")))
     assertEquals("20+ Def Toxapex Body Press vs. 20 HP  / 8 Def Garchomp", description(toxapex, garchomp, moveUse("Body Press")))
+    assertKoChance("guaranteed 4HKO", toxapex, garchomp, moveUse("Body Press"))
   }
 
   @Test
@@ -183,6 +208,7 @@ class DamageCalculatorCrossValidationTest {
     val garchomp = pokemon("Garchomp", "Rough Skin", Nature.ADAMANT, 20, 20, 8, 0, 8, 10)
     assertEquals(listOf(55, 55, 56, 57, 57, 58, 59, 59, 60, 61, 61, 62, 63, 63, 64, 65), rolls(toxapex, garchomp, moveUse("Foul Play")))
     assertEquals("Toxapex Foul Play vs. 20 HP  / 20+ Atk / 8 Def Garchomp", description(toxapex, garchomp, moveUse("Foul Play")))
+    assertKoChance("guaranteed 4HKO", toxapex, garchomp, moveUse("Foul Play"))
   }
 
   @Test
@@ -191,6 +217,7 @@ class DamageCalculatorCrossValidationTest {
     val garchomp = pokemon("Garchomp", "Rough Skin", Nature.JOLLY, 20, 20, 6, 0, 6, 14)
     assertEquals(listOf(21, 21, 21, 22, 22, 22, 22, 23, 23, 23, 23, 24, 24, 24, 24, 25), rolls(toxapex, garchomp, moveUse("Gyro Ball")))
     assertEquals("0 Atk Toxapex Gyro Ball (77 BP) vs. 20 HP  / 6 Def Garchomp", description(toxapex, garchomp, moveUse("Gyro Ball")))
+    assertKoChance("possible 9HKO", toxapex, garchomp, moveUse("Gyro Ball"))
   }
 
   @Test
@@ -202,6 +229,7 @@ class DamageCalculatorCrossValidationTest {
       rolls(garchomp, charizard, moveUse("Rock Slide")),
     )
     assertEquals("20+ Atk Expert Belt Garchomp Rock Slide vs. 20 HP  / 6 Def Charizard", description(garchomp, charizard, moveUse("Rock Slide")))
+    assertKoChance("guaranteed OHKO", garchomp, charizard, moveUse("Rock Slide"))
   }
 
   @Test
@@ -211,6 +239,7 @@ class DamageCalculatorCrossValidationTest {
     val field = Battlefield(defenderSide = SideConditions(hasFriendGuard = true))
     assertEquals(listOf(55, 55, 58, 58, 58, 60, 60, 60, 60, 63, 63, 63, 64, 64, 64, 67), rolls(garchomp, toxapex, moveUse("Earthquake"), field))
     assertEquals("20+ Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex with Friend Guard", description(garchomp, toxapex, moveUse("Earthquake"), field))
+    assertKoChance("guaranteed 3HKO", garchomp, toxapex, moveUse("Earthquake"), field)
   }
 
   @Test
@@ -219,6 +248,7 @@ class DamageCalculatorCrossValidationTest {
     val toxapex = pokemon("Toxapex", "Merciless", Nature.BOLD, 20, 0, 20, 0, 16, 6, gender = Gender.MALE)
     assertEquals(listOf(92, 92, 96, 96, 96, 98, 98, 102, 102, 102, 104, 104, 104, 108, 108, 110), rolls(garchomp, toxapex, moveUse("Earthquake")))
     assertEquals("20+ Atk Rivalry (1.25x) Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex", description(garchomp, toxapex, moveUse("Earthquake")))
+    assertKoChance("guaranteed 2HKO", garchomp, toxapex, moveUse("Earthquake"))
   }
 
   @Test
@@ -227,6 +257,7 @@ class DamageCalculatorCrossValidationTest {
     val toxapex = pokemon("Toxapex", "Merciless", Nature.BOLD, 20, 0, 20, 0, 16, 6, item = "Shuca Berry")
     assertEquals(listOf(37, 37, 39, 39, 39, 40, 40, 40, 40, 42, 42, 42, 43, 43, 43, 45), rolls(garchomp, toxapex, moveUse("Earthquake")))
     assertEquals("20+ Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Shuca Berry Toxapex", description(garchomp, toxapex, moveUse("Earthquake")))
+    assertKoChance("guaranteed 4HKO", garchomp, toxapex, moveUse("Earthquake"))
   }
 
   @Test
@@ -235,6 +266,7 @@ class DamageCalculatorCrossValidationTest {
     val dragonite = pokemon("Dragonite", "Multiscale", Nature.ADAMANT, 20, 20, 8, 0, 8, 10)
     assertEquals(listOf(69, 70, 70, 72, 72, 73, 75, 75, 76, 76, 78, 78, 79, 79, 81, 82), rolls(garchomp, dragonite, moveUse("Dragon Claw")))
     assertEquals("20+ Atk Garchomp Dragon Claw vs. 20 HP  / 8 Def Multiscale Dragonite", description(garchomp, dragonite, moveUse("Dragon Claw")))
+    assertKoChance("guaranteed 3HKO", garchomp, dragonite, moveUse("Dragon Claw"))
   }
 
   @Test
@@ -247,6 +279,7 @@ class DamageCalculatorCrossValidationTest {
       rolls(garchomp, toxapex, moveUse("Earthquake"), field),
     )
     assertEquals("20+ Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex", description(garchomp, toxapex, moveUse("Earthquake"), field))
+    assertKoChance("guaranteed 2HKO", garchomp, toxapex, moveUse("Earthquake"), field)
   }
 
   @Test
@@ -255,6 +288,7 @@ class DamageCalculatorCrossValidationTest {
     val toxapex = pokemon("Toxapex", "Merciless", Nature.BOLD, 20, 0, 20, 0, 16, 6)
     assertEquals(listOf(36, 36, 37, 37, 37, 39, 39, 39, 39, 40, 40, 40, 42, 42, 42, 43), rolls(talonflame, toxapex, moveUse("Acrobatics")))
     assertEquals("20 Atk Talonflame Acrobatics (110 BP) vs. 20 HP  / 20+ Def Toxapex", description(talonflame, toxapex, moveUse("Acrobatics")))
+    assertKoChance("99.98% chance to 4HKO", talonflame, toxapex, moveUse("Acrobatics"))
   }
 
   @Test
@@ -263,6 +297,7 @@ class DamageCalculatorCrossValidationTest {
     val toxapex = pokemon("Toxapex", "Merciless", Nature.BOLD, 20, 0, 20, 0, 16, 6)
     assertEquals(listOf(47, 48, 48, 49, 49, 50, 50, 51, 52, 52, 53, 53, 54, 54, 55, 56), rolls(garchomp, toxapex, moveUse("Facade")))
     assertEquals("20+ Atk Garchomp Facade (140 BP) vs. 20 HP  / 20+ Def Toxapex", description(garchomp, toxapex, moveUse("Facade")))
+    assertKoChance("98.46% chance to 3HKO", garchomp, toxapex, moveUse("Facade"))
   }
 
   @Test
@@ -274,6 +309,7 @@ class DamageCalculatorCrossValidationTest {
       "20+ Atk Garchomp Bullet Seed (2 hits) vs. 20 HP  / 20+ Def Toxapex",
       DamageCalculator.calculateMove(garchomp, toxapex, moveUse("Bullet Seed"), Battlefield(), hits = 2).description,
     )
+    assertKoChance("possible 7HKO", garchomp, toxapex, moveUse("Bullet Seed"), hits = 2)
   }
 
   @Test
@@ -282,6 +318,7 @@ class DamageCalculatorCrossValidationTest {
     val skarmory = pokemon("Skarmory", "Sturdy", Nature.BOLD, 20, 0, 20, 0, 16, 6)
     assertEquals(listOf(0), rolls(garchomp, skarmory, moveUse("Sheer Cold")))
     assertEquals("Garchomp Sheer Cold vs. Sturdy Skarmory", description(garchomp, skarmory, moveUse("Sheer Cold")))
+    assertKoChance("is it a one-hit KO?!", garchomp, skarmory, moveUse("Sheer Cold"))
   }
 
   @Test
@@ -290,6 +327,7 @@ class DamageCalculatorCrossValidationTest {
     val toxapex = pokemon("Toxapex", "Flash Fire", Nature.BOLD, 20, 0, 20, 0, 16, 6)
     assertEquals(listOf(0), rolls(charizard, toxapex, moveUse("Fire Blast")))
     assertEquals("Charizard Fire Blast vs. Flash Fire Toxapex", description(charizard, toxapex, moveUse("Fire Blast")))
+    assertKoChance("No damage for you", charizard, toxapex, moveUse("Fire Blast"))
   }
 
   @Test
@@ -299,6 +337,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(21, 21, 21, 22, 22, 22, 22, 23, 23, 23, 23, 24, 24, 24, 24, 25),
       "20+ Atk Gengar Struggle vs. 20 HP  / 20+ Def Gengar",
+      "possible 7HKO",
       gengar, target, moveUse("Struggle"),
     )
   }
@@ -310,6 +349,7 @@ class DamageCalculatorCrossValidationTest {
     assertEquals(listOf(42, 42, 42, 43, 43, 43, 45, 45, 45, 46, 46, 46, 48, 48, 48, 49), result.hits[0].rolls)
     assertEquals(listOf(9, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 12), result.hits[1].rolls)
     assertEquals("20+ Atk Parental Bond Garchomp Dragon Claw (2 hits) vs. 20 HP  / 20+ Def Toxapex", result.description)
+    assertEquals("guaranteed 3HKO", result.koChance.text)
   }
 
   @Test
@@ -317,6 +357,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9),
       "20+ Atk Piercing Drill Garchomp Body Slam vs. 20 HP  / 20+ Def Toxapex through Protect",
+      "possibly the worst move ever",
       garchomp(ability = "Piercing Drill"), toxapex(), moveUse("Body Slam"), Battlefield(defenderSide = SideConditions(isProtected = true)),
     )
   }
@@ -326,6 +367,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(29, 30, 30, 30, 31, 31, 31, 32, 32, 32, 33, 33, 33, 34, 34, 35),
       "20+ Atk Garchomp Body Slam vs. 20 HP  / 20+ Def Toxapex",
+      "guaranteed 5HKO",
       garchomp(), toxapex(), moveUse("Body Slam"), Battlefield(defenderSide = SideConditions(isProtected = true)),
     )
   }
@@ -335,6 +377,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(152, 152, 156, 156, 158, 162, 162, 164, 164, 168, 170, 170, 174, 174, 176, 180),
       "20+ Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex after using Glaive Rush",
+      "guaranteed OHKO",
       garchomp(), toxapex().copy(isVulnerableFromGlaiveRush = true), moveUse("Earthquake"),
     )
   }
@@ -344,6 +387,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(74, 74, 78, 78, 78, 80, 80, 80, 80, 84, 84, 84, 86, 86, 86, 90),
       "156+ Atk Garchomp Earthquake vs. 156 HP  / 156+ Def Toxapex",
+      "guaranteed 2HKO",
       garchomp(), toxapex(), moveUse("Earthquake"), statDisplay = StatDisplay.EVS,
     )
   }
@@ -353,6 +397,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(74, 74, 78, 78, 78, 80, 80, 80, 80, 84, 84, 84, 86, 86, 86, 90),
       "187 Atk Garchomp Earthquake vs. 145 HP  / 211 Def Toxapex",
+      "guaranteed 2HKO",
       garchomp(), toxapex(), moveUse("Earthquake"), statDisplay = StatDisplay.STATS,
     )
   }
@@ -362,6 +407,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97),
       "+1 Toxapex Foul Play vs. 156 HP  / 156+ Atk / 60 Def Garchomp",
+      "guaranteed 3HKO",
       toxapex(), garchomp(boosts = StatBoosts(attack = 1)), moveUse("Foul Play"), statDisplay = StatDisplay.EVS,
     )
   }
@@ -371,6 +417,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(168, 170, 174, 174, 176, 180, 180, 182, 186, 186, 188, 192, 192, 194, 198, 200),
       "+1 20+ Atk Garchomp Earthquake vs. -1 20 HP  / 20+ Def Toxapex",
+      "guaranteed OHKO",
       garchomp(boosts = StatBoosts(attack = 1)), toxapex(boosts = StatBoosts(defense = -1)), moveUse("Earthquake"),
     )
   }
@@ -382,6 +429,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(156, 158, 160, 161, 163, 165, 166, 169, 171, 173, 174, 176, 178, 179, 182, 184),
       "+1 32+ Atk Life Orb Tough Claws Mega Charizard X Flare Blitz vs. 32 HP  / 0 Def Incineroar in Sun through Reflect",
+      "guaranteed 2HKO",
       charizard, incineroar, moveUse("Flare Blitz"), Battlefield(weather = Weather.SUN, defenderSide = SideConditions(hasReflect = true)),
     )
   }
@@ -391,6 +439,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(123, 124, 126, 127, 129, 130, 132, 133, 135, 136, 138, 139, 141, 142, 144, 145),
       "20+ SpA Pelipper Hydro Pump vs. 20 HP  / 8 SpD Garchomp in Rain",
+      "guaranteed 2HKO",
       specialAttacker("Pelipper", "Drizzle"), garchomp(), moveUse("Hydro Pump"), Battlefield(weather = Weather.RAIN),
     )
   }
@@ -400,6 +449,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(62, 62, 62, 66, 66, 66, 66, 68, 68, 68, 68, 72, 72, 72, 72, 74),
       "20+ SpA Charizard Flamethrower vs. 20 HP  / 10 SpD Venusaur in Rain",
+      "guaranteed 3HKO",
       specialAttacker("Charizard", "Blaze"), venusaur(), moveUse("Flamethrower"), Battlefield(weather = Weather.RAIN),
     )
   }
@@ -410,6 +460,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(12, 12, 13, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 15),
       "20+ SpA Charizard Dragon Pulse vs. 20 HP  / 20+ SpD Tyranitar in Sand and Misty Terrain",
+      "possibly the worst move ever",
       specialAttacker("Charizard", "Blaze"), tyranitar, moveUse("Dragon Pulse"), Battlefield(weather = Weather.SAND, terrain = Terrain.MISTY),
     )
   }
@@ -420,6 +471,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(40, 40, 40, 42, 42, 42, 43, 43, 43, 45, 45, 45, 46, 46, 46, 48),
       "20+ Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Glalie in Snow",
+      "45.41% chance to 4HKO",
       garchomp(), glalie, moveUse("Earthquake"), Battlefield(weather = Weather.SNOW),
     )
   }
@@ -429,6 +481,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(29, 29, 30, 30, 30, 31, 31, 31, 32, 32, 32, 33, 33, 33, 34, 34),
       "20+ SpA Mega Sol Mega Meganium Flamethrower vs. 20 HP  / 16 SpD Toxapex",
+      "guaranteed 5HKO",
       specialAttacker("Mega Meganium", "Mega Sol"), toxapex(), moveUse("Flamethrower"),
     )
   }
@@ -439,6 +492,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(364, 364, 372, 376, 384, 384, 388, 396, 396, 400, 408, 412, 412, 420, 424, 432),
       "20 SpA Raichu Terrain Pulse (100 BP Electric) vs. 20 HP  / 16 SpD Pelipper in Electric Terrain",
+      "guaranteed OHKO",
       specialAttacker("Raichu", "Lightning Rod", Nature.TIMID), pelipper, moveUse("Terrain Pulse"), Battlefield(terrain = Terrain.ELECTRIC),
     )
   }
@@ -448,6 +502,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(38, 38, 38, 42, 42, 42, 42, 42, 42, 44, 44, 44, 44, 44, 44, 48),
       "20+ Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex in Grassy Terrain",
+      "40.39% chance to 4HKO after Grassy Terrain recovery",
       garchomp(), toxapex(), moveUse("Earthquake"), Battlefield(terrain = Terrain.GRASSY),
     )
   }
@@ -455,7 +510,7 @@ class DamageCalculatorCrossValidationTest {
   @Test
   fun psychicTerrainBlocksPriority() {
     val kingambit = pokemon("Kingambit", "Defiant", Nature.ADAMANT, 20, 20, 8, 0, 8, 10)
-    assertCalc(listOf(0), "Kingambit Sucker Punch vs. Toxapex in Psychic Terrain", kingambit, toxapex(), moveUse("Sucker Punch"), Battlefield(terrain = Terrain.PSYCHIC))
+    assertCalc(listOf(0), "Kingambit Sucker Punch vs. Toxapex in Psychic Terrain", "No damage for you", kingambit, toxapex(), moveUse("Sucker Punch"), Battlefield(terrain = Terrain.PSYCHIC))
   }
 
   @Test
@@ -463,6 +518,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(85, 85, 88, 88, 89, 89, 92, 92, 93, 93, 96, 96, 97, 97, 100, 101),
       "20+ SpA Charizard Flamethrower vs. 20 HP  / 10 SpD Venusaur through Light Screen",
+      "92.19% chance to 2HKO",
       specialAttacker("Charizard", "Blaze"), venusaur(), moveUse("Flamethrower"), Battlefield(defenderSide = SideConditions(hasLightScreen = true)),
     )
   }
@@ -472,6 +528,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(49, 49, 52, 52, 52, 53, 53, 53, 53, 56, 56, 56, 57, 57, 57, 60),
       "20+ Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex through Aurora Veil",
+      "guaranteed 3HKO",
       garchomp(), toxapex(), moveUse("Earthquake"), Battlefield(defenderSide = SideConditions(hasAuroraVeil = true, hasReflect = true)),
     )
   }
@@ -482,6 +539,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(152, 156, 158, 158, 162, 162, 164, 168, 168, 170, 170, 174, 176, 176, 180, 182),
       "20+ Atk Garchomp Earthquake vs. 20 HP  / 6 Def Charizard under Gravity",
+      "31.25% chance to OHKO",
       garchomp(), charizard, moveUse("Earthquake"), Battlefield(isGravity = true),
     )
   }
@@ -492,6 +550,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(25, 27, 27, 27, 27, 27, 28, 28, 28, 28, 28, 30, 30, 30, 30, 31),
       "20+ SpA Charizard Flamethrower vs. 20 HP  / 20+ SpD Thick Fat Snorlax",
+      "possible 9HKO",
       specialAttacker("Charizard", "Blaze"), snorlax, moveUse("Flamethrower"),
     )
   }
@@ -502,6 +561,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(64, 64, 66, 66, 67, 67, 69, 69, 70, 70, 72, 72, 73, 73, 75, 76),
       "+2 20+ Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Unaware Clefable",
+      "guaranteed 3HKO",
       garchomp(boosts = StatBoosts(attack = 2)), clefable, moveUse("Earthquake"),
     )
   }
@@ -511,6 +571,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(140, 144, 144, 146, 146, 150, 150, 152, 156, 156, 158, 158, 162, 162, 164, 168),
       "20+ SpA Unaware Clefable Moonblast vs. +1 20 HP  / 8 SpD Garchomp",
+      "guaranteed 2HKO",
       specialAttacker("Clefable", "Unaware"), garchomp(boosts = StatBoosts(specialDefense = 1)), moveUse("Moonblast"),
     )
   }
@@ -521,6 +582,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(63, 64, 64, 64, 67, 67, 67, 69, 69, 69, 72, 72, 72, 73, 73, 76),
       "20+ Atk Garchomp Earthquake vs. 20 HP  / 20+ Def Solid Rock Rhyperior",
+      "31.13% chance to 3HKO",
       garchomp(), rhyperior, moveUse("Earthquake"),
     )
   }
@@ -530,6 +592,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(29, 30, 30, 30, 30, 31, 31, 32, 32, 33, 33, 33, 33, 34, 34, 35),
       "20+ SpA Charizard Flamethrower vs. 20 HP  / 16 SpD Dry Skin Toxapex",
+      "guaranteed 5HKO",
       specialAttacker("Charizard", "Blaze"), toxapex(ability = "Dry Skin"), moveUse("Flamethrower"),
     )
   }
@@ -539,19 +602,20 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(21, 21, 21, 21, 21, 21, 22, 22, 22, 23, 23, 23, 24, 24, 24, 24),
       "20+ Atk Garchomp Dragon Claw vs. 20 HP  / 20+ Def Fluffy Toxapex",
+      "guaranteed 7HKO",
       garchomp(), toxapex(ability = "Fluffy"), moveUse("Dragon Claw"),
     )
   }
 
   @Test
   fun airBalloonImmunity() {
-    assertCalc(listOf(0), "Garchomp Earthquake vs. Air Balloon Toxapex", garchomp(), toxapex(item = "Air Balloon"), moveUse("Earthquake"))
+    assertCalc(listOf(0), "Garchomp Earthquake vs. Air Balloon Toxapex", "No damage for you", garchomp(), toxapex(item = "Air Balloon"), moveUse("Earthquake"))
   }
 
   @Test
   fun levitateImmunity() {
     val rotom = pokemon("Rotom-Wash", "Levitate", Nature.BOLD, 20, 0, 20, 0, 16, 6)
-    assertCalc(listOf(0), "Garchomp Earthquake vs. Levitate Rotom-Wash", garchomp(), rotom, moveUse("Earthquake"))
+    assertCalc(listOf(0), "Garchomp Earthquake vs. Levitate Rotom-Wash", "No damage for you", garchomp(), rotom, moveUse("Earthquake"))
   }
 
   @Test
@@ -560,6 +624,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(51, 51, 51, 52, 52, 54, 54, 54, 55, 55, 57, 57, 57, 58, 58, 60),
       "20+ Atk Kingambit Knock Off (97.5 BP) vs. 20 HP  / 20+ Def Toxapex",
+      "guaranteed 3HKO",
       kingambit, toxapex(item = "Leftovers"), moveUse("Knock Off"),
     )
   }
@@ -569,6 +634,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(70, 72, 72, 73, 73, 75, 75, 76, 78, 78, 79, 79, 81, 81, 82, 84),
       "20 SpA Gengar Hex (130 BP) vs. 20 HP  / 16 SpD Toxapex",
+      "guaranteed 2HKO after poison damage",
       specialAttacker("Gengar", "Cursed Body", Nature.TIMID), toxapex(status = Status.POISONED), moveUse("Hex"),
     )
   }
@@ -578,6 +644,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(30, 30, 30, 31, 31, 31, 31, 33, 33, 33, 33, 34, 34, 34, 34, 36),
       "20+ SpA Venusaur Solar Beam (60 BP) vs. 20 HP  / 16 SpD Toxapex in Rain",
+      "guaranteed 5HKO",
       specialAttacker("Venusaur", "Chlorophyll"), toxapex(), moveUse("Solar Beam"), Battlefield(weather = Weather.RAIN),
     )
   }
@@ -587,6 +654,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(117, 118, 120, 120, 121, 123, 124, 126, 127, 129, 130, 132, 133, 135, 136, 138),
       "+2 20+ SpA Hatterene Stored Power (60 BP) vs. 20 HP  / 8 SpD Garchomp",
+      "guaranteed 2HKO",
       specialAttacker("Hatterene", "Magic Bounce", boosts = StatBoosts(specialAttack = 2)), garchomp(), moveUse("Stored Power"),
     )
   }
@@ -597,6 +665,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(46, 46, 48, 48, 48, 49, 49, 51, 51, 51, 52, 52, 52, 54, 54, 55),
       "20+ Atk Gengar Last Respects (150 BP) vs. 20 HP  / 20+ Def Toxapex",
+      "92.26% chance to 3HKO",
       gengar, toxapex(), moveUse("Last Respects").copy(priorPowerBoosts = 2),
     )
   }
@@ -606,6 +675,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(84, 84, 85, 87, 87, 88, 90, 90, 91, 93, 93, 94, 96, 96, 97, 99),
       "20+ SpA Pelipper Water Spout (150 BP) vs. 20 HP  / 8 SpD Garchomp",
+      "guaranteed 3HKO",
       specialAttacker("Pelipper", "Drizzle"), garchomp(), moveUse("Water Spout"),
     )
   }
@@ -615,6 +685,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(320, 326, 330, 332, 338, 342, 344, 348, 354, 356, 360, 362, 368, 372, 374, 380),
       "20+ SpA Charizard Helping Hand Power Spot Battery Flamethrower vs. 20 HP  / 10 SpD Venusaur",
+      "guaranteed OHKO",
       specialAttacker("Charizard", "Blaze"), venusaur(), moveUse("Flamethrower"),
       Battlefield(attackerSide = SideConditions(hasHelpingHand = true, hasPowerSpot = true, hasBattery = true)),
     )
@@ -626,6 +697,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(31, 32, 32, 33, 33, 33, 33, 34, 34, 35, 35, 36, 36, 36, 36, 37),
       "20+ Atk Metagross Ally Steely Spirit Iron Head vs. 20 HP  / 20+ Def Toxapex",
+      "0.73% chance to 4HKO",
       metagross, toxapex(), moveUse("Iron Head"), Battlefield(attackerSide = SideConditions(hasAllySteelySpirit = true)),
     )
   }
@@ -635,6 +707,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(150, 150, 152, 152, 156, 158, 158, 162, 162, 164, 168, 168, 170, 170, 174, 176),
       "20 SpA Raichu Charged Thunderbolt vs. 20 HP  / 16 SpD Toxapex",
+      "guaranteed OHKO",
       specialAttacker("Raichu", "Lightning Rod", Nature.TIMID), toxapex(), moveUse("Thunderbolt"), Battlefield(isCharge = true),
     )
   }
@@ -645,6 +718,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(52, 54, 54, 54, 55, 55, 57, 57, 58, 58, 58, 60, 60, 61, 61, 63),
       "20+ Atk Supreme Overlord (2 allies down) Kingambit Kowtow Cleave vs. 20 HP  / 20+ Def Toxapex",
+      "guaranteed 3HKO",
       kingambit, toxapex(), moveUse("Kowtow Cleave").copy(faintedAllyCount = 2),
     )
   }
@@ -656,6 +730,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(56, 56, 60, 60, 60, 60, 60, 62, 62, 62, 62, 66, 66, 66, 66, 68),
       "20+ Atk Rivalry (0.75x) Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex",
+      "guaranteed 3HKO",
       garchomp, toxapex, moveUse("Earthquake"),
     )
   }
@@ -665,6 +740,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(98, 98, 98, 102, 102, 104, 104, 104, 108, 108, 110, 110, 110, 114, 114, 116),
       "20+ Atk Sand Force Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex in Sand",
+      "guaranteed 2HKO after sandstorm damage",
       garchomp(ability = "Sand Force"), toxapex(), moveUse("Earthquake"), Battlefield(weather = Weather.SAND),
     )
   }
@@ -675,6 +751,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(38, 39, 39, 40, 40, 40, 41, 41, 42, 42, 43, 43, 44, 44, 45, 45),
       "20+ Atk Scrappy Garchomp Close Combat vs. 20 HP  / 20+ Def Gengar",
+      "99.93% chance to 4HKO",
       garchomp(ability = "Scrappy"), gengar, moveUse("Close Combat"),
     )
   }
@@ -684,6 +761,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(61, 63, 63, 64, 64, 66, 66, 67, 67, 69, 69, 70, 70, 72, 72, 73),
       "20+ SpA Liquid Voice Primarina Hyper Voice vs. 20 HP  / 8 SpD Garchomp",
+      "45.36% chance to 3HKO",
       specialAttacker("Primarina", "Liquid Voice"), garchomp(), moveUse("Hyper Voice"),
     )
   }
@@ -693,6 +771,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(134, 134, 138, 138, 140, 140, 144, 144, 146, 146, 150, 150, 152, 152, 156, 158),
       "20+ SpA Pixilate Sylveon Hyper Voice vs. 20 HP  / 8 SpD Garchomp",
+      "guaranteed 2HKO",
       specialAttacker("Sylveon", "Pixilate"), garchomp(), moveUse("Hyper Voice"),
     )
   }
@@ -703,6 +782,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(25, 26, 26, 27, 27, 27, 27, 27, 28, 28, 28, 29, 29, 30, 30, 30),
       "20 Atk Libero Cinderace Close Combat vs. 20 HP  / 20+ Def Toxapex",
+      "possible 5HKO",
       cinderace, toxapex(), moveUse("Close Combat"),
     )
   }
@@ -712,6 +792,7 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(114, 114, 116, 116, 120, 120, 120, 122, 122, 126, 126, 128, 128, 132, 132, 134),
       "20+ Atk Hustle Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex",
+      "guaranteed 2HKO",
       garchomp(ability = "Hustle"), toxapex(), moveUse("Earthquake"),
     )
   }
@@ -721,13 +802,14 @@ class DamageCalculatorCrossValidationTest {
     assertCalc(
       listOf(114, 114, 116, 116, 120, 120, 120, 122, 122, 126, 126, 128, 128, 132, 132, 134),
       "20+ Atk Guts Garchomp Earthquake vs. 20 HP  / 20+ Def Toxapex",
+      "guaranteed 2HKO",
       garchomp(ability = "Guts", status = Status.BURNED), toxapex(), moveUse("Earthquake"),
     )
   }
 
   @Test
   fun statusMove() {
-    assertCalc(listOf(0), "Garchomp Swords Dance vs. Toxapex", garchomp(), toxapex(), moveUse("Swords Dance"))
+    assertCalc(listOf(0), "Garchomp Swords Dance vs. Toxapex", "It's a status move, it won't deal damage.", garchomp(), toxapex(), moveUse("Swords Dance"))
   }
 
   @Test
@@ -735,6 +817,7 @@ class DamageCalculatorCrossValidationTest {
     val result = DamageCalculator.calculateMove(garchomp(), toxapex(), moveUse("Bullet Seed"), Battlefield(), hits = 3)
     assertEquals(List(3) { listOf(9, 9, 9, 9, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11) }, result.hits.map { it.rolls })
     assertEquals("20+ Atk Garchomp Bullet Seed (3 hits) vs. 20 HP  / 20+ Def Toxapex", result.description)
+    assertEquals("possible 5HKO", result.koChance.text)
   }
 
   @Test
@@ -749,6 +832,7 @@ class DamageCalculatorCrossValidationTest {
       result.hits.map { it.rolls },
     )
     assertEquals("20+ Atk Garchomp Triple Axel (3 hits) vs. 20 HP  / 20+ Def Toxapex", result.description)
+    assertEquals("possible 7HKO", result.koChance.text)
   }
 
   @Test
@@ -756,6 +840,7 @@ class DamageCalculatorCrossValidationTest {
     val result = DamageCalculator.calculateMove(garchomp(), toxapex(), moveUse("Dragon Darts"), Battlefield(), hits = 1)
     assertEquals(listOf(listOf(25, 27, 27, 27, 27, 27, 28, 28, 28, 28, 28, 30, 30, 30, 30, 31)), result.hits.map { it.rolls })
     assertEquals("20+ Atk Garchomp Dragon Darts (1 hits) vs. 20 HP  / 20+ Def Toxapex", result.description)
+    assertEquals("possible 5HKO", result.koChance.text)
   }
 
   @Test

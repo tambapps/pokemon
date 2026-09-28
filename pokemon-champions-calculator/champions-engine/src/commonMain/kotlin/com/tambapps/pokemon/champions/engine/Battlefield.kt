@@ -6,7 +6,11 @@ enum class Weather { NONE, SUN, RAIN, SAND, HAIL, SNOW }
 
 enum class Terrain { NONE, ELECTRIC, GRASSY, MISTY, PSYCHIC }
 
-/** Field conditions that belong to one side of the field rather than the whole battlefield. */
+/**
+ * Field conditions that belong to one side of the field rather than the whole battlefield. Like the source
+ * calculator's toggles, the end-of-turn states ([isLeechSeeded], [isSaltCured], [isCursed], [isBound], [hasAquaRing],
+ * [isIngrained]) are the side's: the KO chance applies the defender side's to the defender.
+ */
 data class SideConditions(
   val hasTailwind: Boolean = false,
   val hasReflect: Boolean = false,
@@ -18,8 +22,22 @@ data class SideConditions(
   val hasAllySteelySpirit: Boolean = false,
   val hasHelpingHand: Boolean = false,
   val isProtected: Boolean = false,
+  /** Spikes damage on switch-in, which the KO chance counts. */
   val spikesLayers: Int = 0,
+  /** Stealth Rock damage on switch-in, which the KO chance counts. */
   val hasStealthRock: Boolean = false,
+  /** Loses 1/8 of its max HP at the end of each turn. */
+  val isLeechSeeded: Boolean = false,
+  /** Loses 1/16 of its max HP at the end of each turn, 1/8 for a Water or Steel type. */
+  val isSaltCured: Boolean = false,
+  /** Loses 1/4 of its max HP at the end of each turn (a Ghost-type's Curse). */
+  val isCursed: Boolean = false,
+  /** Trapped by a binding move (Bind, Wrap, Fire Spin...): loses 1/8 of its max HP at the end of each turn, 1/6 against a Binding Band. */
+  val isBound: Boolean = false,
+  /** Recovers 1/16 of its max HP at the end of each turn, more with a Big Root. */
+  val hasAquaRing: Boolean = false,
+  /** Recovers 1/16 of its max HP at the end of each turn, more with a Big Root, and is grounded. */
+  val isIngrained: Boolean = false,
 ) {
   init {
     requireValid(spikesLayers in 0..3) { "Spikes has at most 3 layers, got $spikesLayers" }

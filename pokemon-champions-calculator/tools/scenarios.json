@@ -1615,5 +1615,531 @@
     "attacker": { "name": "Gengar", "ability": "Cursed Body", "nature": "Timid", "curHpFraction": 0.3, "statPoints": { "hp": 20, "at": 0, "df": 6, "sa": 20, "sd": 8, "sp": 12 } },
     "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
     "move": "Pain Split"
+  },
+  {
+    "id": "ko-stealth-rock",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isSR": true }
+  },
+  {
+    "id": "ko-spikes-1-layer",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "spikes": 1 }
+  },
+  {
+    "id": "ko-spikes-2-layers",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "spikes": 2 }
+  },
+  {
+    "id": "ko-spikes-3-layers",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "spikes": 3 }
+  },
+  {
+    "id": "ko-stealth-rock-and-spikes",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isSR": true, "spikes": 1 }
+  },
+  {
+    "id": "ko-stealth-rock-4x-weak",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Volcarona", "ability": "Flame Body", "nature": "Timid", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "field": { "isSR": true }
+  },
+  {
+    "id": "ko-stealth-rock-ohko",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "curHpFraction": 0.6, "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "field": { "isSR": true }
+  },
+  {
+    "id": "ko-stealth-rock-ohko-chance",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "curHpFraction": 0.7, "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "field": { "isSR": true }
+  },
+  {
+    "id": "ko-spikes-flying-type",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Corviknight", "ability": "Pressure", "nature": "Impish", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isSR": true, "spikes": 2 }
+  },
+  {
+    "id": "ko-spikes-ingrain-grounds-flying-type",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Corviknight", "ability": "Pressure", "nature": "Impish", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "spikes": 2, "isIngrain": true }
+  },
+  {
+    "id": "ko-spikes-gravity-grounds-flying-type",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Corviknight", "ability": "Pressure", "nature": "Impish", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "spikes": 2, "isGravity": true }
+  },
+  {
+    "id": "ko-spikes-air-balloon",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Air Balloon", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "spikes": 1 }
+  },
+  {
+    "id": "ko-magic-guard",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Clefable", "ability": "Magic Guard", "nature": "Bold", "status": "Poisoned", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "field": { "isSR": true, "spikes": 3, "isLeechSeed": true, "isCurse": true, "isSaltCure": true, "isBinding": true, "weather": "Sand" }
+  },
+  {
+    "id": "ko-leftovers",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Leftovers", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-leftovers-klutz",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Klutz", "nature": "Bold", "item": "Leftovers", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-leftovers-knock-off",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Leftovers", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Knock Off"
+  },
+  {
+    "id": "ko-leftovers-thief-itemless-attacker",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Leftovers", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Thief"
+  },
+  {
+    "id": "ko-leftovers-thief-attacker-holding-item",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "item": "Life Orb", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Leftovers", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Thief"
+  },
+  {
+    "id": "ko-leftovers-psychic-noise",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Leftovers", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Psychic Noise"
+  },
+  {
+    "id": "ko-leftovers-cancels-sandstorm",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Leftovers", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "weather": "Sand" }
+  },
+  {
+    "id": "ko-leech-seed",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isLeechSeed": true }
+  },
+  {
+    "id": "ko-leech-seed-ohko",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "curHpFraction": 0.6, "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "field": { "isLeechSeed": true }
+  },
+  {
+    "id": "ko-salt-cure",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Snorlax", "ability": "Thick Fat", "nature": "Careful", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isSaltCure": true }
+  },
+  {
+    "id": "ko-salt-cure-water-type",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isSaltCure": true }
+  },
+  {
+    "id": "ko-curse",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isCurse": true }
+  },
+  {
+    "id": "ko-binding",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isBinding": true }
+  },
+  {
+    "id": "ko-binding-band",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Binding Band", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isBinding": true }
+  },
+  {
+    "id": "ko-binding-band-klutz",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Klutz", "nature": "Bold", "item": "Binding Band", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isBinding": true }
+  },
+  {
+    "id": "ko-aqua-ring",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isAquaRing": true }
+  },
+  {
+    "id": "ko-aqua-ring-big-root",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Big Root", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isAquaRing": true }
+  },
+  {
+    "id": "ko-ingrain",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isIngrain": true }
+  },
+  {
+    "id": "ko-ingrain-big-root",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Big Root", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isIngrain": true }
+  },
+  {
+    "id": "ko-grassy-terrain",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "terrain": "Grassy" }
+  },
+  {
+    "id": "ko-grassy-terrain-flying-type",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Corviknight", "ability": "Pressure", "nature": "Impish", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "terrain": "Grassy" }
+  },
+  {
+    "id": "ko-grassy-terrain-levitate",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Levitate", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "terrain": "Grassy" }
+  },
+  {
+    "id": "ko-psychic-noise-blocks-healing",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Psychic Noise",
+    "field": { "terrain": "Grassy", "isAquaRing": true }
+  },
+  {
+    "id": "ko-poison",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "status": "Poisoned", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-toxic",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "status": "Badly Poisoned", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-toxic-counter",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "status": "Badly Poisoned", "toxicCounter": 5, "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-toxic-5hko",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "status": "Badly Poisoned", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Bullet Punch"
+  },
+  {
+    "id": "ko-toxic-counter-15",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "status": "Badly Poisoned", "toxicCounter": 15, "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Bullet Punch"
+  },
+  {
+    "id": "ko-poison-heal",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Poison Heal", "nature": "Bold", "status": "Poisoned", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-poison-heal-badly-poisoned",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Poison Heal", "nature": "Bold", "status": "Badly Poisoned", "toxicCounter": 4, "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-poison-heal-psychic-noise",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Poison Heal", "nature": "Bold", "status": "Poisoned", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Psychic Noise"
+  },
+  {
+    "id": "ko-burn",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "status": "Burned", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-burn-heatproof",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Heatproof", "nature": "Bold", "status": "Burned", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-sandstorm",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "weather": "Sand" }
+  },
+  {
+    "id": "ko-sandstorm-steel-type",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Excadrill", "ability": "Sand Rush", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "weather": "Sand" }
+  },
+  {
+    "id": "ko-sandstorm-overcoat",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Overcoat", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "weather": "Sand" }
+  },
+  {
+    "id": "ko-hail",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "weather": "Hail" }
+  },
+  {
+    "id": "ko-hail-ice-type",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Weavile", "ability": "Pressure", "nature": "Jolly", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake",
+    "field": { "weather": "Hail" }
+  },
+  {
+    "id": "ko-hail-ice-body",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Ice Body", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "weather": "Hail" }
+  },
+  {
+    "id": "ko-hail-ice-body-psychic-noise",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Ice Body", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Psychic Noise",
+    "field": { "weather": "Hail" }
+  },
+  {
+    "id": "ko-snow-ice-body",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Ice Body", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "weather": "Snow" }
+  },
+  {
+    "id": "ko-rain-dry-skin",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Dry Skin", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "weather": "Rain" }
+  },
+  {
+    "id": "ko-rain-dish",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Rain Dish", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "weather": "Rain" }
+  },
+  {
+    "id": "ko-rain-dish-psychic-noise",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Rain Dish", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Psychic Noise",
+    "field": { "weather": "Rain" }
+  },
+  {
+    "id": "ko-sun-dry-skin",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Dry Skin", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "weather": "Sun" }
+  },
+  {
+    "id": "ko-sun-solar-power",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Solar Power", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "weather": "Sun" }
+  },
+  {
+    "id": "ko-many-effects",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "status": "Burned", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isSR": true, "isLeechSeed": true, "terrain": "Grassy" }
+  },
+  {
+    "id": "ko-many-effects-oran-berry",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Oran Berry", "status": "Badly Poisoned", "toxicCounter": 2, "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "spikes": 1, "isSaltCure": true, "isBinding": true }
+  },
+  {
+    "id": "ko-sitrus-berry",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-sitrus-berry-guaranteed",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake"
+  },
+  {
+    "id": "ko-oran-berry",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Oran Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-sitrus-berry-ripen",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Ripen", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-sitrus-berry-knock-off",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Knock Off",
+    "field": { "isSR": true }
+  },
+  {
+    "id": "ko-sitrus-berry-bug-bite",
+    "attacker": { "name": "Scizor", "ability": "Technician", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Bug Bite"
+  },
+  {
+    "id": "ko-sitrus-berry-pluck",
+    "attacker": { "name": "Dragonite", "ability": "Inner Focus", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Pluck"
+  },
+  {
+    "id": "ko-sitrus-berry-klutz",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Klutz", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-sitrus-berry-below-half-hp",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "curHpFraction": 0.45, "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-sitrus-berry-ohko-chance",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "curHpFraction": 0.6, "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Earthquake"
+  },
+  {
+    "id": "ko-sitrus-berry-leech-seed",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw",
+    "field": { "isLeechSeed": true }
+  },
+  {
+    "id": "ko-sitrus-berry-multi-hit",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Bullet Seed",
+    "moveOverrides": { "hits": 3 }
+  },
+  {
+    "id": "ko-sitrus-berry-multi-hit-5-hits",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Bullet Seed",
+    "moveOverrides": { "hits": 5 }
+  },
+  {
+    "id": "ko-sitrus-berry-multi-hit-grassy-terrain",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Bullet Seed",
+    "moveOverrides": { "hits": 3 },
+    "field": { "terrain": "Grassy" }
+  },
+  {
+    "id": "ko-sitrus-berry-parental-bond",
+    "attacker": { "name": "Garchomp", "ability": "Parental Bond", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Dragon Claw"
+  },
+  {
+    "id": "ko-sitrus-berry-triple-axel",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "item": "Sitrus Berry", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Triple Axel",
+    "moveOverrides": { "hits": 3 }
+  },
+  {
+    "id": "ko-pain-split",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Pain Split"
+  },
+  {
+    "id": "ko-ohko-move",
+    "attacker": { "name": "Garchomp", "ability": "Rough Skin", "nature": "Adamant", "statPoints": { "hp": 20, "at": 20, "df": 8, "sa": 0, "sd": 8, "sp": 10 } },
+    "defender": { "name": "Toxapex", "ability": "Merciless", "nature": "Bold", "statPoints": { "hp": 20, "at": 0, "df": 20, "sa": 0, "sd": 16, "sp": 6 } },
+    "move": "Sheer Cold"
   }
 ]
