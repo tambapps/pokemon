@@ -87,6 +87,11 @@ val chance = KoChanceCalculator.minimumHitsToKo(result.rolls, targetHp = toxapex
 // KoChanceResult(hits = 2, chance = 1.0) -> "guaranteed 2HKO"
 ```
 
+For a whole move rather than a single hit, `DamageCalculator.calculateMove` returns every hit of one
+use (a multi-hit move's hits, each Triple Axel hit with its own power, Parental Bond's two hits),
+defaulting to the source calculator's hit count (`defaultHitCount`: 3 for 2-5 hit moves, 5 with Skill
+Link...), and `KoChanceCalculator.minimumUsesToKo` gives the KO chance in uses of that move.
+
 A `DamageResult` also reports which stats the hit rolled off of (`attackStat`, `defenseStat`),
 e.g. to describe a calc: Body Press reports the attacker's Defense, Foul Play the defender's
 Attack, Psyshock the defender's Defense.

@@ -1,6 +1,7 @@
 package com.tambapps.pokemon.champions.engine
 
 import com.tambapps.pokemon.champions.data.Ability
+import com.tambapps.pokemon.champions.data.HitCount
 import com.tambapps.pokemon.champions.data.Move
 import com.tambapps.pokemon.champions.data.MoveCategory
 import com.tambapps.pokemon.PokeType
@@ -54,6 +55,34 @@ object DamageCalculator {
       attackStat = AttackStatResolver.attackStatSourceOf(move, attacker, defender),
       defenseStat = DefenseStatResolver.defenseStatOf(hitsPhysical),
     )
+  }
+
+  /**
+   * Every hit of one use of [moveUse]'s move: [hits] times for a multi-hit move (each Triple Axel/Triple Kick
+   * hit with its own power), twice for a Parental Bond single-hit move (as the source calculator, not for a
+   * spread move in Doubles), once otherwise. Every hit uses the attacker/defender's starting state.
+   */
+  fun calculateMove(
+    attacker: BattlePokemon,
+    defender: BattlePokemon,
+    moveUse: MoveUse,
+    field: Battlefield,
+    hits: Int = defaultHitCount(moveUse.move, attacker),
+  ): MoveDamageResult {
+    val move = moveUse.move
+    requireValid(hits in move.hitCountRange) { "${move.name.value} hits ${move.hitCountRange} times, got $hits" }
+    val isParentalBond = attacker.resolvedAbility == Ability.PARENTAL_BOND && move.hitCount == HitCount.Once &&
+      (field.format == BattleFormat.SINGLES || !move.isSpread)
+    if (isParentalBond) {
+      val bondHits = calculateParentalBondHits(attacker, defender, moveUse, field)
+      return MoveDamageResult(listOf(bondHits.firstHit, bondHits.secondHit))
+    }
+    if (move.hasEscalatingPower) {
+      return MoveDamageResult((1..hits).map { calculateSingleHit(attacker, defender, moveUse.copy(hitNumber = it), field) })
+    }
+    // every hit is the same, no need to calculate it several times
+    val hit = calculateSingleHit(attacker, defender, moveUse, field)
+    return MoveDamageResult(List(hits) { hit })
   }
 
   /** Parental Bond always hits twice: a full-power hit, then a second hit at a quarter of that base damage. */

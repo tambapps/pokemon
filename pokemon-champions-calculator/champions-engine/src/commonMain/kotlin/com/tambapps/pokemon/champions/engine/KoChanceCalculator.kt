@@ -33,6 +33,34 @@ object KoChanceCalculator {
     return null
   }
 
+  /**
+   * Like [minimumHitsToKo], but counting uses of a whole move, whose hits can each roll differently
+   * (a multi-hit move, Triple Axel's escalating power, Parental Bond's weaker second hit). The
+   * returned [KoChanceResult.hits] is a number of uses of the move.
+   */
+  fun minimumUsesToKo(move: MoveDamageResult, targetHp: Int, maxUses: Int = 4): KoChanceResult? {
+    requireValid(move.hits.isNotEmpty()) { "a move has at least one hit" }
+    val perUseDistribution = move.hits.fold(mapOf(0 to 1.0)) { distribution, hit -> convolve(distribution, hit.rolls) }
+    var totalDamageDistribution = mapOf(0 to 1.0)
+    for (uses in 1..maxUses) {
+      totalDamageDistribution = convolveDistributions(totalDamageDistribution, perUseDistribution)
+      val chance = totalDamageDistribution.filterKeys { it >= targetHp }.values.sum()
+      if (chance > 0.0) return KoChanceResult(uses, chance)
+    }
+    return null
+  }
+
+  private fun convolveDistributions(first: Map<Int, Double>, second: Map<Int, Double>): Map<Int, Double> {
+    val combined = mutableMapOf<Int, Double>()
+    for ((firstTotal, firstProbability) in first) {
+      for ((secondTotal, secondProbability) in second) {
+        val total = firstTotal + secondTotal
+        combined[total] = (combined[total] ?: 0.0) + firstProbability * secondProbability
+      }
+    }
+    return combined
+  }
+
   private fun convolve(damageSoFar: Map<Int, Double>, nextHitRolls: List<Int>): Map<Int, Double> {
     val rollProbability = 1.0 / nextHitRolls.size
     val combined = mutableMapOf<Int, Double>()
