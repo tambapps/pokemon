@@ -145,7 +145,7 @@ internal object AdditionalHits {
       !((attacker.resolvedAbility == Ability.PROTEAN || attacker.resolvedAbility == Ability.LIBERO) && attacker.abilityIsActive && effectiveType == PokeType.FIRE) &&
       !(attacker.resolvedAbility == Ability.LEAF_GUARD && field.weather == Weather.SUN) &&
       attacker.resolvedAbility !in BURN_IMMUNE_ABILITIES &&
-      (field.terrain != Terrain.MISTY || !attacker.isGrounded(field))
+      (field.terrain != Terrain.MISTY || !attacker.isAttackerGrounded(field))
 
   private fun Stat.toBoostableStat() = when (this) {
     Stat.ATTACK -> BoostableStat.ATTACK

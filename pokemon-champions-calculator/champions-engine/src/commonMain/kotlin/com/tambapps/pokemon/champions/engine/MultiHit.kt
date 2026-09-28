@@ -34,11 +34,15 @@ fun defaultHitCount(move: Move, attacker: BattlePokemon): Int {
  * vs. 20 HP  / 20+ Def Toxapex": the first hit's [DamageResult.description] plus the number of hits and Parental Bond
  * @param facts the facts [description] was written from: the first hit's [DamageResult.facts] plus the number of hits
  * and Parental Bond
+ * @param koChance the source calculator's KO chance of the move and its text, e.g. "guaranteed 3HKO after Sitrus Berry
+ * recovery": the part after the damage in the source's result, counting the hazards and end-of-turn effects on the
+ * defender's side of the field
  */
 data class MoveDamageResult(
   val hits: List<DamageResult>,
   val description: String,
   val facts: CalcFacts,
+  val koChance: KoChance,
 ) {
   val minDamage: Int get() = hits.sumOf { it.minDamage }
   val maxDamage: Int get() = hits.sumOf { it.maxDamage }

@@ -49,7 +49,7 @@ object DamageCalculator {
    * hit with its own power), twice for a Parental Bond single-hit move (as the source calculator, not for a
    * spread move in Doubles), once otherwise. Like the source, the hits after the first account for what the
    * first ones changed: a consumed resist berry, a broken Multiscale, Weak Armor, Stamina, Gooey, Spicy Spray...
-   * [statDisplay] is how the descriptions write the stat investments.
+   * [statDisplay] is how the descriptions write the stat investments. The result also carries the move's KO chance.
    */
   fun calculateMove(
     attacker: BattlePokemon,
@@ -96,7 +96,9 @@ object DamageCalculator {
       AdditionalHits.hitsOf(battle, moveUse, hits, first, facts, statDisplay)
     }
     val calcFacts = facts.build()
-    return MoveDamageResult(allHits, calcFacts.format(statDisplay), calcFacts)
+    // like the source, the KO chance reads the Pokemon and field as the setup pass left them (e.g. a Klutz holder's item)
+    val koChance = KoChanceCalculator.koChance(allHits.map { it.rolls }, move, battle.attacker, battle.defender, battle.field)
+    return MoveDamageResult(allHits, calcFacts.format(statDisplay), calcFacts, koChance)
   }
 
   internal fun newFacts(battle: PreparedBattle, moveUse: MoveUse) =

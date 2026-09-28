@@ -80,17 +80,10 @@ val result = DamageCalculator.calculateSingleHit(
 // result.rolls: the 16 damage values for the games' 85%-100% roll, ascending
 ```
 
-For KO-chance math, feed a roll list into `KoChanceCalculator`:
-
-```kotlin
-val chance = KoChanceCalculator.minimumHitsToKo(result.rolls, targetHp = toxapex.hp)
-// KoChanceResult(hits = 2, chance = 1.0) -> "guaranteed 2HKO"
-```
-
 For a whole move rather than a single hit, `DamageCalculator.calculateMove` returns every hit of one
 use (a multi-hit move's hits, each Triple Axel hit with its own power, Parental Bond's two hits),
 defaulting to the source calculator's hit count (`defaultHitCount`: 3 for 2-5 hit moves, 5 with Skill
-Link...), and `KoChanceCalculator.minimumUsesToKo` gives the KO chance in uses of that move. Like the
+Link...), along with the move's KO chance (see below). Like the
 source, the hits after the first account for what the previous ones changed: a resist berry
 consumed or Multiscale broken by the first hit, Weak Armor, Stamina, Gooey (and Defiant/Competitive),
 Spicy Spray (and a Rawst/Lum Berry), Parental Bond's second hit after its move's stat change.
@@ -122,6 +115,22 @@ picked with the `statDisplay` parameter of the `DamageCalculator` functions: Cha
 points by default like the source (`20+ Atk`), or `StatDisplay.EVS` (`156+ Atk`) or
 `StatDisplay.STATS` (the stat values, `187 Atk`).
 
+`MoveDamageResult.koChance` is the move's KO chance as the source shows it after the damage, a port
+of `ko_chance.js`'s `getKOChanceText`: `text` is its exact text (e.g. `guaranteed 3HKO after Sitrus
+Berry recovery` or `43.75% chance to OHKO after Stealth Rock`), `uses` the number of uses it is about
+and `chance` the probability (null for a "possible" 5HKO and more, which the source only bounds). It
+counts what the defender's side of the `Battlefield` sets up: Stealth Rock and Spikes on switch-in
+(`SideConditions.hasStealthRock`/`spikesLayers`), and between uses the end-of-turn effects in the
+games' order: weather (sandstorm, hail, Dry Skin, Solar Power, Rain Dish, Ice Body), Grassy Terrain,
+Leftovers, Aqua Ring and Ingrain (with Big Root), Leech Seed, poison, toxic (`BattlePokemon.toxicCounter`),
+Poison Heal, burn (and Heatproof), Curse, Salt Cure and binding moves (with Binding Band)
+(`isLeechSeeded`, `isSaltCured`, `isCursed`, `isBound`, `hasAquaRing`, `isIngrained`), plus the HP a
+Sitrus or Oran Berry (and Ripen) restores at half HP. Magic Guard, Klutz, Knock Off, Thief/Covet,
+Bug Bite/Pluck and Psychic Noise's healing block are accounted for like the source. Its probability
+code keeps damage totals in JS objects whose key order decides its results, so [`JsDict`](champions-engine/src/commonMain/kotlin/com/tambapps/pokemon/champions/engine/JsDict.kt)
+reproduces that order, and the chances match the source's to the last digit, quirks included (the
+source's text for OHKO moves, "is it a one-hit KO?!", included).
+
 The facts behind that text are also exposed, typed, as `facts` (a `CalcFacts`) on both results
 (package `com.tambapps.pokemon.champions.engine.description`): the attacker's/defender's
 ability and item that applied (`Ability?`/`Item?`), the weather and terrain that applied, the
@@ -149,10 +158,12 @@ Two layers of tests, for two different jobs:
   bypassing its jQuery/DOM UI) to get ground-truth expected rolls and
   descriptions, which are hand-copied into
   [`DamageCalculatorCrossValidationTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/DamageCalculatorCrossValidationTest.kt),
-  [`SourceParityCrossValidationTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/SourceParityCrossValidationTest.kt)
+  [`SourceParityCrossValidationTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/SourceParityCrossValidationTest.kt),
+  [`KoChanceCrossValidationTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/KoChanceCrossValidationTest.kt)
   and [`DamageCalculatorTest`](champions-engine/src/commonTest/kotlin/com/tambapps/pokemon/champions/engine/DamageCalculatorTest.kt).
-  Every scenario asserts the exact description text, never a hand-written one,
-  and every hit of a multi-hit move.
+  Every scenario asserts the exact description and KO chance texts, never
+  hand-written ones, and every hit of a multi-hit move. The `ko-` scenarios
+  cover every hazard, end-of-turn effect and restoring berry case of the KO chance.
   Covers STAB, type effectiveness, critical hits, weather (sun, rain, sand,
   snow, Mega Sol), terrains, type-boosting items, screens (Reflect, Light
   Screen, Aurora Veil), Life Orb, burn and Guts, boosts on both sides,
@@ -237,13 +248,17 @@ Defaults to `../../../NCP-VGC-Damage-Calculator` (a sibling of the
 directly — the function the UI calls, setup pass then `GET_DAMAGE_SV`,
 bypassing the jQuery UI — for each matchup listed in `scenarios.json`, and
 prints each scenario's damage rolls and description (an array of rolls per
-distinct hit for a multi-hit move whose hits differ). Its output is what's
+distinct hit for a multi-hit move whose hits differ), hit count and KO chance
+text (`ko_chance.js`'s `getKOChanceText`, called like the UI's `calculate()`
+does, after the calc). Its output is what's
 hand-copied into the cross-validation tests as expected values: the ground
 truth this port is checked against. Descriptions use the calculator UI's
 default stat display (stat points); a scenario's `displayMode` (`"EVs"` or
 `"raw"`) picks another one. A scenario's field can also set
-`attackerTailwind`/`defenderTailwind`, and `counteredMove` is the defender's
-move a Counter-like move returns. It isn't wired into the Gradle build; run it
+`attackerTailwind`/`defenderTailwind` and the defender side's end-of-turn
+toggles (`isSR`, `spikes`, `isLeechSeed`, `isSaltCure`, `isCurse`, `isBinding`,
+`isAquaRing`, `isIngrain`), a Pokémon `toxicCounter`, and `counteredMove` is
+the defender's move a Counter-like move returns. It isn't wired into the Gradle build; run it
 by hand when adding scenarios or re-verifying after an upstream mechanic
 changes.
 
@@ -302,12 +317,13 @@ engine handles every damage case the source does; what's left:
   multi-hit move, but real Beat Up rolls each hit off a *different*
   uninflicted ally's Attack stat; this port has no team-roster concept, so
   it uses the attacker's own stat for every hit instead, as the source does.
-- **KO-chance math is damage-only.** `KoChanceCalculator` convolves the
-  16-roll distribution across repeated hits, but doesn't account for
-  between-turn effects the source calculator's `ko_chance.js` does:
-  residual damage (weather, burn/poison, Leftovers, Leech Seed), hazards
-  beyond an initial HP offset you supply yourself, or HP restored by a
-  berry mid-KO-check.
+- **Ingrain grounds each Pokémon by its own side, deliberately.** The
+  source reads the defender's side for both Pokémon of a calc, so there a
+  defender's Ingrain also grounds the attacker (terrain boosts, Terrain
+  Pulse, Expanding Force...) and the attacker's own Ingrain doesn't. The
+  engine follows the games: `SideConditions.isIngrained` grounds the
+  Pokémon of that side only. Calcs differ from the source only when one
+  side is ingrained and the attacker isn't grounded otherwise.
 - Accuracy, PP, and non-damage secondary effects (status chance, stat-drop
   chance, flinch...) are out of scope entirely — this is a damage
   calculator, not a battle simulator.

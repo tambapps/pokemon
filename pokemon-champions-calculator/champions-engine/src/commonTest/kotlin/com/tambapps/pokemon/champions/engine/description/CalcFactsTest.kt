@@ -78,13 +78,15 @@ class CalcFactsTest {
     assertEquals(Ability.RIVALRY, rivalry.attackerAbility)
     assertEquals(RivalryEffect.SAME_GENDER, rivalry.rivalryEffect)
 
-    val overlord = DamageCalculator.calculateSingleHit(
+    val overlordResult = DamageCalculator.calculateMove(
       testPokemon("Kingambit", ability = "Supreme Overlord", attack = 20), toxapex,
       MoveUse(testMove("Kowtow Cleave"), faintedAllyCount = 1), Battlefield(),
-    ).facts
+    )
+    val overlord = overlordResult.facts
     assertEquals(1, overlord.faintedAllies)
     // oracle.js output of the supreme-overlord-one-ally scenario
     assertEquals("20 Atk Supreme Overlord (1 ally down) Kingambit Kowtow Cleave vs. 20 HP  / 20+ Def Toxapex", overlord.format())
+    assertEquals("71.41% chance to 3HKO", overlordResult.koChance.text)
   }
 
   @Test

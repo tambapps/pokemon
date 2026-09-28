@@ -53,7 +53,7 @@ internal fun fieldResolvedTypeOf(move: Move, attacker: BattlePokemon, field: Bat
     Weather.NONE -> PokeType.NORMAL
   }
   "Aura Wheel" -> if (attacker.species.name.value == "Morpeko-Hangry") PokeType.DARK else move.type
-  "Terrain Pulse" -> if (field.terrain == Terrain.NONE || !attacker.isGrounded(field)) {
+  "Terrain Pulse" -> if (field.terrain == Terrain.NONE || !attacker.isAttackerGrounded(field)) {
     PokeType.NORMAL
   } else when (field.terrain) {
     Terrain.ELECTRIC -> PokeType.ELECTRIC
