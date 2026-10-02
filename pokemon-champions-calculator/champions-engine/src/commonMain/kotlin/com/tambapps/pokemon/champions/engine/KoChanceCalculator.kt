@@ -19,9 +19,29 @@ import kotlin.math.floor
  * KO chance (a status move, no damage, an OHKO move, or a move too weak to KO in 9 uses)
  * @param chance the probability (0.0-1.0) of the KO in [uses] uses, 1.0 when guaranteed. Null when the text is only a
  * "possible" KO (5 uses and more, where the source only compares the lowest and highest rolls), or not a KO chance
+ * @param kind what [text] is about, to tell apart the texts that aren't a KO chance without comparing them
  */
-data class KoChance(val text: String, val uses: Int?, val chance: Double?) {
+data class KoChance(val text: String, val uses: Int?, val chance: Double?, val kind: Kind = Kind.KO) {
   val isGuaranteed: Boolean get() = chance == 1.0
+
+  enum class Kind {
+    /** A KO in [uses] uses */
+    KO,
+    /** An OHKO move (Fissure, Sheer Cold...), whose damage isn't calculated */
+    OHKO_MOVE,
+    /** Pain Split, which deals no damage but shares the HP */
+    PAIN_SPLIT,
+    STATUS_MOVE,
+    /** No roll deals damage (an immunity, or a fixed damage of 0) */
+    NO_DAMAGE,
+    /** Even the highest rolls don't KO in [MAX_KO_USES] uses ("possibly the worst move ever") */
+    NO_KO_IN_MAX_USES,
+  }
+
+  companion object {
+    /** The most uses of a move the KO chance is looked for in, like the source calculator */
+    const val MAX_KO_USES = 9
+  }
 }
 
 /**
@@ -45,10 +65,14 @@ internal object KoChanceCalculator {
   fun koChance(hitRolls: List<List<Int>>, move: Move, attacker: BattlePokemon, defender: BattlePokemon, field: Battlefield): KoChance {
     requireValid(hitRolls.isNotEmpty()) { "a move has at least one hit" }
     // ap_calc.js shows this (as a link) instead of the KO chance of an OHKO move
-    if (move.isOHKO) return KoChance(OHKO_MOVE_TEXT, uses = null, chance = null)
-    if (move.name.value == "Pain Split") return KoChance("The battlers shared their pain!", uses = null, chance = null)
-    if (move.category == MoveCategory.STATUS) return KoChance("It's a status move, it won't deal damage.", uses = null, chance = null)
-    if (hitRolls.all { it.last() == 0 }) return KoChance("No damage for you", uses = null, chance = null)
+    if (move.isOHKO) return KoChance(OHKO_MOVE_TEXT, uses = null, chance = null, KoChance.Kind.OHKO_MOVE)
+    if (move.name.value == "Pain Split") {
+      return KoChance("The battlers shared their pain!", uses = null, chance = null, KoChance.Kind.PAIN_SPLIT)
+    }
+    if (move.category == MoveCategory.STATUS) {
+      return KoChance("It's a status move, it won't deal damage.", uses = null, chance = null, KoChance.Kind.STATUS_MOVE)
+    }
+    if (hitRolls.all { it.last() == 0 }) return KoChance("No damage for you", uses = null, chance = null, KoChance.Kind.NO_DAMAGE)
 
     val moveName = move.name.value
     val preventsHeal = moveName == "Psychic Noise"
@@ -120,14 +144,14 @@ internal object KoChanceCalculator {
       }
     }
 
-    for (uses in 5..9) {
+    for (uses in 5..KoChance.MAX_KO_USES) {
       if (predictTotal(damageNums.first(), eot, uses, toxicCounter, hp, maxHp, restoreHp, restoreThreshold) >= hp) {
         return KoChance("guaranteed ${uses}HKO$afterText", uses = uses, chance = 1.0)
       } else if (predictTotal(damageNums.last(), eot, uses, toxicCounter, hp, maxHp, restoreHp, restoreThreshold) >= hp) {
         return KoChance("possible ${uses}HKO$afterText", uses = uses, chance = null)
       }
     }
-    return KoChance("possibly the worst move ever", uses = null, chance = null)
+    return KoChance("possibly the worst move ever", uses = null, chance = null, KoChance.Kind.NO_KO_IN_MAX_USES)
   }
 
   /** The source's getRestoreHP, for the restoring items Champions has. */
