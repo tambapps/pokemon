@@ -46,6 +46,8 @@ internal class CalcFactsBuilder(
   var isGlaiveMod: Boolean = false
   var isFriendGuard: Boolean = false
   var isQuarteredByProtect: Boolean = false
+  var isSpread: Boolean = false
+  var isFairyAuraBoosted: Boolean = false
   var countered: CounteredMove? = null
 
   // not a fact: the defender's resist berry weakened this hit, so it's consumed for the next hits of the move
@@ -112,6 +114,8 @@ internal class CalcFactsBuilder(
     isGlaiveRushVulnerable = isGlaiveMod,
     isFriendGuard = isFriendGuard,
     isQuarteredByProtect = isQuarteredByProtect,
+    isSpread = isSpread,
+    isFairyAuraBoosted = isFairyAuraBoosted,
     countered = countered,
   )
 }

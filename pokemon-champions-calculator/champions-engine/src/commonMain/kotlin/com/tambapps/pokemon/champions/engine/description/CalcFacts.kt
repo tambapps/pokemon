@@ -129,6 +129,13 @@ data class CalcFacts(
   val isGlaiveRushVulnerable: Boolean = false,
   val isFriendGuard: Boolean = false,
   val isQuarteredByProtect: Boolean = false,
+  /** The spread move reduction (x0.75 in doubles) applied. Not written: the source's description doesn't mention it */
+  val isSpread: Boolean = false,
+  /**
+   * The field's Fairy Aura boosted the move. Not written as such: the source's description only mentions the ability
+   * of a pokemon of the calc having it ([attackerAbility], [defenderAbility])
+   */
+  val isFairyAuraBoosted: Boolean = false,
   val countered: CounteredMove? = null,
 ) {
 

@@ -241,7 +241,10 @@ object DamageCalculator {
     facts: CalcFactsBuilder,
   ): Int {
     var damage = baseDamage
-    if (field.format != BattleFormat.SINGLES && isSpreadHit(move, attacker, field)) damage = pokeRound(damage * 0xC00, 0x1000)
+    if (field.format != BattleFormat.SINGLES && isSpreadHit(move, attacker, field)) {
+      damage = pokeRound(damage * 0xC00, 0x1000)
+      facts.isSpread = true
+    }
     if (moveUse.isSecondParentalBondHit) damage = pokeRound(damage * 0x0400, 0x1000)
     damage = applyWeatherMod(damage, effectiveType, attacker, field, facts)
     if (defender.isVulnerableFromGlaiveRush) {

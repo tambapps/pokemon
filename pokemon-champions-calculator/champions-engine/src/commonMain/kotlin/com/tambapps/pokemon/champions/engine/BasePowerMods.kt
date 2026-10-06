@@ -60,6 +60,7 @@ internal object BasePowerMods {
     // Champions only offers Fairy Aura, not Dark Aura / Aura Break (hidden for this gen in the source calculator)
     if (field.isFairyAura && effectiveType == PokeType.FAIRY) {
       mods.add(0x1548)
+      facts.isFairyAuraBoosted = true
       if (attacker.resolvedAbility == Ability.FAIRY_AURA) {
         facts.attackerAbility(attacker.resolvedAbility)
       } else if (defenderAbility == Ability.FAIRY_AURA) {
