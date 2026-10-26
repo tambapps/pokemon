@@ -54,9 +54,20 @@ class PokemonNormalizerTest {
     assertEquals("rotom", PokemonNormalizer.normalizeToBase("Rotom-Fan"))
     assertEquals("rotom", PokemonNormalizer.normalizeToBase("Rotom-Mow"))
 
-    // Palafin switches to its Hero form during the battle
+    // forms changed during the battle
     assertEquals("palafin", PokemonNormalizer.normalizeToBase("Palafin"))
     assertEquals("palafin", PokemonNormalizer.normalizeToBase("Palafin-Hero"))
+    assertEquals("mimikyu", PokemonNormalizer.normalizeToBase("Mimikyu-Busted"))
+    assertEquals("eiscue", PokemonNormalizer.normalizeToBase("Eiscue-Noice"))
+    assertEquals("groudon", PokemonNormalizer.normalizeToBase("Groudon-Primal"))
+    assertEquals("kyogre", PokemonNormalizer.normalizeToBase("Kyogre-Primal"))
+    assertEquals("zygarde", PokemonNormalizer.normalizeToBase("Zygarde-Complete"))
+    assertEquals("zygarde", PokemonNormalizer.normalizeToBase("Zygarde-10%"))
+
+    // forms hidden at team preview
+    assertEquals("dudunsparce", PokemonNormalizer.normalizeToBase("Dudunsparce-Three-Segment"))
+    assertEquals("gourgeist", PokemonNormalizer.normalizeToBase("Gourgeist-Super"))
+    assertEquals("pumpkaboo", PokemonNormalizer.normalizeToBase("Pumpkaboo-Small"))
 
     // Test Legendary forms
     assertEquals("terapagos", PokemonNormalizer.normalizeToBase("Terapagos-Stellar"))

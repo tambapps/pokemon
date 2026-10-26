@@ -25,7 +25,17 @@ object PokemonNormalizer {
     insert("tatsugiri")
     insert("pyroar")
     insert("basculegion")
+    // forms changed for the rest of the battle, which a later switch-in shows
     insert("palafin")
+    insert("mimikyu")
+    insert("eiscue")
+    insert("groudon")
+    insert("kyogre")
+    insert("zygarde")
+    // forms hidden at team preview (e.g. Dudunsparce-*)
+    insert("dudunsparce")
+    insert("gourgeist")
+    insert("pumpkaboo")
   }
 
   fun pretty(s: String) = buildString {
