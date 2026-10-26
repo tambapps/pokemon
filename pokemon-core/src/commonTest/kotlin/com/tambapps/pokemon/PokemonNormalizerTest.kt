@@ -54,6 +54,10 @@ class PokemonNormalizerTest {
     assertEquals("rotom", PokemonNormalizer.normalizeToBase("Rotom-Fan"))
     assertEquals("rotom", PokemonNormalizer.normalizeToBase("Rotom-Mow"))
 
+    // Palafin switches to its Hero form during the battle
+    assertEquals("palafin", PokemonNormalizer.normalizeToBase("Palafin"))
+    assertEquals("palafin", PokemonNormalizer.normalizeToBase("Palafin-Hero"))
+
     // Test Legendary forms
     assertEquals("terapagos", PokemonNormalizer.normalizeToBase("Terapagos-Stellar"))
     assertEquals("zamazenta", PokemonNormalizer.normalizeToBase("Zamazenta-Crowned"))

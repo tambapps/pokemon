@@ -25,6 +25,7 @@ object PokemonNormalizer {
     insert("tatsugiri")
     insert("pyroar")
     insert("basculegion")
+    insert("palafin")
   }
 
   fun pretty(s: String) = buildString {
