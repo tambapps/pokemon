@@ -58,6 +58,9 @@ interface SdReplayLogVisitor {
     
     private val RATING_LOG_REGEX = Regex("(.*?)'s rating: (\\d+) .*?&rarr;.*?<strong>(\\d+)</strong>")
     private val NEXT_BATTLE_REGEX = Regex("href=\"([^\"]+)\"")
+    // e.g. <h2><strong>Game 2</strong> of <a href="/game-bestof3-gen9vgc2025regi-123">a best-of-3</a></h2>
+    private const val UHTML_BEST_OF = "bestof"
+    private val BEST_OF_REGEX = Regex("Game (\\d+)</strong> of <a href=\"/?([^\"]+)\">a best-of-(\\d+)")
   }
 
   fun visitLogs(logs: String) = visitLogs(logs.trim().lines())
@@ -77,8 +80,13 @@ interface SdReplayLogVisitor {
       LOG_UHTML -> {
         val name = tokens[2]
         val content = tokens.drop(3).joinToString("|")
+        // its link is the series', not a next battle
+        val bestOf = if (name == UHTML_BEST_OF) BEST_OF_REGEX.find(content) else null
         val match = NEXT_BATTLE_REGEX.find(content)
-        if (match != null) {
+        if (bestOf != null) {
+          val (gameNumber, seriesRef, size) = bestOf.destructured
+          visitBestOfUhtmlLog(name, content, gameNumber.toInt(), size.toInt(), seriesRef)
+        } else if (match != null) {
           var nextBattleRef = match.groupValues[1]
           if (nextBattleRef.contains("-gen")) {
             nextBattleRef = nextBattleRef.substring(nextBattleRef.indexOf("-gen") + 1)
@@ -296,6 +304,14 @@ interface SdReplayLogVisitor {
   fun visitHtmlLog(content: String) {}
   fun visitUhtmlLog(name: String, content: String) {}
   fun visitNextBattleUhtmlLog(name: String, content: String, nextBattleRef: String) {}
+  /**
+   * A game of a series, e.g. the 2nd of a best-of-3
+   *
+   * @param gameNumber the game's number in the series, from 1
+   * @param bestOf the number of games the series can have, e.g. 3
+   * @param seriesRef the series' room, the same for all its games (e.g. game-bestof3-gen9vgc2025regi-123)
+   */
+  fun visitBestOfUhtmlLog(name: String, content: String, gameNumber: Int, bestOf: Int, seriesRef: String) {}
   fun visitTimeLog(timestamp: String) {}
   fun visitGameTypeLog(gameType: String) {}
   fun visitPlayerLog(playerSlot: String, playerName: String, avatar: String?, rating: String?) {}

@@ -3,6 +3,9 @@ package com.tambapps.pokemon.sd.replay.log.visitor
 import com.tambapps.pokemon.Nature
 import com.tambapps.pokemon.PokemonName
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class SdReplayLogVisitorTest {
 
@@ -224,6 +227,37 @@ class SdReplayLogVisitorTest {
         OtsPokemon(PokemonName("Ninetales-Alola"), "Never Melt Ice", "Snow Warning", listOf("Blizzard", "Freeze Dry", "Encore", "Protect"), 50, Nature.TIMID, null),
       )
     )
+  }
+
+  @Test
+  fun visitBestOf() {
+    var visited = false
+    val visitor = object : SdReplayLogVisitor {
+      override fun visitBestOfUhtmlLog(name: String, content: String, gameNumber: Int, bestOf: Int, seriesRef: String) {
+        visited = true
+        assertEquals(3, gameNumber)
+        assertEquals(3, bestOf)
+        assertEquals("game-bestof3-gen9championsvgc2026regmabo3-2677892396", seriesRef)
+      }
+
+      override fun visitNextBattleUhtmlLog(name: String, content: String, nextBattleRef: String) {
+        fail("the series' link isn't a next battle")
+      }
+    }
+    visitor.visitLog("|uhtml|bestof|<h2><strong>Game 3</strong> of <a href=\"/game-bestof3-gen9championsvgc2026regmabo3-2677892396\">a best-of-3</a></h2>")
+    assertTrue(visited)
+  }
+
+  @Test
+  fun visitNextBattle() {
+    var visitedRef: String? = null
+    val visitor = object : SdReplayLogVisitor {
+      override fun visitNextBattleUhtmlLog(name: String, content: String, nextBattleRef: String) {
+        visitedRef = nextBattleRef
+      }
+    }
+    visitor.visitLog("|uhtml|next|Next: <a href=\"/battle-gen9championsvgc2026regmabo3-2677862100\"><strong>Game 2 of 3</strong></a>")
+    assertEquals("gen9championsvgc2026regmabo3-2677862100", visitedRef)
   }
 
 }
