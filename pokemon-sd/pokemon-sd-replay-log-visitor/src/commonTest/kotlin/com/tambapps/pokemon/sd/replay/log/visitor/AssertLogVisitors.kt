@@ -79,6 +79,32 @@ fun assertPokeLog(log: String, expectedPlayerSlot: String, expectedPokemonName: 
   assertTrue(visited, "Should have visited")
 }
 
+fun assertSwapLog(log: String, expectedPokemonSlot: String, expectedTargetPokemonSlot: String) {
+  var visited = false
+  val visitor = object: SdReplayLogVisitor {
+    override fun visitSwapLog(pokemonSlot: String, targetPokemonSlot: String) {
+      visited = true
+      assertEquals(expectedPokemonSlot, pokemonSlot)
+      assertEquals(expectedTargetPokemonSlot, targetPokemonSlot)
+    }
+  }
+  visitor.visitLog(log)
+  assertTrue(visited, "Should have visited")
+}
+
+fun assertReplaceLog(log: String, expectedPokemonSlot: String, expectedPokemonName: String) {
+  var visited = false
+  val visitor = object: SdReplayLogVisitor {
+    override fun visitReplaceLog(pokemonSlot: String, pokemonName: String) {
+      visited = true
+      assertEquals(expectedPokemonSlot, pokemonSlot)
+      assertEquals(expectedPokemonName, pokemonName)
+    }
+  }
+  visitor.visitLog(log)
+  assertTrue(visited, "Should have visited")
+}
+
 fun assertSwitchLog(log: String, expectedPokemonSlot: String, expectedPokemonName: String, expectedHpValue: Int?) {
   var visited = false
   val visitor = object: SdReplayLogVisitor {

@@ -17,6 +17,17 @@ class SdReplayLogVisitorTest {
   }
 
   @Test
+  fun visitSwap() {
+    assertSwapLog("|swap|p2a: Heap|1|[from] move: Ally Switch", P2A, P2B)
+    assertSwapLog("|swap|p1b: Vanilluxe|0|[from] move: Ally Switch", P1B, P1A)
+  }
+
+  @Test
+  fun visitReplace() {
+    assertReplaceLog("|replace|p2a: Zoroark|Zoroark-Hisui, L50, M", P2A, "Zoroark-Hisui")
+  }
+
+  @Test
   fun visitMove() {
     assertMoveLog(
       "|move|p2b: Miraidon|Draco Meteor|p1b: Ogerpon",

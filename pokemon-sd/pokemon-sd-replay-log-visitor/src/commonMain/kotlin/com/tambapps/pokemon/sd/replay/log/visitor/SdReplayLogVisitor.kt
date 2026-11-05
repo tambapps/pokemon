@@ -13,6 +13,8 @@ interface SdReplayLogVisitor {
     private const val LOG_RAW = "raw"
     private const val LOG_DRAG = "drag"
     private const val LOG_SWITCH = "switch"
+    private const val LOG_SWAP = "swap"
+    private const val LOG_REPLACE = "replace"
     private const val LOG_TERASTALLIZE = "-terastallize"
     private const val LOG_MEGA = "-mega"
     private const val LOG_WIN = "win"
@@ -146,6 +148,19 @@ interface SdReplayLogVisitor {
         val hpInfo = tokens.getOrNull(4)
         val hpPercentage: Int? = hpInfo?.let { parseHpPercentage(it) }
         visitDragLog(pokemonSlot, pokemonName, hpPercentage)
+      }
+      LOG_SWAP -> {
+        // e.g. |swap|p2a: Heap|1|[from] move: Ally Switch, the position being the one of the slot on the side
+        val pokemonSlot = tokens[2].split(':')[0]
+        val position = tokens[3].toIntOrNull()
+        if (position != null) {
+          visitSwapLog(pokemonSlot, pokemonSlot.dropLast(1) + ('a' + position))
+        }
+      }
+      LOG_REPLACE -> {
+        val pokemonSlot = tokens[2].split(':')[0]
+        val pokemonName = formatPokemonName(tokens[3].split(',')[0])
+        visitReplaceLog(pokemonSlot, pokemonName)
       }
       LOG_FIELDSTART -> {
         val field = tokens[2]
@@ -328,6 +343,17 @@ interface SdReplayLogVisitor {
   fun visitStartLog() {}
   fun visitSwitchLog(pokemonSlot: String, pokemonName: String, hpPercentage: Int?) {}
   fun visitDragLog(pokemonSlot: String, pokemonName: String, hpPercentage: Int?) {}
+  /**
+   * A pokemon changed slot (e.g. Ally Switch), the pokemon of the other slot, if any, taking its slot
+   *
+   * @param pokemonSlot the slot it was in, e.g. p1a
+   * @param targetPokemonSlot the slot it is now in, e.g. p1b
+   */
+  fun visitSwapLog(pokemonSlot: String, targetPokemonSlot: String) {}
+  /**
+   * An illusion ended, showing the actual pokemon of the slot
+   */
+  fun visitReplaceLog(pokemonSlot: String, pokemonName: String) {}
   fun visitFieldStartLog(field: String, source: String?, from: String?) {}
   fun visitEndItemLog(pokemonSlot: String, item: String) {}
   fun visitActivateLog(pokemonSlot: String, ability: String, details: String) {}
