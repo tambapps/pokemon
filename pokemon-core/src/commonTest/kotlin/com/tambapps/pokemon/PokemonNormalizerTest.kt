@@ -2,6 +2,7 @@ package com.tambapps.pokemon
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class PokemonNormalizerTest {
@@ -26,6 +27,16 @@ class PokemonNormalizerTest {
     assertEquals("", PokemonNormalizer.normalize(""))
     assertEquals("a", PokemonNormalizer.normalize("A"))
     assertEquals("-", PokemonNormalizer.normalize(" "))
+  }
+
+  @Test
+  fun testNormalizeToBase_floetteEternalIsItsOwnPokemon() {
+    assertEquals("floette", PokemonNormalizer.normalizeToBase("Floette"))
+    assertEquals("floette-eternal", PokemonNormalizer.normalizeToBase("Floette-Eternal"))
+    assertEquals("floette-eternal", PokemonNormalizer.normalizeToBase("Floette-Mega"))
+    assertFalse(PokemonNormalizer.baseMatches("Floette", "Floette-Eternal"))
+    assertFalse(PokemonNormalizer.baseMatches("Floette", "Floette-Mega"))
+    assertTrue(PokemonNormalizer.baseMatches("Floette-Eternal", "Floette-Mega"))
   }
 
   @Test

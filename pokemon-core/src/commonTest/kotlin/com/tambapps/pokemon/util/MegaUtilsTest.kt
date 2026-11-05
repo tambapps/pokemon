@@ -137,7 +137,7 @@ class MegaUtilsTest {
     assertTrue(PokemonName("charizard").canMega)
     assertTrue(PokemonName("mewtwo").canMega)
     assertTrue(PokemonName("floette-eternal").canMega)
-    assertTrue(PokemonName("floette").canMega)
+    assertFalse(PokemonName("floette").canMega)
   }
 
   @Test
