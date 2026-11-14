@@ -40,6 +40,18 @@ class PokemonNormalizerTest {
   }
 
   @Test
+  fun testNormalizeToBase_vivillonPatterns() {
+    assertEquals("vivillon", PokemonNormalizer.normalizeToBase("Vivillon"))
+    assertEquals("vivillon", PokemonNormalizer.normalizeToBase("Vivillon-Polar"))
+    assertEquals("vivillon", PokemonNormalizer.normalizeToBase("Vivillon-Fancy"))
+    assertEquals("vivillon", PokemonNormalizer.normalizeToBase("Vivillon-Pokeball"))
+    assertEquals("vivillon", PokemonNormalizer.normalizeToBase("Vivillon-High-Plains"))
+    assertEquals("vivillon", PokemonNormalizer.normalizeToBase("Vivillon Icy Snow"))
+    assertTrue(PokemonNormalizer.baseMatches("Vivillon-Polar", "Vivillon-Garden"))
+    assertTrue(PokemonNormalizer.baseMatches("Vivillon", "Vivillon-Marine"))
+  }
+
+  @Test
   fun testNormalizeToBase_PrefixMatching() {
     // Test Urshifu forms - should all return "urshifu"
     assertEquals("urshifu", PokemonNormalizer.normalizeToBase("Urshifu"))

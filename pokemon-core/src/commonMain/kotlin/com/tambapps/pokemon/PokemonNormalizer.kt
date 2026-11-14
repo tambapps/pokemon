@@ -36,6 +36,7 @@ object PokemonNormalizer {
     insert("dudunsparce")
     insert("gourgeist")
     insert("pumpkaboo")
+    insert("vivillon")
   }
 
   fun pretty(s: String) = buildString {
